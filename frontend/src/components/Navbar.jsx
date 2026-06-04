@@ -1,0 +1,123 @@
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import { Layers, Menu, X } from 'lucide-react';
+import { useState } from 'react';
+
+export default function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <nav className="glass" style={{
+      position: 'sticky',
+      top: 0,
+      zIndex: 100,
+      height: '70px',
+      display: 'flex',
+      alignItems: 'center',
+      borderBottom: '1px solid var(--border-color)',
+      padding: '0 24px'
+    }}>
+      <div className="container" style={{
+        display: 'flex',
+        justifyContent: 'between',
+        alignItems: 'center',
+        padding: 0
+      }}>
+        {/* Logo */}
+        <NavLink to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <Layers size={28} color="var(--accent-gold)" />
+          <span style={{
+            fontFamily: 'var(--font-serif)',
+            fontSize: '22px',
+            fontWeight: 'bold',
+            letterSpacing: '1px',
+            background: 'linear-gradient(135deg, #f3f3f6 30%, var(--accent-gold) 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>
+            AURA
+          </span>
+          <span style={{
+            fontSize: '11px',
+            letterSpacing: '3px',
+            textTransform: 'uppercase',
+            color: 'var(--text-secondary)',
+            alignSelf: 'flex-end',
+            marginBottom: '4px',
+            marginLeft: '5px'
+          }}>
+            Stone & Paint
+          </span>
+        </NavLink>
+
+        {/* Mobile Menu Icon */}
+        <div className="mobile-toggle" style={{ display: 'none', cursor: 'pointer' }} onClick={() => setIsOpen(!isOpen)}>
+          {isOpen ? <X size={24} /> : <Menu size={24} />}
+        </div>
+
+        {/* Navigation Links */}
+        <div style={{ display: 'flex', gap: '30px', alignItems: 'center' }}>
+          <NavLink 
+            to="/" 
+            style={({ isActive }) => ({
+              fontSize: '14px',
+              fontWeight: '500',
+              color: isActive ? 'var(--accent-gold)' : 'var(--text-secondary)',
+              transition: 'color var(--transition-fast)'
+            })}
+          >
+            Home
+          </NavLink>
+          <NavLink 
+            to="/catalog" 
+            style={({ isActive }) => ({
+              fontSize: '14px',
+              fontWeight: '500',
+              color: isActive ? 'var(--accent-gold)' : 'var(--text-secondary)',
+              transition: 'color var(--transition-fast)'
+            })}
+          >
+            Catalog
+          </NavLink>
+          <NavLink 
+            to="/about" 
+            style={({ isActive }) => ({
+              fontSize: '14px',
+              fontWeight: '500',
+              color: isActive ? 'var(--accent-gold)' : 'var(--text-secondary)',
+              transition: 'color var(--transition-fast)'
+            })}
+          >
+            About Us
+          </NavLink>
+          <NavLink 
+            to="/contact" 
+            style={({ isActive }) => ({
+              fontSize: '14px',
+              fontWeight: '500',
+              color: isActive ? 'var(--accent-gold)' : 'var(--text-secondary)',
+              transition: 'color var(--transition-fast)'
+            })}
+          >
+            Contact
+          </NavLink>
+          <NavLink 
+            to="/admin" 
+            style={({ isActive }) => ({
+              fontSize: '13px',
+              fontWeight: '600',
+              padding: '6px 12px',
+              borderRadius: 'var(--border-radius-sm)',
+              border: '1px dashed var(--accent-gold)',
+              color: isActive ? 'var(--bg-primary)' : 'var(--accent-gold)',
+              backgroundColor: isActive ? 'var(--accent-gold)' : 'transparent',
+              transition: 'all var(--transition-normal)'
+            })}
+          >
+            Admin Panel
+          </NavLink>
+        </div>
+      </div>
+    </nav>
+  );
+}
