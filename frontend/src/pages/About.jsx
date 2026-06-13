@@ -20,7 +20,7 @@ export default function About() {
           Crafting the Foundation of Exquisite Architecture
         </h1>
         <p className="subtitle" style={{ fontSize: '16px', margin: '0 auto' }}>
-          For over two decades, we have partnered with builders, interior designers, and homeowners to supply premium granite and decorative tiles.
+          Since 2021, we have partnered with builders, interior designers, and homeowners to supply premium granite and decorative tiles.
         </p>
       </section>
 
@@ -33,13 +33,13 @@ export default function About() {
             </h2>
             <div style={{ color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '15px', fontSize: '15px', lineHeight: '1.7' }}>
               <p>
-                Founded in 1998 as a boutique stonemason shop, G S Granites & Tiles began with a singular focus: sourcing the finest natural granite slabs for local kitchen builders. Our dedication to selecting raw, high-character minerals quickly earned us a reputation for quality.
+                Founded in 2021, G S Granites & Tiles began with a clear focus: sourcing the finest natural granite slabs. Our dedication to selecting premium materials quickly earned us a reputation for quality.
               </p>
               <p>
-                As client demand grew, we expanded our operations. In 2008, we introduced precision-cut luxury ceramic, porcelain, and mosaic tiles.
+                As client demand grew, we expanded our operations to introduce high-quality ceramic, porcelain, and mosaic tiles.
               </p>
               <p>
-                Today, G S Granites & Tiles stands as a comprehensive showroom and warehouse facility housing over 200 varieties of stone slabs and 500 tile patterns.
+                Today, G S Granites & Tiles operates a comprehensive showroom and warehouse facility, housing a diverse selection of stone slabs and tile patterns.
               </p>
             </div>
           </div>
@@ -132,7 +132,7 @@ export default function About() {
       <section className="container">
         <div className="stats-grid">
           <div className="stats-item">
-            <span style={{ fontSize: '48px', fontWeight: 'bold', fontFamily: 'var(--font-serif)', color: 'var(--accent-gold)' }}>25+</span>
+            <span style={{ fontSize: '48px', fontWeight: 'bold', fontFamily: 'var(--font-serif)', color: 'var(--accent-gold)' }}>5+</span>
             <p style={{ color: 'var(--text-secondary)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '10px' }}>Years in Industry</p>
           </div>
           <div className="stats-item">

@@ -19,7 +19,7 @@ export default function Navbar() {
     }}>
       <div className="container" style={{
         display: 'flex',
-        justifyContent: 'between',
+        justifyContent: 'space-between',
         alignItems: 'center',
         padding: 0
       }}>

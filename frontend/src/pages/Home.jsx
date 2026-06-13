@@ -49,7 +49,7 @@ export default function Home() {
             textTransform: 'uppercase',
             letterSpacing: '0.05em'
           }}>
-            <Sparkles size={14} /> Shaping Dream Spaces Since 1998
+            <Sparkles size={14} /> Shaping Dream Spaces Since 2021
           </div>
 
           <h1 className="serif-title" style={{

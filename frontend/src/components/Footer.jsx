@@ -31,7 +31,7 @@ export default function Footer() {
               </span>
             </div>
             <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '20px', lineHeight: '1.7' }}>
-              Specialists in premium granite slabs, luxury marble and floor tiles. Elevating residential and commercial architecture since 1998.
+              Specialists in premium granite slabs, luxury marble and floor tiles. Elevating residential and commercial architecture since 2021.
             </p>
           </div>
 
