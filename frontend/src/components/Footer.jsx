@@ -27,11 +27,11 @@ export default function Footer() {
                 fontWeight: 'bold',
                 color: 'var(--text-primary)'
               }}>
-                AURA <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Stone & Paint</span>
+                G S <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Granites & Tiles</span>
               </span>
             </div>
             <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '20px', lineHeight: '1.7' }}>
-              Specialists in premium granite slabs, luxury marble and floor tiles, and elite interior/exterior paints. Elevating residential and commercial architecture since 1998.
+              Specialists in premium granite slabs, luxury marble and floor tiles. Elevating residential and commercial architecture since 1998.
             </p>
           </div>
 
@@ -72,15 +72,15 @@ export default function Footer() {
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '15px', fontSize: '14px', color: 'var(--text-secondary)' }}>
               <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
                 <MapPin size={18} color="var(--accent-gold)" style={{ flexShrink: 0, marginTop: '2px' }} />
-                <span>128 Marble Arch Drive, Quarry District, GD 45210</span>
+                <span>Opp. metro pillar no. A857, beside musjid, kukatpally, "y" junction, Hyderabad, Telangana-500072</span>
               </li>
               <li style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                 <Phone size={18} color="var(--accent-gold)" />
-                <span>+1 (555) 746-6374 (STONE-PNT)</span>
+                <span>+91 93916 66951</span>
               </li>
               <li style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                 <Mail size={18} color="var(--accent-gold)" />
-                <span>inquiries@aurastonepaint.com</span>
+                <span>gsgranitesandmarbles@gmail.com</span>
               </li>
             </ul>
           </div>
@@ -119,7 +119,7 @@ export default function Footer() {
           fontSize: '12px',
           color: 'var(--text-muted)'
         }}>
-          <p>&copy; {new Date().getFullYear()} Aura Stone & Paint. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} G S Granites & Tiles. All rights reserved.</p>
           <p>Designed with premium quality materials.</p>
         </div>
       </div>

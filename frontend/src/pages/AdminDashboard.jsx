@@ -95,15 +95,9 @@ export default function AdminDashboard() {
     sendData.append('imageUrl', formData.imageUrl);
 
     // Contextual categories fields
-    if (formData.category !== 'Paint') {
-      sendData.append('thickness', formData.thickness);
-      sendData.append('dimensions', formData.dimensions);
-      sendData.append('finish', formData.finish);
-    } else {
-      sendData.append('finish', formData.finish);
-      sendData.append('coverage', formData.coverage);
-      sendData.append('size', formData.size);
-    }
+    sendData.append('thickness', formData.thickness);
+    sendData.append('dimensions', formData.dimensions);
+    sendData.append('finish', formData.finish);
 
     if (imageFile) {
       sendData.append('images', imageFile);
@@ -189,7 +183,7 @@ export default function AdminDashboard() {
         <div>
           <h1 className="serif-title" style={{ fontSize: '36px' }}>Store Administration</h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginTop: '6px' }}>
-            Manage granite, tiles, paints inventory and review client requests.
+            Manage granite, tiles inventory and review client requests.
           </p>
         </div>
 
@@ -232,7 +226,7 @@ export default function AdminDashboard() {
 
       {/* --- TAB CONTENT: PRODUCTS --- */}
       {activeTab === 'products' && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '40px', alignItems: 'start' }}>
+        <div className="admin-grid">
           
           {/* Left Column: Form to Add/Edit */}
           <div className="glass" style={{ padding: '30px', borderRadius: 'var(--border-radius-lg)' }}>
@@ -285,7 +279,6 @@ export default function AdminDashboard() {
                   >
                     <option value="Granite">Granite</option>
                     <option value="Tile">Tiles</option>
-                    <option value="Paint">Paints</option>
                   </select>
                 </div>
                 <div className="form-group" style={{ marginBottom: 0 }}>
@@ -311,7 +304,7 @@ export default function AdminDashboard() {
                     step="0.01"
                     name="price" 
                     required
-                    placeholder={formData.category === 'Paint' ? 'e.g. 280.00 (per litre)' : 'e.g. 180.00 (per sqft)'} 
+                    placeholder={formData.category === 'Tile' ? 'e.g. 800.00 (per box)' : 'e.g. 180.00 (per sqft)'} 
                     className="form-control"
                     value={formData.price}
                     onChange={handleInputChange}
@@ -333,87 +326,44 @@ export default function AdminDashboard() {
               </div>
 
               {/* DYNAMIC CATEGORY FIELDS */}
-              {formData.category !== 'Paint' ? (
-                /* Granite or Tile Specs */
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', padding: '16px', backgroundColor: 'rgba(255,255,255,0.01)', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-                  <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label className="form-label">Thickness</label>
-                    <input 
-                      type="text" 
-                      name="thickness" 
-                      placeholder="e.g. 3cm, 1.2cm" 
-                      className="form-control"
-                      value={formData.thickness}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label className="form-label">Dimensions</label>
-                    <input 
-                      type="text" 
-                      name="dimensions" 
-                      placeholder='e.g. 120" x 74"' 
-                      className="form-control"
-                      value={formData.dimensions}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label className="form-label">Finish</label>
-                    <select 
-                      name="finish" 
-                      className="form-control"
-                      value={formData.finish}
-                      onChange={handleInputChange}
-                    >
-                      <option value="Polished">Polished</option>
-                      <option value="Honed">Honed</option>
-                      <option value="Matte">Matte</option>
-                      <option value="Leathered">Leathered</option>
-                    </select>
-                  </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', padding: '16px', backgroundColor: 'rgba(255,255,255,0.01)', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label className="form-label">Thickness</label>
+                  <input 
+                    type="text" 
+                    name="thickness" 
+                    placeholder="e.g. 3cm, 1.2cm" 
+                    className="form-control"
+                    value={formData.thickness}
+                    onChange={handleInputChange}
+                  />
                 </div>
-              ) : (
-                /* Paint Specs */
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', padding: '16px', backgroundColor: 'rgba(255,255,255,0.01)', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-                  <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label className="form-label">Finish</label>
-                    <select 
-                      name="finish" 
-                      className="form-control"
-                      value={formData.finish}
-                      onChange={handleInputChange}
-                    >
-                      <option value="Matte">Matte</option>
-                      <option value="Satin">Satin</option>
-                      <option value="Gloss">Gloss</option>
-                      <option value="Semi-Gloss">Semi-Gloss</option>
-                    </select>
-                  </div>
-                  <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label className="form-label">Coverage</label>
-                    <input 
-                      type="text" 
-                      name="coverage" 
-                      placeholder="e.g. 400 sq.ft" 
-                      className="form-control"
-                      value={formData.coverage}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label className="form-label">Size</label>
-                    <input 
-                      type="text" 
-                      name="size" 
-                      placeholder="e.g. 1 Gallon" 
-                      className="form-control"
-                      value={formData.size}
-                      onChange={handleInputChange}
-                    />
-                  </div>
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label className="form-label">Dimensions</label>
+                  <input 
+                    type="text" 
+                    name="dimensions" 
+                    placeholder='e.g. 120" x 74"' 
+                    className="form-control"
+                    value={formData.dimensions}
+                    onChange={handleInputChange}
+                  />
                 </div>
-              )}
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label className="form-label">Finish</label>
+                  <select 
+                    name="finish" 
+                    className="form-control"
+                    value={formData.finish}
+                    onChange={handleInputChange}
+                  >
+                    <option value="Polished">Polished</option>
+                    <option value="Honed">Honed</option>
+                    <option value="Matte">Matte</option>
+                    <option value="Leathered">Leathered</option>
+                  </select>
+                </div>
+              </div>
 
               {/* Description */}
               <div className="form-group" style={{ marginBottom: 0 }}>
@@ -500,7 +450,7 @@ export default function AdminDashboard() {
           <div className="glass" style={{ padding: '30px', borderRadius: 'var(--border-radius-lg)', display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '22px' }}>Inventory Items</h3>
             
-            <div style={{ overflowX: 'auto' }}>
+            <div className="admin-table-wrapper">
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid var(--border-color)', textAlign: 'left' }}>

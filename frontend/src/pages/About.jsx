@@ -14,37 +14,32 @@ export default function About() {
           textTransform: 'uppercase',
           letterSpacing: '0.1em'
         }}>
-          Discover Aura Stone & Paint
+          Discover G S Granites & Tiles
         </span>
         <h1 className="serif-title" style={{ fontSize: '42px', maxWidth: '800px', lineHeight: '1.2' }}>
           Crafting the Foundation of Exquisite Architecture
         </h1>
         <p className="subtitle" style={{ fontSize: '16px', margin: '0 auto' }}>
-          For over two decades, we have partnered with builders, interior designers, and homeowners to supply premium granite, decorative tiles, and professional paint solutions.
+          For over two decades, we have partnered with builders, interior designers, and homeowners to supply premium granite and decorative tiles.
         </p>
       </section>
 
       {/* History and Image Split */}
       <section className="container">
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          gap: '50px',
-          alignItems: 'center'
-        }}>
+        <div className="about-story-grid">
           <div>
             <h2 className="serif-title" style={{ fontSize: '28px', marginBottom: '20px' }}>
               Our Story & Heritage
             </h2>
             <div style={{ color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '15px', fontSize: '15px', lineHeight: '1.7' }}>
               <p>
-                Founded in 1998 as a boutique stonemason shop, Aura Stone & Paint began with a singular focus: sourcing the finest natural granite slabs for local kitchen builders. Our dedication to selecting raw, high-character minerals quickly earned us a reputation for quality.
+                Founded in 1998 as a boutique stonemason shop, G S Granites & Tiles began with a singular focus: sourcing the finest natural granite slabs for local kitchen builders. Our dedication to selecting raw, high-character minerals quickly earned us a reputation for quality.
               </p>
               <p>
-                As client demand grew, we expanded our operations. In 2008, we introduced precision-cut luxury ceramic, porcelain, and mosaic tiles. Realizing that structural stone looks best when complemented by matching wall colors, we collaborated with chemists in 2016 to introduce our signature line of washproof, zero-VOC eco-paints.
+                As client demand grew, we expanded our operations. In 2008, we introduced precision-cut luxury ceramic, porcelain, and mosaic tiles.
               </p>
               <p>
-                Today, Aura stands as a comprehensive showroom and warehouse facility housing over 200 varieties of stone slabs, 500 tile patterns, and an infinite palette of computer-matched paint pigments.
+                Today, G S Granites & Tiles stands as a comprehensive showroom and warehouse facility housing over 200 varieties of stone slabs and 500 tile patterns.
               </p>
             </div>
           </div>
@@ -104,7 +99,7 @@ export default function About() {
               <div>
                 <h3 style={{ fontSize: '20px', marginBottom: '12px', fontFamily: 'var(--font-serif)' }}>Our Vision</h3>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '14px', lineHeight: '1.6' }}>
-                  To become the leading national supplier of premium surface materials and interior paints, recognized for sustainable sourcing practices and unmatched customer design consultations.
+                  To become the leading national supplier of premium surface materials, recognized for sustainable sourcing practices and unmatched customer design consultations.
                 </p>
               </div>
             </div>
@@ -124,7 +119,7 @@ export default function About() {
               <div>
                 <h3 style={{ fontSize: '20px', marginBottom: '12px', fontFamily: 'var(--font-serif)' }}>Our Commitment</h3>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '14px', lineHeight: '1.6' }}>
-                  We guarantee absolute transparency in material origins, thickness tolerances within 1mm, and custom paint match precision using advanced spectroscopic color analyzers.
+                  We guarantee absolute transparency in material origins, and thickness tolerances within 1mm.
                 </p>
               </div>
             </div>
@@ -135,25 +130,20 @@ export default function About() {
 
       {/* Corporate Statistics / Numbers */}
       <section className="container">
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-          gap: '30px',
-          textAlign: 'center'
-        }}>
-          <div style={{ borderRight: '1px solid var(--border-color)', padding: '20px' }}>
+        <div className="stats-grid">
+          <div className="stats-item">
             <span style={{ fontSize: '48px', fontWeight: 'bold', fontFamily: 'var(--font-serif)', color: 'var(--accent-gold)' }}>25+</span>
             <p style={{ color: 'var(--text-secondary)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '10px' }}>Years in Industry</p>
           </div>
-          <div style={{ borderRight: '1px solid var(--border-color)', padding: '20px' }}>
+          <div className="stats-item">
             <span style={{ fontSize: '48px', fontWeight: 'bold', fontFamily: 'var(--font-serif)', color: 'var(--accent-gold)' }}>15k+</span>
             <p style={{ color: 'var(--text-secondary)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '10px' }}>Projects Completed</p>
           </div>
-          <div style={{ borderRight: '1px solid var(--border-color)', padding: '20px' }}>
+          <div className="stats-item">
             <span style={{ fontSize: '48px', fontWeight: 'bold', fontFamily: 'var(--font-serif)', color: 'var(--accent-gold)' }}>120+</span>
             <p style={{ color: 'var(--text-secondary)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '10px' }}>Unique Stone Slabs</p>
           </div>
-          <div style={{ padding: '20px' }}>
+          <div className="stats-item">
             <span style={{ fontSize: '48px', fontWeight: 'bold', fontFamily: 'var(--font-serif)', color: 'var(--accent-gold)' }}>100%</span>
             <p style={{ color: 'var(--text-secondary)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '10px' }}>Client Satisfaction</p>
           </div>

@@ -69,7 +69,7 @@ export default function Home() {
           </h1>
 
           <p className="subtitle" style={{ fontSize: '18px', maxWidth: '650px' }}>
-            Discover our hand-selected collection of premium granite slabs, luxury wall & floor tiles, and designer interior paints crafted to inspire architectural excellence.
+            Discover our hand-selected collection of premium granite slabs and luxury wall & floor tiles crafted to inspire architectural excellence.
           </p>
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginTop: '10px' }}>
@@ -116,7 +116,7 @@ export default function Home() {
             <ShieldCheck size={36} color="var(--accent-gold)" style={{ marginBottom: '16px' }} />
             <h3 style={{ fontSize: '20px', marginBottom: '10px' }}>Certified Durability</h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
-              Our paints are eco-friendly, zero-VOC, washproof and backed by a lifetime warranty to protect and color your home.
+              Our granite and marble slabs are tested for load resistance and backed by a quality assurance guarantee.
             </p>
           </div>
 
@@ -129,7 +129,7 @@ export default function Home() {
             <Sparkles size={36} color="var(--accent-gold)" style={{ marginBottom: '16px' }} />
             <h3 style={{ fontSize: '20px', marginBottom: '10px' }}>Custom Finishes</h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
-              From mirror-polished and leathered granites to velvet-finish paints, we offer tailored finishes to suit any style.
+              From mirror-polished and leathered granites to textured stone tiles, we offer tailored finishes to suit any style.
             </p>
           </div>
         </div>

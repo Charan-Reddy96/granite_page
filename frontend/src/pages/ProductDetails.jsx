@@ -45,7 +45,7 @@ export default function ProductDetails() {
   }
 
   const displayPriceUnit = (category) => {
-    if (category === 'Paint') return '/ litre';
+    if (category === 'Tile') return '/ box';
     return '/ sq.ft';
   };
 
@@ -72,23 +72,11 @@ export default function ProductDetails() {
         <ArrowLeft size={16} /> Back to Catalog
       </Link>
 
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-        gap: '50px',
-        alignItems: 'start'
-      }}>
+      <div className="product-details-grid">
         
         {/* Left Column: Image Gallery */}
         <div>
-          <div style={{
-            border: '1px solid var(--border-color)',
-            borderRadius: 'var(--border-radius-lg)',
-            overflow: 'hidden',
-            backgroundColor: 'var(--bg-secondary)',
-            height: '420px',
-            marginBottom: '20px'
-          }}>
+          <div className="product-main-image">
             <img 
               src={activeImage || '/static/uploads/placeholder.webp'} 
               alt={product.name} 
@@ -203,39 +191,17 @@ export default function ProductDetails() {
               )}
 
               {/* Granite/Tile specific spec rows */}
-              {product.category !== 'Paint' && (
-                <>
-                  {product.thickness && (
-                    <div style={{ display: 'flex', borderBottom: '1px solid var(--border-color)', padding: '12px 16px', fontSize: '14px' }}>
-                      <span style={{ width: '150px', color: 'var(--text-muted)', fontWeight: 500 }}>Thickness</span>
-                      <span style={{ color: 'var(--text-primary)' }}>{product.thickness}</span>
-                    </div>
-                  )}
-                  {product.dimensions && (
-                    <div style={{ display: 'flex', borderBottom: '1px solid var(--border-color)', padding: '12px 16px', fontSize: '14px' }}>
-                      <span style={{ width: '150px', color: 'var(--text-muted)', fontWeight: 500 }}>Slab Dimensions</span>
-                      <span style={{ color: 'var(--text-primary)' }}>{product.dimensions}</span>
-                    </div>
-                  )}
-                </>
+              {product.thickness && (
+                <div style={{ display: 'flex', borderBottom: '1px solid var(--border-color)', padding: '12px 16px', fontSize: '14px' }}>
+                  <span style={{ width: '150px', color: 'var(--text-muted)', fontWeight: 500 }}>Thickness</span>
+                  <span style={{ color: 'var(--text-primary)' }}>{product.thickness}</span>
+                </div>
               )}
-
-              {/* Paint specific spec rows */}
-              {product.category === 'Paint' && (
-                <>
-                  {product.coverage && (
-                    <div style={{ display: 'flex', borderBottom: '1px solid var(--border-color)', padding: '12px 16px', fontSize: '14px' }}>
-                      <span style={{ width: '150px', color: 'var(--text-muted)', fontWeight: 500 }}>Estimated Coverage</span>
-                      <span style={{ color: 'var(--text-primary)' }}>{product.coverage}</span>
-                    </div>
-                  )}
-                  {product.size && (
-                    <div style={{ display: 'flex', borderBottom: '1px solid var(--border-color)', padding: '12px 16px', fontSize: '14px' }}>
-                      <span style={{ width: '150px', color: 'var(--text-muted)', fontWeight: 500 }}>Container Size</span>
-                      <span style={{ color: 'var(--text-primary)' }}>{product.size}</span>
-                    </div>
-                  )}
-                </>
+              {product.dimensions && (
+                <div style={{ display: 'flex', borderBottom: '1px solid var(--border-color)', padding: '12px 16px', fontSize: '14px' }}>
+                  <span style={{ width: '150px', color: 'var(--text-muted)', fontWeight: 500 }}>Slab Dimensions</span>
+                  <span style={{ color: 'var(--text-primary)' }}>{product.dimensions}</span>
+                </div>
               )}
             </div>
           </div>

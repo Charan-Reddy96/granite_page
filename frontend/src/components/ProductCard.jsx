@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Layers, Paintbrush, ArrowRight } from 'lucide-react';
+import { Layers, ArrowRight } from 'lucide-react';
 
 export default function ProductCard({ product }) {
   const getBadgeClass = (availability) => {
@@ -11,7 +11,7 @@ export default function ProductCard({ product }) {
   };
 
   const displayPriceUnit = (category) => {
-    if (category === 'Paint') return '/ litre';
+    if (category === 'Tile') return '/ box';
     return '/ sq.ft';
   };
 
@@ -52,11 +52,7 @@ export default function ProductCard({ product }) {
           textTransform: 'uppercase',
           letterSpacing: '0.05em'
         }}>
-          {product.category === 'Paint' ? (
-            <Paintbrush size={12} color="var(--accent-gold)" />
-          ) : (
-            <Layers size={12} color="var(--accent-gold)" />
-          )}
+          <Layers size={12} color="var(--accent-gold)" />
           {product.category}
         </div>
       </div>

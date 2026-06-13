@@ -35,30 +35,31 @@ export default function Navbar() {
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent'
           }}>
-            AURA
+            G S
           </span>
           <span style={{
             fontSize: '11px',
-            letterSpacing: '3px',
+            letterSpacing: '2px',
             textTransform: 'uppercase',
             color: 'var(--text-secondary)',
             alignSelf: 'flex-end',
             marginBottom: '4px',
             marginLeft: '5px'
           }}>
-            Stone & Paint
+            Granites & Tiles
           </span>
         </NavLink>
 
         {/* Mobile Menu Icon */}
-        <div className="mobile-toggle" style={{ display: 'none', cursor: 'pointer' }} onClick={() => setIsOpen(!isOpen)}>
+        <div className="nav-toggle" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <X size={24} /> : <Menu size={24} />}
         </div>
 
         {/* Navigation Links */}
-        <div style={{ display: 'flex', gap: '30px', alignItems: 'center' }}>
+        <div className={`nav-menu ${isOpen ? 'active' : ''}`}>
           <NavLink 
             to="/" 
+            onClick={() => setIsOpen(false)}
             style={({ isActive }) => ({
               fontSize: '14px',
               fontWeight: '500',
@@ -70,6 +71,7 @@ export default function Navbar() {
           </NavLink>
           <NavLink 
             to="/catalog" 
+            onClick={() => setIsOpen(false)}
             style={({ isActive }) => ({
               fontSize: '14px',
               fontWeight: '500',
@@ -81,6 +83,7 @@ export default function Navbar() {
           </NavLink>
           <NavLink 
             to="/about" 
+            onClick={() => setIsOpen(false)}
             style={({ isActive }) => ({
               fontSize: '14px',
               fontWeight: '500',
@@ -92,6 +95,7 @@ export default function Navbar() {
           </NavLink>
           <NavLink 
             to="/contact" 
+            onClick={() => setIsOpen(false)}
             style={({ isActive }) => ({
               fontSize: '14px',
               fontWeight: '500',
@@ -103,6 +107,7 @@ export default function Navbar() {
           </NavLink>
           <NavLink 
             to="/admin" 
+            onClick={() => setIsOpen(false)}
             style={({ isActive }) => ({
               fontSize: '13px',
               fontWeight: '600',

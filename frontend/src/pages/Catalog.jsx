@@ -9,7 +9,7 @@ export default function Catalog() {
   
   // Filter States
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState(''); // '', 'Granite', 'Tile', 'Paint'
+  const [selectedCategory, setSelectedCategory] = useState(''); // '', 'Granite', 'Tile'
   const [selectedColor, setSelectedColor] = useState('');
   const [selectedFinish, setSelectedFinish] = useState('');
   const [minPrice, setMinPrice] = useState('');
@@ -68,28 +68,24 @@ export default function Catalog() {
       <div style={{ marginBottom: '40px' }}>
         <h1 className="serif-title" style={{ fontSize: '36px' }}>Our Collection Catalog</h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginTop: '6px' }}>
-          Browse and filter our exquisite range of natural granites, crafted wall/floor tiles, and premium architectural paints.
+          Browse and filter our exquisite range of natural granites and crafted wall/floor tiles.
         </p>
       </div>
 
+      {/* Mobile Filters Toggle Button */}
+      <button 
+        className="btn btn-secondary mobile-filters-btn"
+        onClick={() => setShowFiltersMobile(!showFiltersMobile)}
+        style={{ display: 'none', width: '100%', marginBottom: '20px', gap: '8px' }}
+      >
+        <SlidersHorizontal size={16} /> {showFiltersMobile ? 'Hide Filters' : 'Show Filters'}
+      </button>
+
       {/* Main Layout Grid: Sidebar + Products list */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '280px 1fr',
-        gap: '40px',
-        alignItems: 'start'
-      }}>
+      <div className="catalog-layout">
         
-        {/* SIDEBAR FILTERS (Desktop) */}
-        <aside style={{
-          backgroundColor: 'var(--bg-secondary)',
-          border: '1px solid var(--border-color)',
-          borderRadius: 'var(--border-radius-md)',
-          padding: '24px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '24px'
-        }}>
+        {/* SIDEBAR FILTERS */}
+        <aside className={`catalog-sidebar ${showFiltersMobile ? 'show' : ''}`}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600 }}>
               <Filter size={18} color="var(--accent-gold)" /> Filters
@@ -126,7 +122,6 @@ export default function Catalog() {
               <option value="">All Categories</option>
               <option value="Granite">Granite</option>
               <option value="Tile">Tiles</option>
-              <option value="Paint">Paints</option>
             </select>
           </div>
 
@@ -158,7 +153,7 @@ export default function Catalog() {
 
           {/* Price Range Filter */}
           <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label">Price Range ({selectedCategory === 'Paint' ? '₹/litre' : '₹/sqft'})</label>
+            <label className="form-label">Price Range ({selectedCategory === 'Tile' ? '₹/box' : '₹/sqft'})</label>
             <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
               <input 
                 type="number" 

@@ -72,11 +72,7 @@ export default function Contact() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
           
           {/* Quick Info Grid */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '20px'
-          }}>
+          <div className="quick-info-grid">
             <div style={{
               backgroundColor: 'var(--bg-secondary)',
               border: '1px solid var(--border-color)',
@@ -85,7 +81,7 @@ export default function Contact() {
             }}>
               <Phone size={24} color="var(--accent-gold)" style={{ marginBottom: '12px' }} />
               <h4 style={{ fontSize: '14px', marginBottom: '4px' }}>Phone Contact</h4>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>+1 (555) 746-6374</p>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>+91 93916 66951</p>
             </div>
             
             <div style={{
@@ -96,7 +92,7 @@ export default function Contact() {
             }}>
               <Mail size={24} color="var(--accent-gold)" style={{ marginBottom: '12px' }} />
               <h4 style={{ fontSize: '14px', marginBottom: '4px' }}>Email Contact</h4>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>inquiries@aurastonepaint.com</p>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>gsgranitesandmarbles@gmail.com</p>
             </div>
 
             <div style={{
@@ -133,7 +129,7 @@ export default function Contact() {
               scrolling="no" 
               marginHeight="0" 
               marginWidth="0" 
-              src="https://maps.google.com/maps?width=100%25&amp;height=300&amp;hl=en&amp;q=128%20Marble%20Arch%20Drive,%20Quarry%20District+(Aura%20Stone%20%26%20Paint%20Showroom)&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
+              src="https://maps.google.com/maps?width=100%25&amp;height=300&amp;hl=en&amp;q=Opp.metro%20pillar%20no.%20A857,%20beside%20musjid,%20kukatpally,%20%22y%22%20junction,%20Hyderabad,%20Telangana-500072&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
               style={{ filter: 'grayscale(0.9) invert(0.9) contrast(1.2)' }}
             />
           </div>
@@ -151,7 +147,7 @@ export default function Contact() {
             Send Us a Message
           </h3>
           <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '24px' }}>
-            Submit an inquiry for custom slab sizing, tile estimates, paint coverage advice, or delivery options.
+            Submit an inquiry for custom slab sizing, tile estimates, or delivery options.
           </p>
 
           {status === 'success' && (
@@ -229,7 +225,7 @@ export default function Contact() {
                 name="message"
                 required
                 className="form-control" 
-                placeholder="Please describe details of your project, stone, tile or paint requirements..." 
+                placeholder="Please describe details of your project, stone, or tile requirements..." 
                 value={formData.message}
                 onChange={handleChange}
               />

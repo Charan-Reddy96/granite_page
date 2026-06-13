@@ -27,219 +27,212 @@ def allowed_file(filename):
 def seed_database():
     with app.app_context():
         db.create_all()
+        
+        # Clear out old seed data if we don't have G S Granites & Tiles products yet
+        try:
+            has_new = Product.query.filter_by(name="Sierra Pearl Granite").count() > 0
+            if not has_new:
+                print("Clearing old products to re-seed with G S Granites & Tiles products...")
+                Product.query.delete()
+                db.session.commit()
+        except Exception as e:
+            print(f"Error checking/clearing products: {e}")
+            db.session.rollback()
+
         if Product.query.count() == 0:
             print("Seeding database with default products...")
             default_products = [
                 # Granite
                 Product(
-                    name="Black Galaxy Granite",
-                    category="Granite",
-                    color="Black",
-                    price=380.0,
-                    availability="In Stock",
-                    description="Stunning black granite with golden and white specks. Perfect for premium countertops and accent walls.",
-                    featured=True,
-                    thickness="3cm",
-                    dimensions="126\" x 74\"",
-                    finish="Polished",
-                    image_paths=json.dumps(["/static/uploads/black_galaxy.webp"])
-                ),
-                Product(
-                    name="Imperial White Granite",
-                    category="Granite",
-                    color="White",
-                    price=320.0,
-                    availability="In Stock",
-                    description="Graceful white granite with light grey and burgundy waves. Elegant choice for kitchens.",
-                    featured=True,
-                    thickness="2cm",
-                    dimensions="118\" x 70\"",
-                    finish="Polished",
-                    image_paths=json.dumps(["/static/uploads/imperial_white.webp"])
-                ),
-                Product(
-                    name="Kashmir Gold Granite",
-                    category="Granite",
-                    color="Gold",
-                    price=420.0,
-                    availability="Low Stock",
-                    description="Warm golden-yellow background with sandy waves. Brings cozy luxury to your spaces.",
-                    featured=False,
-                    thickness="3cm",
-                    dimensions="120\" x 72\"",
-                    finish="Honed",
-                    image_paths=json.dumps(["/static/uploads/kashmir_gold.webp"])
-                ),
-                Product(
-                    name="Steel Grey Granite",
-                    category="Granite",
-                    color="Grey",
-                    price=310.0,
-                    availability="In Stock",
-                    description="Durable steel grey granite slab from India, excellent for commercial heavy-traffic flooring, vanity tops, and durable kitchen countertops.",
-                    featured=False,
-                    thickness="2cm",
-                    dimensions="122\" x 72\"",
-                    finish="Polished",
-                    image_paths=json.dumps(["/static/uploads/steel_grey.webp"])
-                ),
-                Product(
                     name="Tan Brown Granite",
                     category="Granite",
                     color="Brown",
-                    price=340.0,
+                    price=70.0,
                     availability="In Stock",
                     description="Dark black-brown background with large, chocolate-brown and bronze mineral crystals. Highly unique leathered texture.",
                     featured=False,
                     thickness="3cm",
                     dimensions="120\" x 70\"",
                     finish="Leathered",
-                    image_paths=json.dumps(["/static/uploads/tan_brown.webp"])
+                    image_paths=json.dumps(["https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=500&auto=format&fit=crop"])
                 ),
                 Product(
-                    name="Blue Pearl Granite",
+                    name="Absolute Black Granite",
                     category="Granite",
-                    color="Blue",
-                    price=480.0,
+                    color="Black",
+                    price=220.0,
                     availability="In Stock",
-                    description="Exclusive Norwegian blue granite with reflective metallic blue crystals. Elegant, shimmering surface finish.",
+                    description="Deep black solid granite texture. Elegant choice for premium heavy-duty kitchen countertops.",
+                    featured=True,
+                    thickness="2cm",
+                    dimensions="118\" x 70\"",
+                    finish="Polished",
+                    image_paths=json.dumps(["https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?w=500&auto=format&fit=crop"])
+                ),
+                Product(
+                    name="Rose Pearl Granite",
+                    category="Granite",
+                    color="Pink",
+                    price=95.0,
+                    availability="In Stock",
+                    description="Delicate rose-colored minerals embedded in clean quartz. Brings soft warmth to decorative architecture.",
+                    featured=False,
+                    thickness="3cm",
+                    dimensions="120\" x 72\"",
+                    finish="Honed",
+                    image_paths=json.dumps(["https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=500&auto=format&fit=crop"])
+                ),
+                Product(
+                    name="Black Galaxy Granite",
+                    category="Granite",
+                    color="Black",
+                    price=240.0,
+                    availability="In Stock",
+                    description="Stunning black granite with golden and white specks. Perfect for premium countertops and accent walls.",
+                    featured=True,
+                    thickness="3cm",
+                    dimensions="126\" x 74\"",
+                    finish="Polished",
+                    image_paths=json.dumps(["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=500&auto=format&fit=crop"])
+                ),
+                Product(
+                    name="Black Pearl Granite",
+                    category="Granite",
+                    color="Black",
+                    price=150.0,
+                    availability="In Stock",
+                    description="Deep dark granite with subtle metallic silver mineral pearls, highly resistant and durable surface.",
                     featured=False,
                     thickness="2cm",
                     dimensions="115\" x 68\"",
                     finish="Polished",
-                    image_paths=json.dumps(["/static/uploads/blue_pearl.webp"])
+                    image_paths=json.dumps(["https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=500&auto=format&fit=crop"])
                 ),
-                # Tiles
                 Product(
-                    name="Carrara Marble Tile",
+                    name="Blue Granite",
+                    category="Granite",
+                    color="Blue",
+                    price=85.0,
+                    availability="In Stock",
+                    description="Vibrant blue reflections on slate-grey base stone. Extremely beautiful and modern accent cladding.",
+                    featured=False,
+                    thickness="2cm",
+                    dimensions="115\" x 68\"",
+                    finish="Polished",
+                    image_paths=json.dumps(["https://images.unsplash.com/photo-1504198453319-5ce911bafcde?w=500&auto=format&fit=crop"])
+                ),
+                Product(
+                    name="Sierra Pearl Granite",
+                    category="Granite",
+                    color="Grey",
+                    price=105.0,
+                    availability="In Stock",
+                    description="Classic grey stone dotted with quartz pearls. Highly recommended for commercial lobby flooring.",
+                    featured=False,
+                    thickness="3cm",
+                    dimensions="120\" x 70\"",
+                    finish="Leathered",
+                    image_paths=json.dumps(["https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=500&auto=format&fit=crop"])
+                ),
+                Product(
+                    name="Sadarahalli White Granite",
+                    category="Granite",
+                    color="White",
+                    price=90.0,
+                    availability="In Stock",
+                    description="Renowned Sadarahalli white granite, featuring balanced grey salt-and-pepper mineral patterns.",
+                    featured=False,
+                    thickness="2cm",
+                    dimensions="122\" x 72\"",
+                    finish="Polished",
+                    image_paths=json.dumps(["https://images.unsplash.com/photo-1513694203232-719a280e022f?w=500&auto=format&fit=crop"])
+                ),
+                Product(
+                    name="Coffee Brown Granite",
+                    category="Granite",
+                    color="Brown",
+                    price=110.0,
+                    availability="In Stock",
+                    description="Warm brown coffee-toned natural stone. Exudes luxurious comfort for residential designs.",
+                    featured=False,
+                    thickness="3cm",
+                    dimensions="120\" x 70\"",
+                    finish="Honed",
+                    image_paths=json.dumps(["https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=500&auto=format&fit=crop"])
+                ),
+                Product(
+                    name="Hassan Green Granite",
+                    category="Granite",
+                    color="Green",
+                    price=135.0,
+                    availability="In Stock",
+                    description="Traditional premium Hassan green granite. Smooth, weather-resistant, perfect for landmarks and outdoors.",
+                    featured=False,
+                    thickness="2cm",
+                    dimensions="120\" x 70\"",
+                    finish="Polished",
+                    image_paths=json.dumps(["https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=500&auto=format&fit=crop"])
+                ),
+                # Tiles (sold per box)
+                Product(
+                    name="4x2 Premium Vitrified Tiles",
                     category="Tile",
                     color="White",
-                    price=180.0,
+                    price=950.0,
                     availability="In Stock",
-                    description="Classic Italian Carrara marble tiles, suitable for bathroom floors, showers, and backsplash.",
+                    description="Stunning high-gloss 4' x 2' vitrified floor tiles. Box pack covers multiple pieces.",
                     featured=True,
-                    thickness="1cm",
-                    dimensions="12\" x 24\"",
+                    dimensions="4' x 2'",
                     finish="Polished",
-                    image_paths=json.dumps(["/static/uploads/carrara_tile.webp"])
+                    image_paths=json.dumps(["https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=500&auto=format&fit=crop"])
                 ),
                 Product(
-                    name="Slate Grey Tile",
+                    name="2x2 Classic Vitrified Tiles",
+                    category="Tile",
+                    color="White",
+                    price=800.0,
+                    availability="In Stock",
+                    description="Durable 2' x 2' satin-finish vitrified floor tiles. Convenient box packaging.",
+                    featured=False,
+                    dimensions="2' x 2'",
+                    finish="Matte",
+                    image_paths=json.dumps(["https://images.unsplash.com/photo-1507089947368-19c1da9775ae?w=500&auto=format&fit=crop"])
+                ),
+                Product(
+                    name="18x12 Decorative Wall Tiles",
+                    category="Tile",
+                    color="Gold",
+                    price=450.0,
+                    availability="In Stock",
+                    description="Exquisite 18\" x 12\" ceramic wall tiles. Perfect for bathrooms and kitchen backsplashes.",
+                    featured=False,
+                    dimensions="18\" x 12\"",
+                    finish="Polished",
+                    image_paths=json.dumps(["https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=500&auto=format&fit=crop"])
+                ),
+                Product(
+                    name="16x16 Heavy Duty Floor Tiles",
                     category="Tile",
                     color="Grey",
-                    price=95.0,
+                    price=550.0,
                     availability="In Stock",
-                    description="Natural slate tiles with structured matte surface, perfect for outdoor patios or rustic indoor floors.",
+                    description="Rustic 16\" x 16\" non-slip parking and floor tiles. Durable, heavy-traffic resistance.",
                     featured=False,
-                    thickness="1.2cm",
                     dimensions="16\" x 16\"",
                     finish="Matte",
-                    image_paths=json.dumps(["/static/uploads/slate_grey.webp"])
+                    image_paths=json.dumps(["https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=500&auto=format&fit=crop"])
                 ),
                 Product(
-                    name="Travertine Gold Tile",
+                    name="5x2.5 Large Format Slab Tiles",
                     category="Tile",
-                    color="Gold",
-                    price=160.0,
-                    availability="In Stock",
-                    description="Natural beige-gold travertine floor tiles, perfect for warm, luxurious bathroom walls and pool deck border cladding.",
-                    featured=False,
-                    thickness="1.5cm",
-                    dimensions="18\" x 18\"",
-                    finish="Honed",
-                    image_paths=json.dumps(["/static/uploads/travertine_gold.webp"])
-                ),
-                Product(
-                    name="Terrazzo White Tile",
-                    category="Tile",
-                    color="White",
-                    price=120.0,
-                    availability="Low Stock",
-                    description="Modern terrazzo tiles with colorful quartz, granite, and marble chips embedded. Playful yet highly durable for public lobbies.",
-                    featured=False,
-                    thickness="1.2cm",
-                    dimensions="24\" x 24\"",
-                    finish="Matte",
-                    image_paths=json.dumps(["/static/uploads/terrazzo_white.webp"])
-                ),
-                Product(
-                    name="Emerald Ceramic Subway Tile",
-                    category="Tile",
-                    color="Green",
-                    price=75.0,
-                    availability="In Stock",
-                    description="Vibrant emerald green glossy glazed ceramic tiles. Excellent for decorative backsplashes and feature walls.",
-                    featured=False,
-                    thickness="0.8cm",
-                    dimensions="3\" x 6\"",
-                    finish="Polished",
-                    image_paths=json.dumps(["/static/uploads/emerald_subway.webp"])
-                ),
-                # Paints
-                Product(
-                    name="Royal Velvet Interior Paint",
-                    category="Paint",
                     color="Blue",
-                    price=280.0,
+                    price=2450.0,
                     availability="In Stock",
-                    description="Premium washproof interior paint in deep royal blue. Extremely high opacity with a luxurious feel.",
-                    featured=True,
-                    finish="Matte",
-                    coverage="120-150 sq.ft/litre",
-                    size="1 Litre",
-                    image_paths=json.dumps(["/static/uploads/royal_velvet.webp"])
-                ),
-                Product(
-                    name="Golden Sand Satin Paint",
-                    category="Paint",
-                    color="Gold",
-                    price=240.0,
-                    availability="In Stock",
-                    description="Light warm sand paint with a gentle satin sheen. Highly cleanable and long-lasting paint.",
+                    description="Magnificent large-format 5' x 2.5' vitrified slab tiles. Gives seamless marble-like look.",
                     featured=False,
-                    finish="Satin",
-                    coverage="150 sq.ft/litre",
-                    size="1 Litre",
-                    image_paths=json.dumps(["/static/uploads/golden_sand.webp"])
-                ),
-                Product(
-                    name="Emerald Forest Satin Paint",
-                    category="Paint",
-                    color="Green",
-                    price=260.0,
-                    availability="In Stock",
-                    description="Sleek satin wall paint in deep forest green. Perfect for accent doors, cabinetry, and sophisticated study rooms.",
-                    featured=False,
-                    finish="Satin",
-                    coverage="140 sq.ft/litre",
-                    size="1 Litre",
-                    image_paths=json.dumps(["/static/uploads/emerald_forest.webp"])
-                ),
-                Product(
-                    name="Mist Grey Exterior Paint",
-                    category="Paint",
-                    color="Grey",
-                    price=290.0,
-                    availability="In Stock",
-                    description="Heavy-duty weather protection exterior paint in cool mist grey. Resist algae, moisture, and fading.",
-                    featured=False,
-                    finish="Matte",
-                    coverage="110-130 sq.ft/litre",
-                    size="1 Litre",
-                    image_paths=json.dumps(["/static/uploads/mist_grey.webp"])
-                ),
-                Product(
-                    name="Coral Blush Interior Paint",
-                    category="Paint",
-                    color="Red",
-                    price=230.0,
-                    availability="In Stock",
-                    description="Warm coral pink shade with a subtle satin glow. Ideal choice for nursery rooms and playful modern accent walls.",
-                    featured=False,
-                    finish="Satin",
-                    coverage="150 sq.ft/litre",
-                    size="1 Litre",
-                    image_paths=json.dumps(["/static/uploads/coral_blush.webp"])
+                    dimensions="5' x 2.5'",
+                    finish="Polished",
+                    image_paths=json.dumps(["https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?w=500&auto=format&fit=crop"])
                 )
             ]
             for p in default_products:
