@@ -56,13 +56,15 @@ export default function Navbar() {
         </div>
 
         {/* Navigation Links */}
-        <div className={`nav-menu ${isOpen ? 'active' : ''}`}>
+        <div className={`nav-menu ${isOpen ? 'active' : ''}`} style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
           <NavLink 
             to="/" 
             onClick={() => setIsOpen(false)}
             style={({ isActive }) => ({
               fontSize: '14px',
-              fontWeight: '500',
+              fontWeight: '600',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
               color: isActive ? 'var(--accent-gold)' : 'var(--text-secondary)',
               transition: 'color var(--transition-fast)'
             })}
@@ -74,19 +76,37 @@ export default function Navbar() {
             onClick={() => setIsOpen(false)}
             style={({ isActive }) => ({
               fontSize: '14px',
-              fontWeight: '500',
+              fontWeight: '600',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
               color: isActive ? 'var(--accent-gold)' : 'var(--text-secondary)',
               transition: 'color var(--transition-fast)'
             })}
           >
-            Catalog
+            Slabs
           </NavLink>
           <NavLink 
             to="/about" 
             onClick={() => setIsOpen(false)}
             style={({ isActive }) => ({
               fontSize: '14px',
-              fontWeight: '500',
+              fontWeight: '600',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+              color: isActive ? 'var(--accent-gold)' : 'var(--text-secondary)',
+              transition: 'color var(--transition-fast)'
+            })}
+          >
+            Projects
+          </NavLink>
+          <NavLink 
+            to="/about" 
+            onClick={() => setIsOpen(false)}
+            style={({ isActive }) => ({
+              fontSize: '14px',
+              fontWeight: '600',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
               color: isActive ? 'var(--accent-gold)' : 'var(--text-secondary)',
               transition: 'color var(--transition-fast)'
             })}
@@ -98,28 +118,46 @@ export default function Navbar() {
             onClick={() => setIsOpen(false)}
             style={({ isActive }) => ({
               fontSize: '14px',
-              fontWeight: '500',
+              fontWeight: '600',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
               color: isActive ? 'var(--accent-gold)' : 'var(--text-secondary)',
               transition: 'color var(--transition-fast)'
             })}
           >
-            Contact
+            Contact Us
           </NavLink>
           <NavLink 
             to="/admin" 
             onClick={() => setIsOpen(false)}
             style={({ isActive }) => ({
-              fontSize: '13px',
+              fontSize: '12px',
               fontWeight: '600',
-              padding: '6px 12px',
-              borderRadius: 'var(--border-radius-sm)',
-              border: '1px dashed var(--accent-gold)',
-              color: isActive ? 'var(--bg-primary)' : 'var(--accent-gold)',
-              backgroundColor: isActive ? 'var(--accent-gold)' : 'transparent',
-              transition: 'all var(--transition-normal)'
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+              color: 'var(--text-muted)',
+              transition: 'color var(--transition-fast)'
             })}
+            onMouseOver={(e) => e.target.style.color = 'var(--text-primary)'}
+            onMouseOut={(e) => e.target.style.color = 'var(--text-muted)'}
           >
             Admin Panel
+          </NavLink>
+          <NavLink 
+            to="/contact" 
+            onClick={() => setIsOpen(false)}
+            className="btn btn-primary"
+            style={{ 
+              padding: '10px 20px', 
+              fontSize: '13px', 
+              fontWeight: '700', 
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+              borderRadius: 'var(--border-radius-sm)',
+              color: 'var(--bg-primary)'
+            }}
+          >
+            Book Appointment
           </NavLink>
         </div>
       </div>
