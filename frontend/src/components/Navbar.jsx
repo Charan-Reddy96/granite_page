@@ -187,6 +187,7 @@ export default function Navbar() {
                 {isAdmin && (
                   <NavLink
                     to="/admin"
+                    className="admin-nav-link"
                     onClick={closeMenu}
                     style={({ isActive }) => ({
                       fontSize: '13px',

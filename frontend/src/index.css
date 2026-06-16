@@ -503,6 +503,11 @@ select.form-control { cursor: pointer; }
   .product-main-image {
     height: 260px;
   }
+
+  /* Hide Admin Panel link in mobile menu drawer */
+  .admin-nav-link {
+    display: none !important;
+  }
 }
 
 /* --- Small mobile (max 480px) --- */
