@@ -71,8 +71,8 @@ export default function Contact() {
         {/* Left Column: Form & Info */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
           
-          {/* Quick Info Grid */}
-          <div className="quick-info-grid">
+          {/* Quick Info - Horizontal Rows */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {/* Phone Card */}
             <div style={{
               backgroundColor: 'var(--bg-secondary)',
@@ -155,7 +155,6 @@ export default function Contact() {
               border: '1px solid var(--border-color)',
               padding: '20px',
               borderRadius: 'var(--border-radius-md)',
-              gridColumn: 'span 2',
               display: 'flex',
               alignItems: 'flex-start',
               gap: '16px'
@@ -197,7 +196,6 @@ export default function Contact() {
               border: '1px solid var(--border-color)',
               padding: '20px',
               borderRadius: 'var(--border-radius-md)',
-              gridColumn: 'span 2',
               display: 'flex',
               alignItems: 'flex-start',
               gap: '16px'
