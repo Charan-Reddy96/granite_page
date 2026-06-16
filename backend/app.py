@@ -6,7 +6,8 @@ import json
 from sqlalchemy import cast, Float
 
 from config import Config
-from models import db, Product, Inquiry
+from models import db, bcrypt, Product, Inquiry, User
+from auth import generate_token, get_current_user, admin_required
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -17,8 +18,9 @@ CORS(app)
 # Ensure upload directory exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
-# Initialize database
+# Initialize database and bcrypt
 db.init_app(app)
+bcrypt.init_app(app)
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -28,6 +30,15 @@ def allowed_file(filename):
 def seed_database():
     with app.app_context():
         db.create_all()
+
+        # Seed default admin user if none exists
+        if User.query.filter_by(role='admin').count() == 0:
+            print("Creating default admin user...")
+            admin = User(username='admin', role='admin')
+            admin.set_password('admin123')
+            db.session.add(admin)
+            db.session.commit()
+            print("Admin user created (username: admin, password: admin123)")
         
         # Clear out old seed data if we don't have the new granite/tile products
         try:
@@ -248,6 +259,39 @@ def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
+# --- AUTH Routes ---
+
+@app.route('/api/auth/login', methods=['POST'])
+def login():
+    data = request.json
+    if not data:
+        return jsonify({'error': 'Request body must be JSON.'}), 400
+
+    username = data.get('username', '').strip()
+    password = data.get('password', '')
+
+    if not username or not password:
+        return jsonify({'error': 'Username and password are required.'}), 400
+
+    user = User.query.filter_by(username=username).first()
+    if not user or not user.check_password(password):
+        return jsonify({'error': 'Invalid username or password.'}), 401
+
+    token = generate_token(user)
+    return jsonify({
+        'token': token,
+        'user': user.to_dict()
+    })
+
+
+@app.route('/api/auth/me', methods=['GET'])
+def auth_me():
+    user = get_current_user()
+    if not user:
+        return jsonify({'error': 'Not authenticated.'}), 401
+    return jsonify({'user': user.to_dict()})
+
+
 # --- API Routes ---
 
 # GET all products (with filters)
@@ -306,8 +350,9 @@ def get_product(product_id):
     return jsonify(product.to_dict())
 
 
-# POST create new product
+# POST create new product (admin only)
 @app.route('/api/products', methods=['POST'])
+@admin_required
 def create_product():
     # Admin endpoint
     data = request.form
@@ -379,8 +424,9 @@ def create_product():
     return jsonify(new_product.to_dict()), 201
 
 
-# PUT update product
+# PUT update product (admin only)
 @app.route('/api/products/<int:product_id>', methods=['PUT'])
+@admin_required
 def update_product(product_id):
     product = Product.query.get_or_404(product_id)
     
@@ -438,8 +484,9 @@ def update_product(product_id):
     return jsonify(product.to_dict())
 
 
-# DELETE product
+# DELETE product (admin only)
 @app.route('/api/products/<int:product_id>', methods=['DELETE'])
+@admin_required
 def delete_product(product_id):
     product = Product.query.get_or_404(product_id)
     
@@ -492,15 +539,17 @@ def create_inquiry():
     return jsonify(new_inquiry.to_dict()), 201
 
 
-# GET all inquiries
+# GET all inquiries (admin only)
 @app.route('/api/inquiries', methods=['GET'])
+@admin_required
 def get_inquiries():
     inquiries = Inquiry.query.order_by(Inquiry.created_at.desc()).all()
     return jsonify([i.to_dict() for i in inquiries])
 
 
-# PUT update inquiry status
+# PUT update inquiry status (admin only)
 @app.route('/api/inquiries/<int:inquiry_id>', methods=['PUT'])
+@admin_required
 def update_inquiry(inquiry_id):
     inquiry = Inquiry.query.get_or_404(inquiry_id)
     data = request.json
@@ -515,8 +564,9 @@ def update_inquiry(inquiry_id):
     return jsonify(inquiry.to_dict())
 
 
-# DELETE inquiry
+# DELETE inquiry (admin only)
 @app.route('/api/inquiries/<int:inquiry_id>', methods=['DELETE'])
+@admin_required
 def delete_inquiry(inquiry_id):
     inquiry = Inquiry.query.get_or_404(inquiry_id)
     db.session.delete(inquiry)

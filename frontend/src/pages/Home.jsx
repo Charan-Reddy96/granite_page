@@ -19,8 +19,8 @@ export default function Home() {
     <div style={{ 
       display: 'flex', 
       flexDirection: 'column', 
-      gap: '100px', 
-      paddingBottom: '100px',
+      gap: 'clamp(60px, 8vw, 100px)', 
+      paddingBottom: 'clamp(60px, 8vw, 100px)',
       backgroundImage: `url("${import.meta.env.BASE_URL}home_bg_texture.png")`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
@@ -30,9 +30,7 @@ export default function Home() {
       {/* 1. HERO SECTION */}
       <section style={{
         position: 'relative',
-        height: '85vh',
-        minHeight: '600px',
-        maxHeight: '900px',
+        minHeight: 'clamp(480px, 85vh, 900px)',
         display: 'flex',
         alignItems: 'center',
         background: `linear-gradient(rgba(15, 15, 17, 0.4), rgba(15, 15, 17, 0.85)), url("${import.meta.env.BASE_URL}hero_dark_showroom.png") no-repeat center center/cover`,
@@ -76,7 +74,7 @@ export default function Home() {
           </h1>
 
           <p className="subtitle" style={{ 
-            fontSize: '20px', 
+            fontSize: 'clamp(15px, 2vw, 20px)', 
             maxWidth: '650px', 
             color: 'var(--text-primary)',
             fontWeight: '500',
@@ -86,14 +84,14 @@ export default function Home() {
             Supplier and installer of premium granite, marble, and quartzite slabs for residential and commercial architecture.
           </p>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginTop: '12px' }}>
-            <Link to="/catalog" className="btn btn-primary" style={{ padding: '14px 32px', fontSize: '15px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', borderRadius: 'var(--border-radius-sm)' }}>
+          <div className="hero-buttons">
+            <Link to="/catalog" className="btn btn-primary" style={{ padding: '14px 28px', fontSize: '15px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', borderRadius: 'var(--border-radius-sm)' }}>
               Browse Natural Stone Slabs
             </Link>
             <button 
               onClick={() => setIsInquiryOpen(true)} 
               className="btn btn-secondary" 
-              style={{ padding: '14px 32px', fontSize: '15px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', borderRadius: 'var(--border-radius-sm)', backdropFilter: 'blur(8px)' }}
+              style={{ padding: '14px 28px', fontSize: '15px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', borderRadius: 'var(--border-radius-sm)', backdropFilter: 'blur(8px)' }}
             >
               Book Appointment
             </button>
@@ -170,7 +168,7 @@ export default function Home() {
             zIndex: 0
           }} />
 
-          <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '30px' }}>
+          <div className="hero-cta-banner-inner">
             <div style={{ maxWidth: '650px' }}>
               <span style={{
                 backgroundColor: 'var(--accent-gold)',

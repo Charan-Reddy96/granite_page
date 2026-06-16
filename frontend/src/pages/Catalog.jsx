@@ -72,11 +72,11 @@ export default function Catalog() {
         </p>
       </div>
 
-      {/* Mobile Filters Toggle Button */}
+      {/* Mobile Filters Toggle Button — visible on mobile via CSS */}
       <button 
         className="btn btn-secondary mobile-filters-btn"
         onClick={() => setShowFiltersMobile(!showFiltersMobile)}
-        style={{ display: 'none', width: '100%', marginBottom: '20px', gap: '8px' }}
+        style={{ width: '100%', marginBottom: '20px', gap: '8px' }}
       >
         <SlidersHorizontal size={16} /> {showFiltersMobile ? 'Hide Filters' : 'Show Filters'}
       </button>

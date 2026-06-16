@@ -4,6 +4,12 @@
 const isGitHubPages = window.location.hostname.includes('github.io');
 const API_BASE = ''; // proxied via Vite config locally
 
+// Helper to get auth headers for admin API calls
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('gs_auth_token');
+  return token ? { 'Authorization': `Bearer ${token}` } : {};
+};
+
 // Seed data for standalone mode (16 items)
 const defaultSeedProducts = [
   {
@@ -274,6 +280,26 @@ async function checkServer() {
 }
 
 export const api = {
+  // 0. AUTH API
+  login: async (username, password) => {
+    const res = await fetch(`${API_BASE}/api/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Login failed');
+    return data;
+  },
+
+  getMe: async (token) => {
+    const res = await fetch(`${API_BASE}/api/auth/me`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!res.ok) throw new Error('Not authenticated');
+    return res.json();
+  },
+
   // 1. PRODUCTS API
   getProducts: async (filters = {}) => {
     const isOnline = await checkServer();
@@ -343,6 +369,7 @@ export const api = {
     if (isOnline) {
       const res = await fetch(`${API_BASE}/api/products`, {
         method: 'POST',
+        headers: { ...getAuthHeaders() },
         body: formData // Form data with file
       });
       return res.json();
@@ -393,6 +420,7 @@ export const api = {
     if (isOnline) {
       const res = await fetch(`${API_BASE}/api/products/${id}`, {
         method: 'PUT',
+        headers: { ...getAuthHeaders() },
         body: formData
       });
       return res.json();
@@ -442,7 +470,8 @@ export const api = {
     const isOnline = await checkServer();
     if (isOnline) {
       const res = await fetch(`${API_BASE}/api/products/${id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: { ...getAuthHeaders() }
       });
       return res.json();
     } else {
@@ -501,7 +530,9 @@ export const api = {
   getInquiries: async () => {
     const isOnline = await checkServer();
     if (isOnline) {
-      const res = await fetch(`${API_BASE}/api/inquiries`);
+      const res = await fetch(`${API_BASE}/api/inquiries`, {
+        headers: { ...getAuthHeaders() }
+      });
       return res.json();
     } else {
       return getLocalInquiries().reverse(); // Show newest first
@@ -513,7 +544,7 @@ export const api = {
     if (isOnline) {
       const res = await fetch(`${API_BASE}/api/inquiries/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ status })
       });
       return res.json();
@@ -531,7 +562,8 @@ export const api = {
     const isOnline = await checkServer();
     if (isOnline) {
       const res = await fetch(`${API_BASE}/api/inquiries/${id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: { ...getAuthHeaders() }
       });
       return res.json();
     } else {
