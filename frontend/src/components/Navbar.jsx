@@ -85,20 +85,7 @@ export default function Navbar() {
           >
             Slabs
           </NavLink>
-          <NavLink 
-            to="/about" 
-            onClick={() => setIsOpen(false)}
-            style={({ isActive }) => ({
-              fontSize: '14px',
-              fontWeight: '600',
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em',
-              color: isActive ? 'var(--accent-gold)' : 'var(--text-secondary)',
-              transition: 'color var(--transition-fast)'
-            })}
-          >
-            Projects
-          </NavLink>
+
           <NavLink 
             to="/about" 
             onClick={() => setIsOpen(false)}

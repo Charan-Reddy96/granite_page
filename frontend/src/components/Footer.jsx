@@ -67,7 +67,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link to="/about" style={{ color: 'var(--text-secondary)', fontSize: '14px', transition: 'color var(--transition-fast)' }} onMouseOver={(e) => e.target.style.color = 'var(--accent-gold)'} onMouseOut={(e) => e.target.style.color = 'var(--text-secondary)'}>
-                  Our Projects
+                  About Us
                 </Link>
               </li>
               <li>

@@ -132,30 +132,25 @@ export default function Home() {
         <div style={{ textAlign: 'center', marginBottom: '50px' }}>
           <span style={{ color: 'var(--accent-gold)', fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
             Exclusive Collections
-          </span >
+          </span>
           <h2 style={{ fontSize: '38px', fontWeight: '800', marginTop: '8px' }}>Select Your Material</h2>
         </div>
 
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-          gap: '24px'
+          gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))',
+          gap: '30px'
         }}>
           {[
-            { name: 'Quartzite', img: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=500&auto=format&fit=crop' },
-            { name: 'Onyx', img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=500&auto=format&fit=crop' },
-            { name: 'Marble', img: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=500&auto=format&fit=crop' },
-            { name: 'Travertine', img: 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=500&auto=format&fit=crop' },
-            { name: 'Granite', img: 'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?w=500&auto=format&fit=crop' },
-            { name: 'Limestone', img: 'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?w=500&auto=format&fit=crop' },
-            { name: 'Dolomite', img: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=500&auto=format&fit=crop' }
+            { name: 'Granite', label: 'Premium Granite', img: 'http://googleusercontent.com/image_collection/image_retrieval/1800106829975532889', query: 'Granite' },
+            { name: 'Tiles', label: 'Luxury Tiles', img: 'http://googleusercontent.com/image_collection/image_retrieval/792531940683038687', query: 'Tile' }
           ].map((cat) => (
             <Link 
               key={cat.name} 
-              to={`/catalog?category=${cat.name}`}
+              to={`/catalog?category=${cat.query}`}
               style={{
                 position: 'relative',
-                height: '240px',
+                height: '320px',
                 borderRadius: 'var(--border-radius-md)',
                 overflow: 'hidden',
                 display: 'block',
@@ -187,11 +182,11 @@ export default function Home() {
                 background: 'linear-gradient(to top, rgba(15,15,17,0.8) 0%, rgba(15,15,17,0.2) 100%)',
                 display: 'flex',
                 alignItems: 'flex-end',
-                padding: '24px',
+                padding: '30px',
                 zIndex: 2
               }}>
-                <h3 style={{ fontSize: '22px', fontWeight: '700', color: 'var(--text-primary)', margin: 0 }}>
-                  {cat.name}
+                <h3 style={{ fontSize: '24px', fontWeight: '700', color: 'var(--text-primary)', margin: 0 }}>
+                  {cat.label}
                 </h3>
               </div>
               {/* Hover View Range Overlay */}
@@ -213,10 +208,10 @@ export default function Home() {
                 <span style={{
                   backgroundColor: 'var(--accent-gold)',
                   color: 'var(--bg-primary)',
-                  padding: '10px 20px',
+                  padding: '12px 24px',
                   fontWeight: 700,
                   textTransform: 'uppercase',
-                  fontSize: '12px',
+                  fontSize: '13px',
                   letterSpacing: '0.05em',
                   borderRadius: 'var(--border-radius-sm)',
                   boxShadow: 'var(--shadow-md)'
@@ -317,15 +312,6 @@ export default function Home() {
           gap: '20px'
         }}>
           <div>
-            <span style={{
-              color: 'var(--accent-gold)',
-              fontSize: '13px',
-              fontWeight: 600,
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em'
-            }}>
-              Handpicked Materials
-            </span>
             <h2 className="serif-title" style={{ fontSize: '32px', marginTop: '8px' }}>
               Featured Collections
             </h2>
