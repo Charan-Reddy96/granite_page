@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { isAdmin, logout } = useAuth();
+  const { user, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const navRef = useRef(null);
@@ -165,47 +165,97 @@ export default function Navbar() {
               Contact Us
             </NavLink>
 
-            {isAdmin && (
-              <NavLink
-                to="/admin"
-                onClick={closeMenu}
-                style={({ isActive }) => ({
-                  fontSize: '13px',
-                  fontWeight: '600',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
-                  color: isActive ? 'var(--accent-gold)' : 'var(--text-muted)',
-                  transition: 'color var(--transition-fast)'
-                })}
-              >
-                Admin Panel
-              </NavLink>
-            )}
+            {user ? (
+              <div className="nav-user-badge" style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  {user.profile_image ? (
+                    <img 
+                      src={user.profile_image.startsWith('http') ? user.profile_image : `${import.meta.env.BASE_URL}${user.profile_image.substring(1)}`}
+                      alt={user.username}
+                      style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--border-color)' }}
+                    />
+                  ) : (
+                    <div style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: 'var(--bg-tertiary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 'bold', color: 'var(--text-secondary)' }}>
+                      {user.username[0].toUpperCase()}
+                    </div>
+                  )}
+                  <span style={{ fontSize: '13px', color: 'var(--text-primary)', fontWeight: '600' }}>
+                    {user.username}
+                  </span>
+                </div>
+                
+                {isAdmin && (
+                  <NavLink
+                    to="/admin"
+                    onClick={closeMenu}
+                    style={({ isActive }) => ({
+                      fontSize: '13px',
+                      fontWeight: '600',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em',
+                      color: isActive ? 'var(--accent-gold)' : 'var(--text-muted)',
+                      transition: 'color var(--transition-fast)'
+                    })}
+                  >
+                    Admin Panel
+                  </NavLink>
+                )}
 
-            {isAdmin && (
-              <button
-                onClick={() => { logout(); closeMenu(); navigate('/'); }}
-                style={{
-                  background: 'none',
-                  border: '1px solid var(--border-color)',
-                  cursor: 'pointer',
-                  color: 'var(--text-muted)',
-                  fontSize: '12px',
-                  fontWeight: 600,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
-                  padding: '6px 12px',
-                  borderRadius: 'var(--border-radius-sm)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  transition: 'all var(--transition-fast)'
-                }}
-                onMouseOver={(e) => { e.currentTarget.style.color = 'var(--danger)'; e.currentTarget.style.borderColor = 'var(--danger)'; }}
-                onMouseOut={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border-color)'; }}
-              >
-                <LogOut size={14} /> Logout
-              </button>
+                <button
+                  onClick={() => { logout(); closeMenu(); navigate('/'); }}
+                  style={{
+                    background: 'none',
+                    border: '1px solid var(--border-color)',
+                    cursor: 'pointer',
+                    color: 'var(--text-muted)',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    padding: '6px 12px',
+                    borderRadius: 'var(--border-radius-sm)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    transition: 'all var(--transition-fast)'
+                  }}
+                  onMouseOver={(e) => { e.currentTarget.style.color = 'var(--danger)'; e.currentTarget.style.borderColor = 'var(--danger)'; }}
+                  onMouseOut={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border-color)'; }}
+                >
+                  <LogOut size={14} /> Logout
+                </button>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <NavLink
+                  to="/admin/login"
+                  onClick={closeMenu}
+                  style={({ isActive }) => ({
+                    fontSize: '13px',
+                    fontWeight: '600',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    color: isActive ? 'var(--accent-gold)' : 'var(--text-secondary)',
+                    transition: 'color var(--transition-fast)'
+                  })}
+                >
+                  Login
+                </NavLink>
+                <NavLink
+                  to="/signup"
+                  onClick={closeMenu}
+                  style={({ isActive }) => ({
+                    fontSize: '13px',
+                    fontWeight: '600',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    color: isActive ? 'var(--accent-gold)' : 'var(--text-secondary)',
+                    transition: 'color var(--transition-fast)'
+                  })}
+                >
+                  Sign Up
+                </NavLink>
+              </div>
             )}
 
             <NavLink

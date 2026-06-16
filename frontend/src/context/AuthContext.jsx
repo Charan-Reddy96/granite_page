@@ -1,8 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { api } from '../services/api';
 
 const AuthContext = createContext(null);
-
-const isGitHubPages = window.location.hostname.includes('github.io');
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -15,28 +14,19 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const validateToken = async () => {
       const storedToken = localStorage.getItem('gs_auth_token');
-      if (!storedToken || isGitHubPages) {
+      if (!storedToken) {
         setLoading(false);
         return;
       }
 
       try {
-        const res = await fetch('/api/auth/me', {
-          headers: { 'Authorization': `Bearer ${storedToken}` }
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setUser(data.user);
-          setToken(storedToken);
-        } else {
-          // Token is invalid or expired
-          localStorage.removeItem('gs_auth_token');
-          setToken(null);
-          setUser(null);
-        }
+        const data = await api.getMe(storedToken);
+        setUser(data.user);
+        setToken(storedToken);
       } catch (err) {
-        // Server not reachable — clear auth state
+        // Token is invalid or expired
         localStorage.removeItem('gs_auth_token');
+        localStorage.removeItem('gs_device_signature');
         setToken(null);
         setUser(null);
       }
@@ -46,18 +36,20 @@ export function AuthProvider({ children }) {
     validateToken();
   }, []);
 
-  const login = async (username, password) => {
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
-    });
+  const login = async (username, password, deviceSignature = '') => {
+    const data = await api.login(username, password, deviceSignature);
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.error || 'Login failed');
+    if (deviceSignature) {
+      localStorage.setItem('gs_device_signature', deviceSignature);
     }
+    localStorage.setItem('gs_auth_token', data.token);
+    setToken(data.token);
+    setUser(data.user);
+    return data;
+  };
+
+  const register = async (formData) => {
+    const data = await api.register(formData);
 
     localStorage.setItem('gs_auth_token', data.token);
     setToken(data.token);
@@ -67,12 +59,13 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     localStorage.removeItem('gs_auth_token');
+    localStorage.removeItem('gs_device_signature');
     setToken(null);
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, isAdmin, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, token, isAdmin, loading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
@@ -85,3 +78,4 @@ export function useAuth() {
   }
   return context;
 }
+

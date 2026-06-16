@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Lock, LogIn, AlertCircle } from 'lucide-react';
 
 export default function AdminLogin() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [deviceSignature, setDeviceSignature] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { login, isAdmin } = useAuth();
@@ -23,10 +24,10 @@ export default function AdminLogin() {
     setIsLoading(true);
 
     try {
-      await login(username, password);
+      await login(username, password, deviceSignature);
       navigate('/admin', { replace: true });
     } catch (err) {
-      setError(err.message || 'Invalid credentials. Please try again.');
+      setError(err.message || 'Invalid credentials or unauthorized device.');
     } finally {
       setIsLoading(false);
     }
@@ -127,6 +128,21 @@ export default function AdminLogin() {
             />
           </div>
 
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span>Device Authorization Key</span>
+              <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Admin signature key</span>
+            </label>
+            <input
+              type="password"
+              className="form-control"
+              placeholder="e.g. gs_dev_device_sig_2026"
+              value={deviceSignature}
+              onChange={(e) => setDeviceSignature(e.target.value)}
+              required
+            />
+          </div>
+
           <button
             type="submit"
             className="btn btn-primary"
@@ -157,9 +173,13 @@ export default function AdminLogin() {
           color: 'var(--text-muted)',
           marginTop: '24px'
         }}>
-          Authorized personnel only. All access is logged.
+          Not an admin?{' '}
+          <Link to="/signup" style={{ color: 'var(--accent-gold)', textDecoration: 'none', fontWeight: 600 }}>
+            Register here
+          </Link>
         </p>
       </div>
     </div>
   );
 }
+

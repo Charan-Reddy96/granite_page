@@ -14,6 +14,7 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)  # bcrypt hash
     role = db.Column(db.String(20), default='user')  # 'admin' or 'user'
+    profile_image = db.Column(db.String(200), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def set_password(self, raw_password):
@@ -27,8 +28,10 @@ class User(db.Model):
             'id': self.id,
             'username': self.username,
             'role': self.role,
+            'profile_image': self.profile_image,
             'created_at': self.created_at.strftime('%Y-%m-%d %H:%M:%S')
         }
+
 
 class Product(db.Model):
     __tablename__ = 'products'

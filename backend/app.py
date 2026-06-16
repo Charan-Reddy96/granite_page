@@ -34,7 +34,11 @@ def seed_database():
         # Seed default admin user if none exists
         if User.query.filter_by(role='admin').count() == 0:
             print("Creating default admin user...")
-            admin = User(username='admin', role='admin')
+            admin = User(
+                username='admin', 
+                role='admin',
+                profile_image='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop'
+            )
             admin.set_password('admin123')
             db.session.add(admin)
             db.session.commit()
@@ -277,6 +281,24 @@ def login():
     if not user or not user.check_password(password):
         return jsonify({'error': 'Invalid username or password.'}), 401
 
+    # Security check for Admin log-in
+    if user.role == 'admin':
+        # 1. IP Whitelist check
+        allowed_ips = app.config.get('ALLOWED_ADMIN_IPS', [])
+        if allowed_ips:
+            client_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+            if client_ip and ',' in client_ip:
+                client_ip = client_ip.split(',')[0].strip()
+            if client_ip not in allowed_ips:
+                return jsonify({'error': f'Access restricted: Unauthorized device IP address ({client_ip}).'}), 403
+
+        # 2. Device Signature key check
+        expected_sig = app.config.get('ADMIN_DEVICE_SIGNATURE')
+        if expected_sig:
+            device_sig = request.headers.get('X-Device-Signature') or data.get('deviceSignature')
+            if device_sig != expected_sig:
+                return jsonify({'error': 'Access restricted: Unauthorized device signature key.'}), 403
+
     token = generate_token(user)
     return jsonify({
         'token': token,
@@ -289,7 +311,84 @@ def auth_me():
     user = get_current_user()
     if not user:
         return jsonify({'error': 'Not authenticated.'}), 401
+
+    # Security check for active Admin sessions
+    if user.role == 'admin':
+        # 1. IP Whitelist check
+        allowed_ips = app.config.get('ALLOWED_ADMIN_IPS', [])
+        if allowed_ips:
+            client_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+            if client_ip and ',' in client_ip:
+                client_ip = client_ip.split(',')[0].strip()
+            if client_ip not in allowed_ips:
+                return jsonify({'error': f'Access restricted: Unauthorized device IP address ({client_ip}).'}), 403
+
+        # 2. Device Signature key check
+        expected_sig = app.config.get('ADMIN_DEVICE_SIGNATURE')
+        if expected_sig:
+            device_sig = request.headers.get('X-Device-Signature')
+            if device_sig != expected_sig:
+                return jsonify({'error': 'Access restricted: Unauthorized device signature key.'}), 403
+
     return jsonify({'user': user.to_dict()})
+
+
+@app.route('/api/auth/register', methods=['POST'])
+def register():
+    # Supports JSON (without profile image upload) or Multipart Form (with profile image file)
+    if request.is_json:
+        data = request.json
+        username = data.get('username', '').strip()
+        password = data.get('password', '')
+        profile_image_url = None
+    else:
+        data = request.form
+        username = data.get('username', '').strip()
+        password = data.get('password', '')
+        profile_image_url = None
+        
+        # Check if file is uploaded
+        if 'profile_image' in request.files:
+            file = request.files['profile_image']
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                # Ensure unique filename
+                base, ext = os.path.splitext(filename)
+                counter = 1
+                while os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], filename)):
+                    filename = f"{base}_{counter}{ext}"
+                    counter += 1
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                profile_image_url = f"/static/uploads/{filename}"
+
+    if not username or not password:
+        return jsonify({'error': 'Username and password are required.'}), 400
+
+    # Ensure username length limit or validation if needed
+    if len(username) < 3 or len(username) > 20:
+        return jsonify({'error': 'Username must be between 3 and 20 characters.'}), 400
+
+    # Check if user already exists
+    if User.query.filter_by(username=username).first():
+        return jsonify({'error': 'Username is already taken.'}), 400
+
+    try:
+        new_user = User(username=username, role='user', profile_image=profile_image_url)
+        new_user.set_password(password)
+        db.session.add(new_user)
+        db.session.commit()
+        
+        # Log the user in automatically (return token)
+        token = generate_token(new_user)
+        return jsonify({
+            'message': 'Registration successful.',
+            'token': token,
+            'user': new_user.to_dict()
+        }), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': f'Failed to register user: {str(e)}'}), 500
+
 
 
 # --- API Routes ---

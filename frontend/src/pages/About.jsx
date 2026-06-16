@@ -4,7 +4,7 @@ import { Award, Compass, ShieldCheck, MapPin } from 'lucide-react';
 export default function About() {
   return (
     <div style={{ padding: '60px 0 100px 0', display: 'flex', flexDirection: 'column', gap: '80px' }}>
-      
+
       {/* Introduction Header */}
       <section className="container text-center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
         <span style={{
@@ -50,9 +50,9 @@ export default function About() {
             height: '400px',
             border: '1px solid var(--border-color)'
           }}>
-            <img 
-              src="https://images.unsplash.com/photo-1513694203232-719a280e022f?w=600&auto=format&fit=crop" 
-              alt="Premium stone showroom" 
+            <img
+              src="https://images.unsplash.com/photo-1513694203232-719a280e022f?w=600&auto=format&fit=crop"
+              alt="Premium stone showroom"
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />
           </div>
@@ -63,7 +63,7 @@ export default function About() {
       <section style={{ backgroundColor: 'var(--bg-secondary)', borderTop: '1px solid var(--border-color)', borderBottom: '1px solid var(--border-color)', padding: '80px 0' }}>
         <div className="container">
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '40px' }}>
-            
+
             {/* Mission */}
             <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
               <div style={{
@@ -136,11 +136,11 @@ export default function About() {
             <p style={{ color: 'var(--text-secondary)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '10px' }}>Years in Industry</p>
           </div>
           <div className="stats-item">
-            <span style={{ fontSize: '48px', fontWeight: 'bold', fontFamily: 'var(--font-serif)', color: 'var(--accent-gold)' }}>15k+</span>
+            <span style={{ fontSize: '48px', fontWeight: 'bold', fontFamily: 'var(--font-serif)', color: 'var(--accent-gold)' }}>2k+</span>
             <p style={{ color: 'var(--text-secondary)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '10px' }}>Projects Completed</p>
           </div>
           <div className="stats-item">
-            <span style={{ fontSize: '48px', fontWeight: 'bold', fontFamily: 'var(--font-serif)', color: 'var(--accent-gold)' }}>120+</span>
+            <span style={{ fontSize: '48px', fontWeight: 'bold', fontFamily: 'var(--font-serif)', color: 'var(--accent-gold)' }}>20+</span>
             <p style={{ color: 'var(--text-secondary)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '10px' }}>Unique Stone Slabs</p>
           </div>
           <div className="stats-item">

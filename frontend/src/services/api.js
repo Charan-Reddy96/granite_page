@@ -7,7 +7,11 @@ const API_BASE = ''; // proxied via Vite config locally
 // Helper to get auth headers for admin API calls
 const getAuthHeaders = () => {
   const token = localStorage.getItem('gs_auth_token');
-  return token ? { 'Authorization': `Bearer ${token}` } : {};
+  const signature = localStorage.getItem('gs_device_signature');
+  const headers = {};
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  if (signature) headers['X-Device-Signature'] = signature;
+  return headers;
 };
 
 // Seed data for standalone mode (16 items)
@@ -281,23 +285,143 @@ async function checkServer() {
 
 export const api = {
   // 0. AUTH API
-  login: async (username, password) => {
-    const res = await fetch(`${API_BASE}/api/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Login failed');
-    return data;
+  login: async (username, password, deviceSignature = '') => {
+    const isOnline = await checkServer();
+    if (isOnline) {
+      const headers = { 'Content-Type': 'application/json' };
+      if (deviceSignature) {
+        headers['X-Device-Signature'] = deviceSignature;
+      }
+      const res = await fetch(`${API_BASE}/api/auth/login`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ username, password, deviceSignature })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Login failed');
+      return data;
+    } else {
+      // Mock Login in Standalone Mode
+      const trimUser = username.trim();
+      if (trimUser === 'admin') {
+        if (password !== 'admin123') {
+          throw new Error('Invalid username or password.');
+        }
+        if (deviceSignature !== 'gs_dev_device_sig_2026') {
+          throw new Error('Access restricted: Unauthorized device signature key.');
+        }
+        const adminUser = {
+          id: 1,
+          username: 'admin',
+          role: 'admin',
+          profile_image: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop',
+          created_at: '2026-06-16 12:00:00'
+        };
+        return {
+          token: 'mock_jwt_token_admin',
+          user: adminUser
+        };
+      } else {
+        // Check local users
+        const users = JSON.parse(localStorage.getItem('gs_mock_users') || '[]');
+        const user = users.find(u => u.username === trimUser);
+        if (!user || password === '') {
+          throw new Error('Invalid username or password.');
+        }
+        return {
+          token: `mock_jwt_token_${user.id}`,
+          user
+        };
+      }
+    }
   },
 
   getMe: async (token) => {
-    const res = await fetch(`${API_BASE}/api/auth/me`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    if (!res.ok) throw new Error('Not authenticated');
-    return res.json();
+    const isOnline = await checkServer();
+    if (isOnline) {
+      const headers = { 'Authorization': `Bearer ${token}` };
+      const signature = localStorage.getItem('gs_device_signature');
+      if (signature) {
+        headers['X-Device-Signature'] = signature;
+      }
+      const res = await fetch(`${API_BASE}/api/auth/me`, { headers });
+      if (!res.ok) throw new Error('Not authenticated');
+      return res.json();
+    } else {
+      // Mock getMe
+      if (token === 'mock_jwt_token_admin') {
+        const signature = localStorage.getItem('gs_device_signature');
+        if (signature !== 'gs_dev_device_sig_2026') {
+          throw new Error('Access restricted: Unauthorized device signature key.');
+        }
+        return {
+          user: {
+            id: 1,
+            username: 'admin',
+            role: 'admin',
+            profile_image: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop',
+            created_at: '2026-06-16 12:00:00'
+          }
+        };
+      }
+      
+      const userId = token.replace('mock_jwt_token_', '');
+      const users = JSON.parse(localStorage.getItem('gs_mock_users') || '[]');
+      const user = users.find(u => u.id === parseInt(userId));
+      if (!user) throw new Error('Not authenticated');
+      return { user };
+    }
+  },
+
+  register: async (formData) => {
+    const isOnline = await checkServer();
+    if (isOnline) {
+      const res = await fetch(`${API_BASE}/api/auth/register`, {
+        method: 'POST',
+        body: formData // Form data including files
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Registration failed');
+      return data;
+    } else {
+      // Mock Register in Standalone Mode
+      const username = formData.get('username');
+      const password = formData.get('password');
+      const profileImageFile = formData.get('profile_image');
+      
+      let profile_image_url = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop'; // fallback placeholder
+      
+      if (profileImageFile && profileImageFile.name) {
+        // Read client file as data URL to keep offline flow completely active
+        profile_image_url = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.readAsDataURL(profileImageFile);
+        });
+      }
+      
+      const users = JSON.parse(localStorage.getItem('gs_mock_users') || '[]');
+      if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+        throw new Error('Username is already taken.');
+      }
+      
+      const newUser = {
+        id: users.length + 10,
+        username,
+        role: 'user',
+        profile_image: profile_image_url,
+        created_at: new Date().toISOString().replace('T', ' ').substring(0, 19)
+      };
+      
+      users.push(newUser);
+      localStorage.setItem('gs_mock_users', JSON.stringify(users));
+      
+      return {
+        message: 'Registration successful (standalone mock)',
+        token: `mock_jwt_token_${newUser.id}`,
+        user: newUser
+      };
+    }
   },
 
   // 1. PRODUCTS API

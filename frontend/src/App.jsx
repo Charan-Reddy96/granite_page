@@ -11,6 +11,7 @@ import ProductDetails from './pages/ProductDetails';
 import Contact from './pages/Contact';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
+import UserSignup from './pages/UserSignup';
 
 export default function App() {
   return (
@@ -34,6 +35,7 @@ export default function App() {
               <Route path="/catalog" element={<Catalog />} />
               <Route path="/products/:id" element={<ProductDetails />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/signup" element={<UserSignup />} />
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin" element={
                 <ProtectedRoute>
@@ -50,3 +52,4 @@ export default function App() {
     </Router>
   );
 }
+
