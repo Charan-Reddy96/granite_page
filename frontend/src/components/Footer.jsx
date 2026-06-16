@@ -80,7 +80,7 @@ export default function Footer() {
                   onMouseOver={(e) => e.target.style.color = 'var(--accent-gold)'}
                   onMouseOut={(e) => e.target.style.color = 'var(--text-secondary)'}
                 >
-                  Opp. metro pillar no. A857, beside musjid, kukatpally, "y" junction, Hyderabad, Telangana-500072
+                  FCGC+RR3, Opposite DMart Kukatpally, IDA Kukatpally, Kukatpally, Hyderabad, Telangana 500072, India
                 </a>
               </li>
               <li style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
