@@ -73,66 +73,160 @@ export default function Contact() {
           
           {/* Quick Info Grid */}
           <div className="quick-info-grid">
+            {/* Phone Card */}
             <div style={{
               backgroundColor: 'var(--bg-secondary)',
               border: '1px solid var(--border-color)',
               padding: '20px',
-              borderRadius: 'var(--border-radius-md)'
+              borderRadius: 'var(--border-radius-md)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px'
             }}>
-              <Phone size={24} color="var(--accent-gold)" style={{ marginBottom: '12px' }} />
-              <h4 style={{ fontSize: '14px', marginBottom: '4px' }}>Phone Contact</h4>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>+91 93916 66951</p>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '48px',
+                height: '48px',
+                borderRadius: '50%',
+                backgroundColor: 'var(--accent-gold-light)',
+                border: '1px solid rgba(197, 168, 128, 0.2)',
+                flexShrink: 0
+              }}>
+                <Phone size={20} color="var(--accent-gold)" />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                <h4 style={{ fontSize: '13px', margin: 0, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Phone Contact</h4>
+                <p style={{ margin: 0, fontSize: '15px', fontWeight: 600, whiteSpace: 'nowrap' }}>
+                  <a 
+                    href="tel:+919391666951" 
+                    style={{ color: 'var(--accent-gold)', textDecoration: 'none', transition: 'color var(--transition-fast)' }}
+                    onMouseOver={(e) => e.target.style.color = 'var(--text-primary)'}
+                    onMouseOut={(e) => e.target.style.color = 'var(--accent-gold)'}
+                  >
+                    +91 93916 66951
+                  </a>
+                </p>
+              </div>
             </div>
             
-            <div style={{
-              backgroundColor: 'var(--bg-secondary)',
-              border: '1px solid var(--border-color)',
-              padding: '20px',
-              borderRadius: 'var(--border-radius-md)'
-            }}>
-              <Mail size={24} color="var(--accent-gold)" style={{ marginBottom: '12px' }} />
-              <h4 style={{ fontSize: '14px', marginBottom: '4px' }}>Email Contact</h4>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>gsgranitesandmarbles@gmail.com</p>
-            </div>
-
+            {/* Email Card */}
             <div style={{
               backgroundColor: 'var(--bg-secondary)',
               border: '1px solid var(--border-color)',
               padding: '20px',
               borderRadius: 'var(--border-radius-md)',
-              gridColumn: 'span 2'
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px'
             }}>
-              <MapPin size={24} color="var(--accent-gold)" style={{ marginBottom: '12px' }} />
-              <h4 style={{ fontSize: '14px', marginBottom: '6px' }}>Showroom Address</h4>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '13.5px', lineHeight: '1.6' }}>
-                <a 
-                  href="https://maps.app.goo.gl/TMdMDVnAZnbS2iGQ9" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  style={{ textDecoration: 'none', transition: 'color var(--transition-fast)' }}
-                  onMouseOver={(e) => e.target.style.color = 'var(--accent-gold)'}
-                  onMouseOut={(e) => e.target.style.color = 'var(--text-secondary)'}
-                >
-                  FCGC+RR3, Opposite DMart Kukatpally, IDA Kukatpally, Kukatpally, Hyderabad, Telangana 500072, India
-                </a>
-              </p>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '48px',
+                height: '48px',
+                borderRadius: '50%',
+                backgroundColor: 'var(--accent-gold-light)',
+                border: '1px solid rgba(197, 168, 128, 0.2)',
+                flexShrink: 0
+              }}>
+                <Mail size={20} color="var(--accent-gold)" />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', overflow: 'hidden' }}>
+                <h4 style={{ fontSize: '13px', margin: 0, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Email Contact</h4>
+                <p style={{ margin: 0, fontSize: '14px', fontWeight: 600, wordBreak: 'break-all' }}>
+                  <a 
+                    href="mailto:gsgranitesandmarbles@gmail.com" 
+                    style={{ color: 'var(--accent-gold)', textDecoration: 'none', transition: 'color var(--transition-fast)' }}
+                    onMouseOver={(e) => e.target.style.color = 'var(--text-primary)'}
+                    onMouseOut={(e) => e.target.style.color = 'var(--accent-gold)'}
+                  >
+                    gsgranitesandmarbles@gmail.com
+                  </a>
+                </p>
+              </div>
             </div>
 
+            {/* Address Card */}
             <div style={{
               backgroundColor: 'var(--bg-secondary)',
               border: '1px solid var(--border-color)',
               padding: '20px',
               borderRadius: 'var(--border-radius-md)',
-              gridColumn: 'span 2'
+              gridColumn: 'span 2',
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '16px'
             }}>
-              <Clock size={24} color="var(--accent-gold)" style={{ marginBottom: '12px' }} />
-              <h4 style={{ fontSize: '14px', marginBottom: '8px' }}>Business Hours</h4>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '13px', display: 'flex', justifyContent: 'space-between' }}>
-                <span>Monday - Friday</span> <span>8:00 AM - 6:00 PM</span>
-              </p>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '13px', display: 'flex', justifyContent: 'space-between', marginTop: '4px' }}>
-                <span>Saturday</span> <span>9:00 AM - 4:00 PM</span>
-              </p>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '48px',
+                height: '48px',
+                borderRadius: '50%',
+                backgroundColor: 'var(--accent-gold-light)',
+                border: '1px solid rgba(197, 168, 128, 0.2)',
+                flexShrink: 0,
+                marginTop: '2px'
+              }}>
+                <MapPin size={20} color="var(--accent-gold)" />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <h4 style={{ fontSize: '13px', margin: 0, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Showroom Address</h4>
+                <p style={{ margin: 0, fontSize: '14.5px', lineHeight: '1.6' }}>
+                  <a 
+                    href="https://maps.app.goo.gl/TMdMDVnAZnbS2iGQ9" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color var(--transition-fast)' }}
+                    onMouseOver={(e) => e.target.style.color = 'var(--accent-gold)'}
+                    onMouseOut={(e) => e.target.style.color = 'var(--text-secondary)'}
+                  >
+                    FCGC+RR3, Opposite DMart Kukatpally, IDA Kukatpally, Kukatpally, Hyderabad, Telangana 500072, India
+                  </a>
+                </p>
+              </div>
+            </div>
+
+            {/* Business Hours Card */}
+            <div style={{
+              backgroundColor: 'var(--bg-secondary)',
+              border: '1px solid var(--border-color)',
+              padding: '20px',
+              borderRadius: 'var(--border-radius-md)',
+              gridColumn: 'span 2',
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '16px'
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '48px',
+                height: '48px',
+                borderRadius: '50%',
+                backgroundColor: 'var(--accent-gold-light)',
+                border: '1px solid rgba(197, 168, 128, 0.2)',
+                flexShrink: 0,
+                marginTop: '2px'
+              }}>
+                <Clock size={20} color="var(--accent-gold)" />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%' }}>
+                <h4 style={{ fontSize: '13px', margin: 0, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Business Hours</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '13.5px', display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontWeight: 500 }}>Monday - Friday</span> <span>8:00 AM - 6:00 PM</span>
+                  </p>
+                  <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '13.5px', display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontWeight: 500 }}>Saturday</span> <span>9:00 AM - 4:00 PM</span>
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
