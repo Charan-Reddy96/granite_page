@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { X, Send } from 'lucide-react';
 import { api } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 export default function InquiryModal({ isOpen, onClose, preFilledProduct = null }) {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -17,11 +19,20 @@ export default function InquiryModal({ isOpen, onClose, preFilledProduct = null 
   useEffect(() => {
     // If modal is opened, fetch list of products for dropdown if not prefilled
     if (isOpen) {
+      // Pre-populate name and email if user is authenticated
+      if (user) {
+        setFormData(prev => ({
+          ...prev,
+          name: prev.name || user.username,
+          email: prev.email || `${user.username}@example.com`
+        }));
+      }
+
       if (preFilledProduct) {
         setFormData(prev => ({
           ...prev,
           product_id: preFilledProduct.id,
-          message: `Hello, I am interested in your "${preFilledProduct.name}" product. Please share pricing and shipping details.`
+          message: prev.message || `Hello, I am interested in your "${preFilledProduct.name}" product. Please share pricing and shipping details.`
         }));
       } else {
         // Fetch all products for dropdown
@@ -30,7 +41,8 @@ export default function InquiryModal({ isOpen, onClose, preFilledProduct = null 
           .catch(err => console.error("Error loading products for modal dropdown:", err));
       }
     }
-  }, [isOpen, preFilledProduct]);
+  }, [isOpen, preFilledProduct, user]);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;

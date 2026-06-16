@@ -9,14 +9,19 @@ export default function AdminLogin() {
   const [deviceSignature, setDeviceSignature] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { login, isAdmin } = useAuth();
+  const { login, user, isAdmin } = useAuth();
   const navigate = useNavigate();
 
-  // If already logged in as admin, redirect
-  if (isAdmin) {
-    navigate('/admin', { replace: true });
+  // If already logged in, redirect appropriately
+  if (user) {
+    if (isAdmin) {
+      navigate('/admin', { replace: true });
+    } else {
+      navigate('/', { replace: true });
+    }
     return null;
   }
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();

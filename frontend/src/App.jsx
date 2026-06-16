@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
+import UserProtectedRoute from './components/UserProtectedRoute';
 import Home from './pages/Home';
 import About from './pages/About';
 import Catalog from './pages/Catalog';
@@ -30,13 +31,38 @@ export default function App() {
           {/* Page Content */}
           <main style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/catalog" element={<Catalog />} />
-              <Route path="/products/:id" element={<ProductDetails />} />
-              <Route path="/contact" element={<Contact />} />
+              {/* Public Unprotected Sign Up / Login */}
               <Route path="/signup" element={<UserSignup />} />
               <Route path="/admin/login" element={<AdminLogin />} />
+
+              {/* Protected Client Pages */}
+              <Route path="/" element={
+                <UserProtectedRoute>
+                  <Home />
+                </UserProtectedRoute>
+              } />
+              <Route path="/about" element={
+                <UserProtectedRoute>
+                  <About />
+                </UserProtectedRoute>
+              } />
+              <Route path="/catalog" element={
+                <UserProtectedRoute>
+                  <Catalog />
+                </UserProtectedRoute>
+              } />
+              <Route path="/products/:id" element={
+                <UserProtectedRoute>
+                  <ProductDetails />
+                </UserProtectedRoute>
+              } />
+              <Route path="/contact" element={
+                <UserProtectedRoute>
+                  <Contact />
+                </UserProtectedRoute>
+              } />
+
+              {/* Protected Admin Page */}
               <Route path="/admin" element={
                 <ProtectedRoute>
                   <AdminDashboard />
@@ -52,4 +78,5 @@ export default function App() {
     </Router>
   );
 }
+
 
