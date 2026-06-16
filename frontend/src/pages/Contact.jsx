@@ -102,6 +102,29 @@ export default function Contact() {
               borderRadius: 'var(--border-radius-md)',
               gridColumn: 'span 2'
             }}>
+              <MapPin size={24} color="var(--accent-gold)" style={{ marginBottom: '12px' }} />
+              <h4 style={{ fontSize: '14px', marginBottom: '6px' }}>Showroom Address</h4>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '13.5px', lineHeight: '1.6' }}>
+                <a 
+                  href="https://maps.app.goo.gl/TMdMDVnAZnbS2iGQ9" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  style={{ textDecoration: 'none', transition: 'color var(--transition-fast)' }}
+                  onMouseOver={(e) => e.target.style.color = 'var(--accent-gold)'}
+                  onMouseOut={(e) => e.target.style.color = 'var(--text-secondary)'}
+                >
+                  Opp. metro pillar no. A857, beside musjid, kukatpally, "y" junction, Hyderabad, Telangana - 500072
+                </a>
+              </p>
+            </div>
+
+            <div style={{
+              backgroundColor: 'var(--bg-secondary)',
+              border: '1px solid var(--border-color)',
+              padding: '20px',
+              borderRadius: 'var(--border-radius-md)',
+              gridColumn: 'span 2'
+            }}>
               <Clock size={24} color="var(--accent-gold)" style={{ marginBottom: '12px' }} />
               <h4 style={{ fontSize: '14px', marginBottom: '8px' }}>Business Hours</h4>
               <p style={{ color: 'var(--text-secondary)', fontSize: '13px', display: 'flex', justifyContent: 'space-between' }}>
@@ -129,7 +152,7 @@ export default function Contact() {
               scrolling="no" 
               marginHeight="0" 
               marginWidth="0" 
-              src="https://maps.google.com/maps?width=100%25&amp;height=300&amp;hl=en&amp;q=Opp.metro%20pillar%20no.%20A857,%20beside%20musjid,%20kukatpally,%20%22y%22%20junction,%20Hyderabad,%20Telangana-500072&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3805.6383134396856!2d78.4220232!3d17.4770171!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb91aecdd3e1fd%3A0x58b0867381008a99!2sG.S.+Granites+And+Marbles!5e0!3m2!1sen!2sin"
               style={{ filter: 'grayscale(0.9) invert(0.9) contrast(1.2)' }}
             />
           </div>
