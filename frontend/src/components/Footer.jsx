@@ -72,10 +72,10 @@ export default function Footer() {
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '15px', fontSize: '14px', color: 'var(--text-secondary)' }}>
               <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
                 <MapPin size={18} color="var(--accent-gold)" style={{ flexShrink: 0, marginTop: '2px' }} />
-                <a 
-                  href="https://maps.app.goo.gl/TMdMDVnAZnbS2iGQ9" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
+                <a
+                  href="https://maps.app.goo.gl/TMdMDVnAZnbS2iGQ9"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color var(--transition-fast)' }}
                   onMouseOver={(e) => e.target.style.color = 'var(--accent-gold)'}
                   onMouseOut={(e) => e.target.style.color = 'var(--text-secondary)'}
