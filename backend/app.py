@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import json
+from sqlalchemy import cast, Float
 
 from config import Config
 from models import db, Product, Inquiry
@@ -28,11 +29,11 @@ def seed_database():
     with app.app_context():
         db.create_all()
         
-        # Clear out old seed data if we don't have G S Granites & Tiles products yet
+        # Clear out old seed data if we don't have the new granite/tile products
         try:
-            has_new = Product.query.filter_by(name="Sierra Pearl Granite").count() > 0
+            has_new = Product.query.filter_by(name="Steel Black Granite").count() > 0
             if not has_new:
-                print("Clearing old products to re-seed with G S Granites & Tiles products...")
+                print("Clearing old products to re-seed with the new granite/tile inventory...")
                 Product.query.delete()
                 db.session.commit()
         except Exception as e:
@@ -42,12 +43,12 @@ def seed_database():
         if Product.query.count() == 0:
             print("Seeding database with default products...")
             default_products = [
-                # Granite
+                # Granite (10 items)
                 Product(
                     name="Tan Brown Granite",
                     category="Granite",
                     color="Brown",
-                    price=70.0,
+                    price="60 - 80",
                     availability="In Stock",
                     description="Dark black-brown background with large, chocolate-brown and bronze mineral crystals. Highly unique leathered texture.",
                     featured=False,
@@ -57,182 +58,182 @@ def seed_database():
                     image_paths=json.dumps(["https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=500&auto=format&fit=crop"])
                 ),
                 Product(
-                    name="Absolute Black Granite",
+                    name="Black Granite",
                     category="Granite",
                     color="Black",
-                    price=220.0,
+                    price="120 - 280",
                     availability="In Stock",
-                    description="Deep black solid granite texture. Elegant choice for premium heavy-duty kitchen countertops.",
+                    description="Deep black solid granite texture. Elegant choice for premium heavy-duty kitchen countertops and flooring.",
                     featured=True,
                     thickness="2cm",
                     dimensions="118\" x 70\"",
                     finish="Polished",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?w=500&auto=format&fit=crop"])
+                    image_paths=json.dumps(["http://googleusercontent.com/image_collection/image_retrieval/11766463299363602454"])
                 ),
                 Product(
-                    name="Rose Pearl Granite",
+                    name="Rosy Pink Granite",
                     category="Granite",
                     color="Pink",
-                    price=95.0,
+                    price="80 - 120",
                     availability="In Stock",
                     description="Delicate rose-colored minerals embedded in clean quartz. Brings soft warmth to decorative architecture.",
                     featured=False,
                     thickness="3cm",
                     dimensions="120\" x 72\"",
                     finish="Honed",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=500&auto=format&fit=crop"])
+                    image_paths=json.dumps(["http://googleusercontent.com/image_collection/image_retrieval/6038925374339461329"])
                 ),
                 Product(
                     name="Black Galaxy Granite",
                     category="Granite",
                     color="Black",
-                    price=240.0,
+                    price="170 - 280",
                     availability="In Stock",
                     description="Stunning black granite with golden and white specks. Perfect for premium countertops and accent walls.",
                     featured=True,
                     thickness="3cm",
                     dimensions="126\" x 74\"",
                     finish="Polished",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=500&auto=format&fit=crop"])
+                    image_paths=json.dumps(["http://googleusercontent.com/image_collection/image_retrieval/7106706524840432896"])
                 ),
                 Product(
                     name="Black Pearl Granite",
                     category="Granite",
                     color="Black",
-                    price=150.0,
+                    price="120 - 180",
                     availability="In Stock",
                     description="Deep dark granite with subtle metallic silver mineral pearls, highly resistant and durable surface.",
                     featured=False,
                     thickness="2cm",
                     dimensions="115\" x 68\"",
                     finish="Polished",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=500&auto=format&fit=crop"])
+                    image_paths=json.dumps(["http://googleusercontent.com/image_collection/image_retrieval/10407630008814658093"])
                 ),
                 Product(
                     name="Blue Granite",
                     category="Granite",
                     color="Blue",
-                    price=85.0,
+                    price="70 - 110",
                     availability="In Stock",
                     description="Vibrant blue reflections on slate-grey base stone. Extremely beautiful and modern accent cladding.",
                     featured=False,
                     thickness="2cm",
                     dimensions="115\" x 68\"",
                     finish="Polished",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-1504198453319-5ce911bafcde?w=500&auto=format&fit=crop"])
+                    image_paths=json.dumps(["http://googleusercontent.com/image_collection/image_retrieval/11249034005412611704"])
                 ),
                 Product(
                     name="Sierra Pearl Granite",
                     category="Granite",
                     color="Grey",
-                    price=105.0,
+                    price="80 - 120",
                     availability="In Stock",
                     description="Classic grey stone dotted with quartz pearls. Highly recommended for commercial lobby flooring.",
                     featured=False,
                     thickness="3cm",
                     dimensions="120\" x 70\"",
                     finish="Leathered",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=500&auto=format&fit=crop"])
+                    image_paths=json.dumps(["http://googleusercontent.com/image_collection/image_retrieval/13713677982778485788"])
                 ),
                 Product(
-                    name="Sadarahalli White Granite",
+                    name="Sadali White Granite",
                     category="Granite",
                     color="White",
-                    price=90.0,
+                    price="75 - 110",
                     availability="In Stock",
-                    description="Renowned Sadarahalli white granite, featuring balanced grey salt-and-pepper mineral patterns.",
+                    description="Renowned Sadali white granite, featuring balanced grey salt-and-pepper mineral patterns.",
                     featured=False,
                     thickness="2cm",
                     dimensions="122\" x 72\"",
                     finish="Polished",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-1513694203232-719a280e022f?w=500&auto=format&fit=crop"])
+                    image_paths=json.dumps(["http://googleusercontent.com/image_collection/image_retrieval/5907520677096429330"])
                 ),
                 Product(
                     name="Coffee Brown Granite",
                     category="Granite",
                     color="Brown",
-                    price=110.0,
+                    price="100 - 120",
                     availability="In Stock",
                     description="Warm brown coffee-toned natural stone. Exudes luxurious comfort for residential designs.",
                     featured=False,
                     thickness="3cm",
                     dimensions="120\" x 70\"",
                     finish="Honed",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=500&auto=format&fit=crop"])
+                    image_paths=json.dumps(["http://googleusercontent.com/image_collection/image_retrieval/18160955284143415760"])
                 ),
                 Product(
-                    name="Hassan Green Granite",
+                    name="Steel Black Granite",
                     category="Granite",
-                    color="Green",
-                    price=135.0,
+                    color="Black",
+                    price="120 - 150",
                     availability="In Stock",
-                    description="Traditional premium Hassan green granite. Smooth, weather-resistant, perfect for landmarks and outdoors.",
+                    description="Premium steel black granite with textured metallic highlights. Exquisite durability and sleek appearance.",
                     featured=False,
                     thickness="2cm",
                     dimensions="120\" x 70\"",
                     finish="Polished",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=500&auto=format&fit=crop"])
+                    image_paths=json.dumps(["http://googleusercontent.com/image_collection/image_retrieval/1800106829975532889"])
                 ),
-                # Tiles (sold per box)
+                # Tiles (5 items, sold per box)
                 Product(
-                    name="4x2 Premium Vitrified Tiles",
+                    name="4x2 Vitrified Tiles",
                     category="Tile",
                     color="White",
-                    price=950.0,
+                    price="800 - 1200",
                     availability="In Stock",
                     description="Stunning high-gloss 4' x 2' vitrified floor tiles. Box pack covers multiple pieces.",
                     featured=True,
                     dimensions="4' x 2'",
                     finish="Polished",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=500&auto=format&fit=crop"])
+                    image_paths=json.dumps(["http://googleusercontent.com/image_collection/image_retrieval/792531940683038687"])
                 ),
                 Product(
-                    name="2x2 Classic Vitrified Tiles",
+                    name="2x2 Vitrified Tiles",
                     category="Tile",
                     color="White",
-                    price=800.0,
+                    price="700 - 900",
                     availability="In Stock",
                     description="Durable 2' x 2' satin-finish vitrified floor tiles. Convenient box packaging.",
                     featured=False,
                     dimensions="2' x 2'",
                     finish="Matte",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-1507089947368-19c1da9775ae?w=500&auto=format&fit=crop"])
+                    image_paths=json.dumps(["http://googleusercontent.com/image_collection/image_retrieval/3675508590278326522"])
                 ),
                 Product(
-                    name="18x12 Decorative Wall Tiles",
+                    name="18x12 Wall Tiles",
                     category="Tile",
                     color="Gold",
-                    price=450.0,
+                    price="280 - 600",
                     availability="In Stock",
                     description="Exquisite 18\" x 12\" ceramic wall tiles. Perfect for bathrooms and kitchen backsplashes.",
                     featured=False,
                     dimensions="18\" x 12\"",
                     finish="Polished",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=500&auto=format&fit=crop"])
+                    image_paths=json.dumps(["http://googleusercontent.com/image_collection/image_retrieval/722560681256745097"])
                 ),
                 Product(
-                    name="16x16 Heavy Duty Floor Tiles",
+                    name="16x16 Floor Tiles",
                     category="Tile",
                     color="Grey",
-                    price=550.0,
+                    price="400 - 700",
                     availability="In Stock",
                     description="Rustic 16\" x 16\" non-slip parking and floor tiles. Durable, heavy-traffic resistance.",
                     featured=False,
                     dimensions="16\" x 16\"",
                     finish="Matte",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=500&auto=format&fit=crop"])
+                    image_paths=json.dumps(["http://googleusercontent.com/image_collection/image_retrieval/17000636077708472496"])
                 ),
                 Product(
-                    name="5x2.5 Large Format Slab Tiles",
+                    name="8x2.5 Step Tiles",
                     category="Tile",
-                    color="Blue",
-                    price=2450.0,
+                    color="Brown",
+                    price="2200 - 2800",
                     availability="In Stock",
-                    description="Magnificent large-format 5' x 2.5' vitrified slab tiles. Gives seamless marble-like look.",
+                    description="Magnificent step tiles in 8' x 2.5' dimensions. Perfect for stairs and pathways.",
                     featured=False,
-                    dimensions="5' x 2.5'",
+                    dimensions="8' x 2.5'",
                     finish="Polished",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?w=500&auto=format&fit=crop"])
+                    image_paths=json.dumps(["http://googleusercontent.com/image_collection/image_retrieval/15042865107189446128"])
                 )
             ]
             for p in default_products:
@@ -278,14 +279,14 @@ def get_products():
     min_price = request.args.get('min_price')
     if min_price:
         try:
-            query = query.filter(Product.price >= float(min_price))
+            query = query.filter(cast(Product.price, Float) >= float(min_price))
         except ValueError:
             pass
             
     max_price = request.args.get('max_price')
     if max_price:
         try:
-            query = query.filter(Product.price <= float(max_price))
+            query = query.filter(cast(Product.price, Float) <= float(max_price))
         except ValueError:
             pass
             
@@ -329,10 +330,7 @@ def create_product():
     if not name or not category or not color or not price:
         return jsonify({'error': 'Name, Category, Color, and Price are required fields.'}), 400
         
-    try:
-        price_val = float(price)
-    except ValueError:
-        return jsonify({'error': 'Price must be a number.'}), 400
+    price_val = str(price)
         
     # File handling
     images_list = []
@@ -399,10 +397,7 @@ def update_product(product_id):
     if 'color' in data:
         product.color = data['color']
     if 'price' in data:
-        try:
-            product.price = float(data['price'])
-        except ValueError:
-            return jsonify({'error': 'Price must be a number.'}), 400
+        product.price = str(data['price'])
     if 'availability' in data:
         product.availability = data['availability']
     if 'description' in data:

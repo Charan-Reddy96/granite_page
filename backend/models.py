@@ -11,7 +11,7 @@ class Product(db.Model):
     name = db.Column(db.String(100), nullable=False)
     category = db.Column(db.String(50), nullable=False)  # 'Granite', 'Tile', 'Paint'
     color = db.Column(db.String(50), nullable=False)
-    price = db.Column(db.Float, nullable=False)  # Price per sq.ft for stone, per unit for paint
+    price = db.Column(db.String(50), nullable=False)  # Price per sq.ft or box (supporting ranges)
     availability = db.Column(db.String(50), default='In Stock')  # 'In Stock', 'Low Stock', 'Out of Stock'
     description = db.Column(db.Text, nullable=True)
     featured = db.Column(db.Boolean, default=False)
