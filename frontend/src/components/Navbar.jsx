@@ -31,7 +31,7 @@ export default function Navbar() {
             fontSize: '22px',
             fontWeight: 'bold',
             letterSpacing: '1px',
-            background: 'linear-gradient(135deg, #f3f3f6 30%, var(--accent-gold) 100%)',
+            background: 'linear-gradient(135deg, var(--text-primary) 30%, var(--accent-gold) 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent'
           }}>
@@ -141,7 +141,7 @@ export default function Navbar() {
               textTransform: 'uppercase',
               letterSpacing: '0.05em',
               borderRadius: 'var(--border-radius-sm)',
-              color: 'var(--bg-primary)'
+              color: 'var(--accent-dark)'
             }}
           >
             Book Appointment

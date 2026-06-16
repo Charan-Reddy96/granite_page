@@ -50,7 +50,8 @@ export default function ProductCard({ product }) {
           fontSize: '11px',
           fontWeight: 600,
           textTransform: 'uppercase',
-          letterSpacing: '0.05em'
+          letterSpacing: '0.05em',
+          color: '#FFFFFF'
         }}>
           <Layers size={12} color="var(--accent-gold)" />
           {product.category}

@@ -26,7 +26,7 @@ export default function Footer() {
                 fontSize: '20px',
                 fontWeight: 'bold',
                 letterSpacing: '1px',
-                background: 'linear-gradient(135deg, #f3f3f6 30%, var(--accent-gold) 100%)',
+                background: 'linear-gradient(135deg, var(--text-primary) 30%, var(--accent-gold) 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent'
               }}>

@@ -16,7 +16,16 @@ export default function Home() {
   }, []);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '100px', paddingBottom: '100px' }}>
+    <div style={{ 
+      display: 'flex', 
+      flexDirection: 'column', 
+      gap: '100px', 
+      paddingBottom: '100px',
+      backgroundImage: `url("${import.meta.env.BASE_URL}home_bg_texture.png")`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed'
+    }}>
       
       {/* 1. HERO SECTION */}
       <section style={{
@@ -26,7 +35,7 @@ export default function Home() {
         maxHeight: '900px',
         display: 'flex',
         alignItems: 'center',
-        background: 'linear-gradient(rgba(15, 15, 17, 0.4), rgba(15, 15, 17, 0.85)), url("https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1600&auto=format&fit=crop") no-repeat center center/cover',
+        background: `linear-gradient(rgba(15, 15, 17, 0.4), rgba(15, 15, 17, 0.85)), url("${import.meta.env.BASE_URL}hero_dark_showroom.png") no-repeat center center/cover`,
         borderBottom: '1px solid var(--border-color)'
       }}>
         {/* Visual Overlay Layer for premium depth */}

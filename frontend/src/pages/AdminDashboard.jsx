@@ -199,7 +199,7 @@ export default function AdminDashboard() {
               fontSize: '13px',
               fontWeight: 600,
               backgroundColor: activeTab === 'products' ? 'var(--accent-gold)' : 'transparent',
-              color: activeTab === 'products' ? 'var(--bg-primary)' : 'var(--text-secondary)',
+              color: activeTab === 'products' ? 'var(--accent-dark)' : 'var(--text-secondary)',
               transition: 'all var(--transition-normal)'
             }}
           >
@@ -215,7 +215,7 @@ export default function AdminDashboard() {
               fontSize: '13px',
               fontWeight: 600,
               backgroundColor: activeTab === 'inquiries' ? 'var(--accent-gold)' : 'transparent',
-              color: activeTab === 'inquiries' ? 'var(--bg-primary)' : 'var(--text-secondary)',
+              color: activeTab === 'inquiries' ? 'var(--accent-dark)' : 'var(--text-secondary)',
               transition: 'all var(--transition-normal)'
             }}
           >
