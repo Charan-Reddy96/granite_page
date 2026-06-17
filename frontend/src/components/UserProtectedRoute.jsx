@@ -21,9 +21,9 @@ export default function UserProtectedRoute({ children }) {
     );
   }
 
-  // If no user is authenticated, redirect to Login page
+  // If no user is authenticated, redirect to Signup page firstly
   if (!user) {
-    return <Navigate to="/admin/login" replace />;
+    return <Navigate to="/signup" replace />;
   }
 
   return children;

@@ -13,6 +13,7 @@ import Contact from './pages/Contact';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import UserSignup from './pages/UserSignup';
+import UserLogin from './pages/UserLogin';
 
 export default function App() {
   return (
@@ -33,6 +34,7 @@ export default function App() {
             <Routes>
               {/* Public Unprotected Sign Up / Login */}
               <Route path="/signup" element={<UserSignup />} />
+              <Route path="/login" element={<UserLogin />} />
               <Route path="/admin/login" element={<AdminLogin />} />
 
               {/* Protected Client Pages */}

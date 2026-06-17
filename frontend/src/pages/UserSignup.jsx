@@ -334,7 +334,7 @@ export default function UserSignup() {
         }}>
           Already have an account?{' '}
           <Link 
-            to="/admin/login" 
+            to="/login" 
             style={{ 
               color: 'var(--accent-gold)', 
               textDecoration: 'none', 

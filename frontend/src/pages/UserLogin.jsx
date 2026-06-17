@@ -1,27 +1,21 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Lock, LogIn, AlertCircle } from 'lucide-react';
+import { LogIn, AlertCircle } from 'lucide-react';
 
-export default function AdminLogin() {
+export default function UserLogin() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [deviceSignature, setDeviceSignature] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { login, user, isAdmin } = useAuth();
+  const { login, user } = useAuth();
   const navigate = useNavigate();
 
-  // If already logged in, redirect appropriately
+  // If already logged in, redirect to home
   if (user) {
-    if (isAdmin) {
-      navigate('/admin', { replace: true });
-    } else {
-      navigate('/', { replace: true });
-    }
+    navigate('/', { replace: true });
     return null;
   }
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,10 +23,11 @@ export default function AdminLogin() {
     setIsLoading(true);
 
     try {
-      await login(username, password, deviceSignature);
-      navigate('/admin', { replace: true });
+      // Pass empty string for device signature since standard users don't need one
+      await login(username, password, '');
+      navigate('/', { replace: true });
     } catch (err) {
-      setError(err.message || 'Invalid credentials or unauthorized device.');
+      setError(err.message || 'Invalid username or password.');
     } finally {
       setIsLoading(false);
     }
@@ -67,7 +62,7 @@ export default function AdminLogin() {
             justifyContent: 'center',
             margin: '0 auto 16px auto'
           }}>
-            <Lock size={24} color="var(--accent-gold)" />
+            <LogIn size={24} color="var(--accent-gold)" />
           </div>
           <h1 style={{
             fontFamily: 'var(--font-serif)',
@@ -75,13 +70,13 @@ export default function AdminLogin() {
             fontWeight: 700,
             marginBottom: '8px'
           }}>
-            Admin Access
+            User Sign In
           </h1>
           <p style={{
             color: 'var(--text-secondary)',
             fontSize: '14px'
           }}>
-            Sign in to access the store administration panel.
+            Sign in to your account to browse slabs and request inquiries.
           </p>
         </div>
 
@@ -111,7 +106,7 @@ export default function AdminLogin() {
             <input
               type="text"
               className="form-control"
-              placeholder="Enter admin username"
+              placeholder="Enter your username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
@@ -125,26 +120,11 @@ export default function AdminLogin() {
             <input
               type="password"
               className="form-control"
-              placeholder="Enter password"
+              placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
               autoComplete="current-password"
-            />
-          </div>
-
-          <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span>Device Authorization Key</span>
-              <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Admin signature key</span>
-            </label>
-            <input
-              type="password"
-              className="form-control"
-              placeholder="e.g. gs_dev_device_sig_2026"
-              value={deviceSignature}
-              onChange={(e) => setDeviceSignature(e.target.value)}
-              required
             />
           </div>
 
@@ -172,19 +152,30 @@ export default function AdminLogin() {
           </button>
         </form>
 
-        <p style={{
-          textAlign: 'center',
-          fontSize: '12px',
-          color: 'var(--text-muted)',
-          marginTop: '24px'
+        {/* Redirect Footer Links */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '12px',
+          marginTop: '24px',
+          fontSize: '13px'
         }}>
-          Not an admin?{' '}
-          <Link to="/login" style={{ color: 'var(--accent-gold)', textDecoration: 'none', fontWeight: 600 }}>
-            User Login
-          </Link>
-        </p>
+          <p style={{ margin: 0, color: 'var(--text-secondary)' }}>
+            Don't have an account?{' '}
+            <Link to="/signup" style={{ color: 'var(--accent-gold)', textDecoration: 'none', fontWeight: 600 }}>
+              Register here
+            </Link>
+          </p>
+          <p style={{ margin: 0 }}>
+            <Link to="/admin/login" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}
+              onMouseOver={(e) => e.target.style.color = 'var(--accent-gold)'}
+              onMouseOut={(e) => e.target.style.color = 'var(--text-muted)'}>
+              Are you an Admin? Sign in here
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
 }
-
