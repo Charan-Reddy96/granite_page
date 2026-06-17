@@ -25,7 +25,7 @@ export default function ProductCard({ product }) {
   return (
     <div className="card" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       {/* Product Image Area */}
-      <div className="img-container" style={{ height: '220px' }}>
+      <div className="img-container" style={{ height: 'var(--card-image-height, 220px)' }}>
         <img 
           src={getCategoryImage(product)} 
           alt={product.name} 

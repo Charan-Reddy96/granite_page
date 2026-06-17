@@ -30,7 +30,7 @@ export default function Home() {
       {/* 1. HERO SECTION */}
       <section style={{
         position: 'relative',
-        minHeight: 'clamp(480px, 85vh, 900px)',
+        minHeight: 'var(--hero-min-height, clamp(480px, 85vh, 900px))',
         display: 'flex',
         alignItems: 'center',
         background: `linear-gradient(rgba(15, 15, 17, 0.4), rgba(15, 15, 17, 0.85)), url("${import.meta.env.BASE_URL}hero_dark_showroom.png") no-repeat center center/cover`,
@@ -56,7 +56,7 @@ export default function Home() {
           gap: '24px'
         }}>
           <h1 style={{
-            fontSize: 'clamp(44px, 7vw, 76px)',
+            fontSize: 'var(--hero-title-size, clamp(44px, 7vw, 76px))',
             lineHeight: '1.1',
             fontWeight: '800',
             maxWidth: '900px',
@@ -74,7 +74,7 @@ export default function Home() {
           </h1>
 
           <p className="subtitle" style={{ 
-            fontSize: 'clamp(15px, 2vw, 20px)', 
+            fontSize: 'var(--hero-subtitle-size, clamp(15px, 2vw, 20px))', 
             maxWidth: '650px', 
             color: 'var(--text-primary)',
             fontWeight: '500',
@@ -112,7 +112,7 @@ export default function Home() {
           gap: '20px'
         }}>
           <div>
-            <h2 className="serif-title" style={{ fontSize: '32px', marginTop: '8px' }}>
+            <h2 className="section-title serif-title" style={{ marginTop: '8px' }}>
               Featured Collections
             </h2>
           </div>
@@ -149,14 +149,7 @@ export default function Home() {
 
       {/* 4. PRIVATE CONSULTATION / SHOWROOM BANNER */}
       <section className="container">
-        <div style={{
-          background: 'linear-gradient(135deg, var(--bg-tertiary) 0%, rgba(197, 168, 128, 0.08) 100%)',
-          border: '1px solid var(--accent-gold)',
-          borderRadius: 'var(--border-radius-lg)',
-          padding: '60px 50px',
-          position: 'relative',
-          overflow: 'hidden'
-        }}>
+        <div className="consultation-banner">
           <div style={{
             position: 'absolute',
             top: '-20px',
@@ -182,7 +175,7 @@ export default function Home() {
               }}>
                 Private Consultation
               </span>
-              <h2 className="serif-title" style={{ fontSize: '32px', marginTop: '16px', marginBottom: '12px', fontWeight: '800' }}>
+              <h2 className="section-title serif-title" style={{ marginTop: '16px', marginBottom: '12px', fontWeight: '800' }}>
                 Private Showroom & Stone Selection
               </h2>
               <p style={{ color: 'var(--text-secondary)', fontSize: '15px', lineHeight: '1.7' }}>

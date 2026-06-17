@@ -3,7 +3,7 @@ import { Award, Compass, ShieldCheck, MapPin } from 'lucide-react';
 
 export default function About() {
   return (
-    <div style={{ padding: '60px 0 100px 0', display: 'flex', flexDirection: 'column', gap: '80px' }}>
+    <div style={{ padding: 'var(--section-padding-vertical, 60px) 0 var(--section-gap, 100px) 0', display: 'flex', flexDirection: 'column', gap: 'var(--section-gap, 80px)' }}>
 
       {/* Introduction Header */}
       <section className="container text-center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
@@ -16,7 +16,7 @@ export default function About() {
         }}>
           Discover G S Granites & Tiles
         </span>
-        <h1 className="serif-title" style={{ fontSize: '42px', maxWidth: '800px', lineHeight: '1.2' }}>
+        <h1 className="serif-title" style={{ fontSize: 'var(--page-title-size, 42px)', maxWidth: '800px', lineHeight: '1.2' }}>
           Crafting the Foundation of Exquisite Architecture
         </h1>
         <p className="subtitle" style={{ fontSize: '16px', margin: '0 auto' }}>
@@ -28,7 +28,7 @@ export default function About() {
       <section className="container">
         <div className="about-story-grid">
           <div>
-            <h2 className="serif-title" style={{ fontSize: '28px', marginBottom: '20px' }}>
+            <h2 className="serif-title" style={{ fontSize: 'var(--section-title-size, 28px)', marginBottom: '20px' }}>
               Our Story & Heritage
             </h2>
             <div style={{ color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '15px', fontSize: '15px', lineHeight: '1.7' }}>
@@ -47,7 +47,7 @@ export default function About() {
             position: 'relative',
             borderRadius: 'var(--border-radius-lg)',
             overflow: 'hidden',
-            height: '400px',
+            height: 'var(--about-img-height, 400px)',
             border: '1px solid var(--border-color)'
           }}>
             <img
@@ -60,7 +60,7 @@ export default function About() {
       </section>
 
       {/* Mission & Vision */}
-      <section style={{ backgroundColor: 'var(--bg-secondary)', borderTop: '1px solid var(--border-color)', borderBottom: '1px solid var(--border-color)', padding: '80px 0' }}>
+      <section style={{ backgroundColor: 'var(--bg-secondary)', borderTop: '1px solid var(--border-color)', borderBottom: '1px solid var(--border-color)', padding: 'var(--banner-padding-vertical, 80px) 0' }}>
         <div className="container">
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '40px' }}>
 
