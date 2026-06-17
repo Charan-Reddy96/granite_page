@@ -108,62 +108,66 @@ export default function Navbar() {
           <div
             className={`nav-menu ${isOpen ? 'active' : ''}`}
           >
-            <NavLink
-              to="/"
-              onClick={closeMenu}
-              style={({ isActive }) => ({
-                fontSize: '14px',
-                fontWeight: '600',
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                color: isActive ? 'var(--accent-gold)' : 'var(--text-secondary)',
-                transition: 'color var(--transition-fast)'
-              })}
-            >
-              Home
-            </NavLink>
-            <NavLink
-              to="/catalog"
-              onClick={closeMenu}
-              style={({ isActive }) => ({
-                fontSize: '14px',
-                fontWeight: '600',
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                color: isActive ? 'var(--accent-gold)' : 'var(--text-secondary)',
-                transition: 'color var(--transition-fast)'
-              })}
-            >
-              Slabs
-            </NavLink>
-            <NavLink
-              to="/about"
-              onClick={closeMenu}
-              style={({ isActive }) => ({
-                fontSize: '14px',
-                fontWeight: '600',
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                color: isActive ? 'var(--accent-gold)' : 'var(--text-secondary)',
-                transition: 'color var(--transition-fast)'
-              })}
-            >
-              About Us
-            </NavLink>
-            <NavLink
-              to="/contact"
-              onClick={closeMenu}
-              style={({ isActive }) => ({
-                fontSize: '14px',
-                fontWeight: '600',
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                color: isActive ? 'var(--accent-gold)' : 'var(--text-secondary)',
-                transition: 'color var(--transition-fast)'
-              })}
-            >
-              Contact Us
-            </NavLink>
+            {user && (
+              <>
+                <NavLink
+                  to="/"
+                  onClick={closeMenu}
+                  style={({ isActive }) => ({
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    color: isActive ? 'var(--accent-gold)' : 'var(--text-secondary)',
+                    transition: 'color var(--transition-fast)'
+                  })}
+                >
+                  Home
+                </NavLink>
+                <NavLink
+                  to="/catalog"
+                  onClick={closeMenu}
+                  style={({ isActive }) => ({
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    color: isActive ? 'var(--accent-gold)' : 'var(--text-secondary)',
+                    transition: 'color var(--transition-fast)'
+                  })}
+                >
+                  Slabs
+                </NavLink>
+                <NavLink
+                  to="/about"
+                  onClick={closeMenu}
+                  style={({ isActive }) => ({
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    color: isActive ? 'var(--accent-gold)' : 'var(--text-secondary)',
+                    transition: 'color var(--transition-fast)'
+                  })}
+                >
+                  About Us
+                </NavLink>
+                <NavLink
+                  to="/contact"
+                  onClick={closeMenu}
+                  style={({ isActive }) => ({
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    color: isActive ? 'var(--accent-gold)' : 'var(--text-secondary)',
+                    transition: 'color var(--transition-fast)'
+                  })}
+                >
+                  Contact Us
+                </NavLink>
+              </>
+            )}
 
             {user ? (
               <div className="nav-user-badge" style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -175,7 +179,7 @@ export default function Navbar() {
                       style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--border-color)' }}
                     />
                   ) : (
-                    <div style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: 'var(--bg-tertiary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 'bold', color: 'var(--text-secondary)' }}>
+                    <div style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: 'var(--bg-tertiary)', display: 'flex', alignItems: 'center', justifySelf: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 'bold', color: 'var(--text-secondary)' }}>
                       {user.username[0].toUpperCase()}
                     </div>
                   )}
@@ -259,22 +263,24 @@ export default function Navbar() {
               </div>
             )}
 
-            <NavLink
-              to="/contact"
-              onClick={closeMenu}
-              className="btn btn-primary"
-              style={{
-                padding: '10px 20px',
-                fontSize: '13px',
-                fontWeight: '700',
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                borderRadius: 'var(--border-radius-sm)',
-                color: 'var(--accent-dark)'
-              }}
-            >
-              Book Appointment
-            </NavLink>
+            {user && (
+              <NavLink
+                to="/contact"
+                onClick={closeMenu}
+                className="btn btn-primary"
+                style={{
+                  padding: '10px 20px',
+                  fontSize: '13px',
+                  fontWeight: '700',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  borderRadius: 'var(--border-radius-sm)',
+                  color: 'var(--accent-dark)'
+                }}
+              >
+                Book Appointment
+              </NavLink>
+            )}
           </div>
         </div>
       </nav>
