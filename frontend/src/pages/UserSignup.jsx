@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { UserPlus, Image, AlertCircle, Eye, EyeOff, CheckCircle } from 'lucide-react';
+import { UserPlus, AlertCircle, Eye, EyeOff, CheckCircle } from 'lucide-react';
 
 export default function UserSignup() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [profileImage, setProfileImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   
   const [error, setError] = useState('');
@@ -24,17 +22,7 @@ export default function UserSignup() {
     return null;
   }
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        setError('Image size must be less than 2MB');
-        return;
-      }
-      setProfileImage(file);
-      setImagePreview(URL.createObjectURL(file));
-    }
-  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -61,9 +49,7 @@ export default function UserSignup() {
       const formData = new FormData();
       formData.append('username', username);
       formData.append('password', password);
-      if (profileImage) {
-        formData.append('profile_image', profileImage);
-      }
+
 
       await register(formData);
       setSuccess(true);
@@ -168,72 +154,7 @@ export default function UserSignup() {
         {!success && (
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             
-            {/* Profile Photo Upload */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
-              <span className="form-label" style={{ alignSelf: 'flex-start' }}>Profile Picture (Optional)</span>
-              
-              <div style={{ position: 'relative', width: '90px', height: '90px' }}>
-                {imagePreview ? (
-                  <img 
-                    src={imagePreview} 
-                    alt="Preview" 
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      borderRadius: '50%',
-                      objectFit: 'cover',
-                      border: '2px solid var(--accent-gold)'
-                    }}
-                  />
-                ) : (
-                  <div style={{
-                    width: '100%',
-                    height: '100%',
-                    borderRadius: '50%',
-                    backgroundColor: 'var(--bg-tertiary)',
-                    border: '1px dashed var(--border-color)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'var(--text-muted)'
-                  }}>
-                    <Image size={28} />
-                  </div>
-                )}
-                
-                <label 
-                  htmlFor="profile-upload" 
-                  style={{
-                    position: 'absolute',
-                    bottom: 0,
-                    right: 0,
-                    backgroundColor: 'var(--accent-gold)',
-                    color: 'var(--bg-primary)',
-                    width: '28px',
-                    height: '28px',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    boxShadow: 'var(--shadow-sm)',
-                    border: '2px solid var(--bg-secondary)'
-                  }}
-                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--accent-gold-hover)'}
-                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'var(--accent-gold)'}
-                >
-                  <span style={{ fontSize: '16px', fontWeight: 'bold', lineHeight: 1 }}>+</span>
-                </label>
-                <input 
-                  type="file" 
-                  id="profile-upload" 
-                  accept="image/*" 
-                  onChange={handleImageChange} 
-                  style={{ display: 'none' }}
-                />
-              </div>
-              <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Max image size: 2MB (PNG, JPG, WEBP)</span>
-            </div>
+
 
             {/* Username Input */}
             <div className="form-group" style={{ marginBottom: 0 }}>
