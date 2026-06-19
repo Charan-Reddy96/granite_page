@@ -17,8 +17,13 @@ export default function UserSignup() {
   const navigate = useNavigate();
 
   // If already logged in, redirect to home
+  React.useEffect(() => {
+    if (user) {
+      navigate('/', { replace: true });
+    }
+  }, [user, navigate]);
+
   if (user) {
-    navigate('/', { replace: true });
     return null;
   }
 

@@ -56,7 +56,7 @@ export default function Home() {
           gap: '24px'
         }}>
           <h1 style={{
-            fontSize: 'var(--hero-title-size, clamp(44px, 7vw, 76px))',
+            fontSize: 'clamp(36px, 5.5vw, 60px)',
             lineHeight: '1.1',
             fontWeight: '800',
             maxWidth: '900px',
@@ -74,7 +74,7 @@ export default function Home() {
           </h1>
 
           <p className="subtitle" style={{ 
-            fontSize: 'var(--hero-subtitle-size, clamp(15px, 2vw, 20px))', 
+            fontSize: 'clamp(14px, 1.8vw, 17px)', 
             maxWidth: '650px', 
             color: 'var(--text-primary)',
             fontWeight: '500',
@@ -85,13 +85,13 @@ export default function Home() {
           </p>
 
           <div className="hero-buttons">
-            <Link to="/catalog" className="btn btn-primary" style={{ padding: '14px 28px', fontSize: '15px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', borderRadius: 'var(--border-radius-sm)' }}>
+            <Link to="/catalog" className="btn btn-primary" style={{ padding: '12px 24px', fontSize: '13.5px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', borderRadius: 'var(--border-radius-sm)' }}>
               Browse Natural Stone Slabs
             </Link>
             <button 
               onClick={() => setIsInquiryOpen(true)} 
               className="btn btn-secondary" 
-              style={{ padding: '14px 28px', fontSize: '15px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', borderRadius: 'var(--border-radius-sm)', backdropFilter: 'blur(8px)' }}
+              style={{ padding: '12px 24px', fontSize: '13.5px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', borderRadius: 'var(--border-radius-sm)', backdropFilter: 'blur(8px)' }}
             >
               Book Appointment
             </button>
@@ -112,7 +112,7 @@ export default function Home() {
           gap: '20px'
         }}>
           <div>
-            <h2 className="section-title serif-title" style={{ marginTop: '8px' }}>
+            <h2 className="section-title serif-title" style={{ marginTop: '8px', fontSize: 'clamp(24px, 3.5vw, 30px)' }}>
               Featured Collections
             </h2>
           </div>
@@ -121,7 +121,7 @@ export default function Home() {
             alignItems: 'center',
             gap: '8px',
             color: 'var(--accent-gold)',
-            fontSize: '14px',
+            fontSize: '13px',
             fontWeight: 500
           }}>
             View Complete Catalog <ArrowRight size={16} />
@@ -168,17 +168,17 @@ export default function Home() {
                 color: 'var(--bg-primary)',
                 padding: '4px 10px',
                 borderRadius: 'var(--border-radius-sm)',
-                fontSize: '11px',
+                fontSize: '10px',
                 fontWeight: 700,
                 textTransform: 'uppercase',
                 letterSpacing: '0.08em'
               }}>
                 Private Consultation
               </span>
-              <h2 className="section-title serif-title" style={{ marginTop: '16px', marginBottom: '12px', fontWeight: '800' }}>
+              <h2 className="section-title serif-title" style={{ marginTop: '16px', marginBottom: '12px', fontWeight: '800', fontSize: 'clamp(24px, 3.5vw, 30px)' }}>
                 Private Showroom & Stone Selection
               </h2>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '15px', lineHeight: '1.7' }}>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '14px', lineHeight: '1.6' }}>
                 Book a private appointment at our showroom. Our stone consultants will guide you through our exclusive range of natural marble, granite, quartzite, and tiles to perfectly elevate your residential or commercial architectural vision.
               </p>
             </div>
@@ -186,7 +186,7 @@ export default function Home() {
               <button 
                 onClick={() => setIsInquiryOpen(true)}
                 className="btn btn-primary"
-                style={{ padding: '14px 32px', fontSize: '14px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', borderRadius: 'var(--border-radius-sm)' }}
+                style={{ padding: '12px 26px', fontSize: '13px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', borderRadius: 'var(--border-radius-sm)' }}
               >
                 Book Consultation <ArrowRight size={16} />
               </button>

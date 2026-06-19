@@ -13,12 +13,17 @@ export default function AdminLogin() {
   const navigate = useNavigate();
 
   // If already logged in, redirect appropriately
-  if (user) {
-    if (isAdmin) {
-      navigate('/admin', { replace: true });
-    } else {
-      navigate('/', { replace: true });
+  React.useEffect(() => {
+    if (user) {
+      if (isAdmin) {
+        navigate('/admin', { replace: true });
+      } else {
+        navigate('/', { replace: true });
+      }
     }
+  }, [user, isAdmin, navigate]);
+
+  if (user) {
     return null;
   }
 

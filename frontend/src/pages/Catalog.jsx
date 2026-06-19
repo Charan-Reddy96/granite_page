@@ -1,15 +1,35 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Search, Filter, RotateCcw, SlidersHorizontal } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { api } from '../services/api';
 
 export default function Catalog() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const categoryParam = searchParams.get('category') || '';
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   
   // Filter States
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState(''); // '', 'Granite', 'Tile'
+  const [selectedCategory, setSelectedCategory] = useState(categoryParam); // '', 'Granite', 'Tile'
+
+  // Sync selectedCategory when categoryParam changes
+  useEffect(() => {
+    if (categoryParam !== selectedCategory) {
+      setSelectedCategory(categoryParam);
+    }
+  }, [categoryParam]);
+
+  const handleCategoryChange = (val) => {
+    setSelectedCategory(val);
+    if (val) {
+      setSearchParams({ category: val });
+    } else {
+      setSearchParams({});
+    }
+  };
   const [selectedColor, setSelectedColor] = useState('');
   const [selectedFinish, setSelectedFinish] = useState('');
   const [minPrice, setMinPrice] = useState('');
@@ -59,6 +79,7 @@ export default function Catalog() {
     setSelectedFinish('');
     setMinPrice('');
     setMaxPrice('');
+    setSearchParams({});
   };
 
   return (
@@ -117,7 +138,7 @@ export default function Catalog() {
             <select 
               className="form-control" 
               value={selectedCategory} 
-              onChange={(e) => setSelectedCategory(e.target.value)}
+              onChange={(e) => handleCategoryChange(e.target.value)}
             >
               <option value="">All Categories</option>
               <option value="Granite">Granite</option>

@@ -4,6 +4,23 @@
 const isGitHubPages = window.location.hostname.includes('github.io');
 const API_BASE = ''; // proxied via Vite config locally
 
+// Helper for fetch with a timeout
+async function fetchWithTimeout(url, options = {}, timeout = 5000) {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+  try {
+    const res = await fetch(url, {
+      ...options,
+      signal: controller.signal
+    });
+    clearTimeout(id);
+    return res;
+  } catch (e) {
+    clearTimeout(id);
+    throw e;
+  }
+}
+
 // Helper to get auth headers for admin API calls
 const getAuthHeaders = () => {
   const token = localStorage.getItem('gs_auth_token');
@@ -28,7 +45,7 @@ const defaultSeedProducts = [
     thickness: "3cm",
     dimensions: "120\" x 70\"",
     finish: "Leathered",
-    images: ["https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=500&auto=format&fit=crop"]
+    images: ["https://images.unsplash.com/photo-1615529182904-14819c35db37?w=800&auto=format&fit=crop"]
   },
   {
     id: 2,
@@ -42,7 +59,7 @@ const defaultSeedProducts = [
     thickness: "2cm",
     dimensions: "118\" x 70\"",
     finish: "Polished",
-    images: ["http://googleusercontent.com/image_collection/image_retrieval/11766463299363602454"]
+    images: ["https://images.unsplash.com/photo-puHt0sQBucA?w=800&auto=format&fit=crop"]
   },
   {
     id: 3,
@@ -56,7 +73,7 @@ const defaultSeedProducts = [
     thickness: "3cm",
     dimensions: "120\" x 72\"",
     finish: "Honed",
-    images: ["http://googleusercontent.com/image_collection/image_retrieval/6038925374339461329"]
+    images: ["https://images.unsplash.com/photo-1605281317010-fe5ffe798156?w=800&auto=format&fit=crop"]
   },
   {
     id: 4,
@@ -70,7 +87,7 @@ const defaultSeedProducts = [
     thickness: "3cm",
     dimensions: "126\" x 74\"",
     finish: "Polished",
-    images: ["http://googleusercontent.com/image_collection/image_retrieval/7106706524840432896"]
+    images: ["https://images.unsplash.com/photo-1618220179428-22790b461013?w=800&auto=format&fit=crop"]
   },
   {
     id: 5,
@@ -84,7 +101,7 @@ const defaultSeedProducts = [
     thickness: "2cm",
     dimensions: "115\" x 68\"",
     finish: "Polished",
-    images: ["http://googleusercontent.com/image_collection/image_retrieval/10407630008814658093"]
+    images: ["https://images.unsplash.com/photo-1617806118233-18e1db207f62?w=800&auto=format&fit=crop"]
   },
   {
     id: 6,
@@ -98,7 +115,7 @@ const defaultSeedProducts = [
     thickness: "2cm",
     dimensions: "115\" x 68\"",
     finish: "Polished",
-    images: ["http://googleusercontent.com/image_collection/image_retrieval/11249034005412611704"]
+    images: ["https://images.unsplash.com/photo-cAFiFHG66yk?w=800&auto=format&fit=crop"]
   },
   {
     id: 7,
@@ -112,7 +129,7 @@ const defaultSeedProducts = [
     thickness: "3cm",
     dimensions: "120\" x 70\"",
     finish: "Leathered",
-    images: ["http://googleusercontent.com/image_collection/image_retrieval/13713677982778485788"]
+    images: ["https://images.unsplash.com/photo-1599696838247-f0fd90093a8b?w=800&auto=format&fit=crop"]
   },
   {
     id: 8,
@@ -126,7 +143,7 @@ const defaultSeedProducts = [
     thickness: "2cm",
     dimensions: "122\" x 72\"",
     finish: "Polished",
-    images: ["http://googleusercontent.com/image_collection/image_retrieval/5907520677096429330"]
+    images: ["https://images.unsplash.com/photo-li0iC0rjvvg?w=800&auto=format&fit=crop"]
   },
   {
     id: 9,
@@ -140,7 +157,7 @@ const defaultSeedProducts = [
     thickness: "3cm",
     dimensions: "120\" x 70\"",
     finish: "Honed",
-    images: ["http://googleusercontent.com/image_collection/image_retrieval/18160955284143415760"]
+    images: ["https://images.unsplash.com/photo-ooQvQa6p9Vs?w=800&auto=format&fit=crop"]
   },
   {
     id: 10,
@@ -150,11 +167,11 @@ const defaultSeedProducts = [
     price: "120 - 150",
     availability: "In Stock",
     description: "Premium steel black granite with textured metallic highlights. Exquisite durability and sleek appearance.",
-    featured: false,
+    featured: true,
     thickness: "2cm",
     dimensions: "120\" x 70\"",
     finish: "Polished",
-    images: ["http://googleusercontent.com/image_collection/image_retrieval/1800106829975532889"]
+    images: ["https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&auto=format&fit=crop"]
   },
   {
     id: 11,
@@ -167,7 +184,7 @@ const defaultSeedProducts = [
     featured: true,
     dimensions: "4' x 2'",
     finish: "Polished",
-    images: ["http://googleusercontent.com/image_collection/image_retrieval/792531940683038687"]
+    images: ["https://images.unsplash.com/photo-vKv9lgz0pmU?w=800&auto=format&fit=crop"]
   },
   {
     id: 12,
@@ -180,7 +197,7 @@ const defaultSeedProducts = [
     featured: false,
     dimensions: "2' x 2'",
     finish: "Matte",
-    images: ["http://googleusercontent.com/image_collection/image_retrieval/3675508590278326522"]
+    images: ["https://images.unsplash.com/photo-ZVMlab81PFY?w=800&auto=format&fit=crop"]
   },
   {
     id: 13,
@@ -193,7 +210,7 @@ const defaultSeedProducts = [
     featured: false,
     dimensions: "18\" x 12\"",
     finish: "Polished",
-    images: ["http://googleusercontent.com/image_collection/image_retrieval/722560681256745097"]
+    images: ["https://images.unsplash.com/photo-1523821741446-edb2b68bb7a0?w=800&auto=format&fit=crop"]
   },
   {
     id: 14,
@@ -206,7 +223,7 @@ const defaultSeedProducts = [
     featured: false,
     dimensions: "16\" x 16\"",
     finish: "Matte",
-    images: ["http://googleusercontent.com/image_collection/image_retrieval/17000636077708472496"]
+    images: ["https://images.unsplash.com/photo-nCkFRH2E9c0?w=800&auto=format&fit=crop"]
   },
   {
     id: 15,
@@ -219,7 +236,7 @@ const defaultSeedProducts = [
     featured: false,
     dimensions: "8' x 2.5'",
     finish: "Polished",
-    images: ["http://googleusercontent.com/image_collection/image_retrieval/15042865107189446128"]
+    images: ["https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=800&auto=format&fit=crop"]
   }
 ];
 
@@ -231,7 +248,11 @@ const getLocalProducts = () => {
     return defaultSeedProducts;
   }
   let parsed = JSON.parse(p);
-  if (!parsed.some(item => item.name === 'Steel Black Granite')) {
+  const featuredCount = parsed.filter(item => item.featured).length;
+  // Clear and re-seed if the image for id: 2 is not the new black granite close-up texture
+  const blackGranite = parsed.find(item => item.id === 2);
+  const hasNewImages = blackGranite && blackGranite.images && blackGranite.images[0] && blackGranite.images[0].includes('photo-puHt0sQBucA');
+  if (!parsed.some(item => item.name === 'Steel Black Granite') || featuredCount < 4 || !hasNewImages) {
     localStorage.setItem('aura_products', JSON.stringify(defaultSeedProducts));
     return defaultSeedProducts;
   }
@@ -273,10 +294,7 @@ const setLocalInquiries = (inquiries) => {
 async function checkServer() {
   if (isGitHubPages) return false;
   try {
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), 1200); // 1.2s timeout
-    const res = await fetch(`${API_BASE}/api/products?featured=true`, { signal: controller.signal });
-    clearTimeout(id);
+    const res = await fetchWithTimeout(`${API_BASE}/api/products?featured=true`, {}, 1200);
     return res.ok;
   } catch (e) {
     return false;
@@ -292,7 +310,7 @@ export const api = {
       if (deviceSignature) {
         headers['X-Device-Signature'] = deviceSignature;
       }
-      const res = await fetch(`${API_BASE}/api/auth/login`, {
+      const res = await fetchWithTimeout(`${API_BASE}/api/auth/login`, {
         method: 'POST',
         headers,
         body: JSON.stringify({ username, password, deviceSignature })
@@ -344,7 +362,7 @@ export const api = {
       if (signature) {
         headers['X-Device-Signature'] = signature;
       }
-      const res = await fetch(`${API_BASE}/api/auth/me`, { headers });
+      const res = await fetchWithTimeout(`${API_BASE}/api/auth/me`, { headers });
       if (!res.ok) throw new Error('Not authenticated');
       return res.json();
     } else {
@@ -376,7 +394,7 @@ export const api = {
   register: async (formData) => {
     const isOnline = await checkServer();
     if (isOnline) {
-      const res = await fetch(`${API_BASE}/api/auth/register`, {
+      const res = await fetchWithTimeout(`${API_BASE}/api/auth/register`, {
         method: 'POST',
         body: formData // Form data including files
       });
@@ -437,7 +455,7 @@ export const api = {
       if (filters.max_price) queryParams.append('max_price', filters.max_price);
       if (filters.featured) queryParams.append('featured', 'true');
       
-      const res = await fetch(`${API_BASE}/api/products?${queryParams.toString()}`);
+      const res = await fetchWithTimeout(`${API_BASE}/api/products?${queryParams.toString()}`);
       return res.json();
     } else {
       // Mock Filtering
@@ -477,12 +495,12 @@ export const api = {
   getProductById: async (id) => {
     const isOnline = await checkServer();
     if (isOnline) {
-      const res = await fetch(`${API_BASE}/api/products/${id}`);
+      const res = await fetchWithTimeout(`${API_BASE}/api/products/${id}`);
       if (!res.ok) throw new Error("Product not found");
       return res.json();
     } else {
       const products = getLocalProducts();
-      const product = products.find(p => p.id === parseInt(id));
+      const product = products.find(p => p.id.toString() === id.toString());
       if (!product) throw new Error("Product not found");
       return product;
     }
@@ -491,7 +509,7 @@ export const api = {
   createProduct: async (formData) => {
     const isOnline = await checkServer();
     if (isOnline) {
-      const res = await fetch(`${API_BASE}/api/products`, {
+      const res = await fetchWithTimeout(`${API_BASE}/api/products`, {
         method: 'POST',
         headers: { ...getAuthHeaders() },
         body: formData // Form data with file
@@ -542,7 +560,7 @@ export const api = {
   updateProduct: async (id, formData) => {
     const isOnline = await checkServer();
     if (isOnline) {
-      const res = await fetch(`${API_BASE}/api/products/${id}`, {
+      const res = await fetchWithTimeout(`${API_BASE}/api/products/${id}`, {
         method: 'PUT',
         headers: { ...getAuthHeaders() },
         body: formData
@@ -593,15 +611,18 @@ export const api = {
   deleteProduct: async (id) => {
     const isOnline = await checkServer();
     if (isOnline) {
-      const res = await fetch(`${API_BASE}/api/products/${id}`, {
+      const res = await fetchWithTimeout(`${API_BASE}/api/products/${id}`, {
         method: 'DELETE',
         headers: { ...getAuthHeaders() }
       });
       return res.json();
     } else {
       let products = getLocalProducts();
-      products = products.filter(p => p.id !== parseInt(id));
-      setLocalProducts(products);
+      const index = products.findIndex(p => p.id.toString() === id.toString());
+      if (index !== -1) {
+        products.splice(index, 1);
+        setLocalProducts(products);
+      }
       return { message: "Product deleted successfully" };
     }
   },
@@ -610,7 +631,7 @@ export const api = {
   submitInquiry: async (inquiryData) => {
     const isOnline = await checkServer();
     if (isOnline) {
-      const res = await fetch(`${API_BASE}/api/inquiries`, {
+      const res = await fetchWithTimeout(`${API_BASE}/api/inquiries`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(inquiryData)
@@ -654,7 +675,7 @@ export const api = {
   getInquiries: async () => {
     const isOnline = await checkServer();
     if (isOnline) {
-      const res = await fetch(`${API_BASE}/api/inquiries`, {
+      const res = await fetchWithTimeout(`${API_BASE}/api/inquiries`, {
         headers: { ...getAuthHeaders() }
       });
       return res.json();
@@ -666,7 +687,7 @@ export const api = {
   updateInquiryStatus: async (id, status) => {
     const isOnline = await checkServer();
     if (isOnline) {
-      const res = await fetch(`${API_BASE}/api/inquiries/${id}`, {
+      const res = await fetchWithTimeout(`${API_BASE}/api/inquiries/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ status })
@@ -685,14 +706,14 @@ export const api = {
   deleteInquiry: async (id) => {
     const isOnline = await checkServer();
     if (isOnline) {
-      const res = await fetch(`${API_BASE}/api/inquiries/${id}`, {
+      const res = await fetchWithTimeout(`${API_BASE}/api/inquiries/${id}`, {
         method: 'DELETE',
         headers: { ...getAuthHeaders() }
       });
       return res.json();
     } else {
       let inquiries = getLocalInquiries();
-      inquiries = inquiries.filter(i => i.id !== parseInt(id));
+      inquiries = inquiries.filter(i => i.id.toString() !== id.toString());
       setLocalInquiries(inquiries);
       return { message: "Inquiry deleted successfully" };
     }
