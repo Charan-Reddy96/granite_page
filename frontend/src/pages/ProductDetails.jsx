@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, MessageSquare, Shield, CheckCircle, Scale } from 'lucide-react';
 import InquiryModal from '../components/InquiryModal';
-import { api } from '../services/api';
+import { api, resolveImageUrl } from '../services/api';
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -78,7 +78,7 @@ export default function ProductDetails() {
         <div>
           <div className="product-main-image">
             <img 
-              src={activeImage || '/static/uploads/placeholder.webp'} 
+              src={resolveImageUrl(activeImage) || resolveImageUrl('/static/uploads/placeholder.webp')} 
               alt={product.name} 
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               onError={(e) => {
@@ -105,7 +105,7 @@ export default function ProductDetails() {
                     padding: 0
                   }}
                 >
-                  <img src={img} alt="Product view" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <img src={resolveImageUrl(img)} alt="Product view" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </button>
               ))}
             </div>

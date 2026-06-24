@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Layers, ArrowRight } from 'lucide-react';
+import { resolveImageUrl } from '../services/api';
 
 export default function ProductCard({ product }) {
   const getBadgeClass = (availability) => {
@@ -17,9 +18,9 @@ export default function ProductCard({ product }) {
 
   const getCategoryImage = (product) => {
     if (product.images && product.images.length > 0) {
-      return product.images[0];
+      return resolveImageUrl(product.images[0]);
     }
-    return '/static/uploads/placeholder.webp';
+    return resolveImageUrl('/static/uploads/placeholder.webp');
   };
 
   return (

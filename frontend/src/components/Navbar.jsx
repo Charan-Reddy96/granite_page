@@ -3,6 +3,7 @@ import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { Layers, Menu, X, LogOut } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { resolveImageUrl } from '../services/api';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -174,7 +175,7 @@ export default function Navbar() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   {user.profile_image ? (
                     <img 
-                      src={user.profile_image.startsWith('http') ? user.profile_image : `${import.meta.env.BASE_URL}${user.profile_image.substring(1)}`}
+                      src={resolveImageUrl(user.profile_image)}
                       alt={user.username}
                       style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--border-color)' }}
                     />

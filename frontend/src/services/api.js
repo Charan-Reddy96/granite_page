@@ -4,6 +4,16 @@
 const isGitHubPages = window.location.hostname.includes('github.io');
 const API_BASE = ''; // proxied via Vite config locally
 
+export const resolveImageUrl = (path) => {
+  if (!path) return '';
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
+    return path;
+  }
+  const cleanPath = path.startsWith('/') ? path.substring(1) : path;
+  const baseUrl = import.meta.env.BASE_URL || '/';
+  return `${baseUrl}${cleanPath}`;
+};
+
 // Helper for fetch with a timeout
 async function fetchWithTimeout(url, options = {}, timeout = 5000) {
   const controller = new AbortController();
@@ -529,7 +539,17 @@ export const api = {
       const finish = formData.get('finish');
       const coverage = formData.get('coverage');
       const size = formData.get('size');
-      const imageUrl = formData.get('imageUrl') || 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=500&auto=format&fit=crop';
+      
+      const imageFile = formData.get('images');
+      let imageUrl = formData.get('imageUrl') || 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=500&auto=format&fit=crop';
+
+      if (imageFile && imageFile.name) {
+        imageUrl = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.readAsDataURL(imageFile);
+        });
+      }
 
       const products = getLocalProducts();
       const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
@@ -584,7 +604,17 @@ export const api = {
       const finish = formData.get('finish');
       const coverage = formData.get('coverage');
       const size = formData.get('size');
-      const imageUrl = formData.get('imageUrl');
+      
+      const imageFile = formData.get('images');
+      let imageUrl = formData.get('imageUrl');
+
+      if (imageFile && imageFile.name) {
+        imageUrl = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.readAsDataURL(imageFile);
+        });
+      }
 
       products[index] = {
         ...products[index],

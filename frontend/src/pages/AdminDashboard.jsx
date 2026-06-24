@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Edit2, Mail, CheckCircle2, Phone, AlertCircle, Upload, Archive } from 'lucide-react';
-import { api } from '../services/api';
+import { api, resolveImageUrl } from '../services/api';
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('products'); // 'products' | 'inquiries'
@@ -27,11 +27,6 @@ export default function AdminDashboard() {
   const [imageFile, setImageFile] = useState(null);
   const [productMessage, setProductMessage] = useState(null);
   
-  useEffect(() => {
-    fetchProducts();
-    fetchInquiries();
-  }, []);
-
   const fetchProducts = () => {
     api.getProducts()
       .then(data => setProducts(data))
@@ -43,6 +38,11 @@ export default function AdminDashboard() {
       .then(data => setInquiries(data))
       .catch(err => console.error("Error loading inquiries:", err));
   };
+
+  useEffect(() => {
+    fetchProducts();
+    fetchInquiries();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -416,6 +416,56 @@ export default function AdminDashboard() {
                   onChange={handleInputChange}
                 />
               </div>
+
+              {/* Image Preview Box */}
+              {(imageFile || formData.imageUrl) && (
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label className="form-label">Image Preview</label>
+                  <div style={{
+                    width: '120px',
+                    height: '120px',
+                    borderRadius: 'var(--border-radius-md)',
+                    overflow: 'hidden',
+                    border: '1px solid var(--border-color)',
+                    backgroundColor: 'var(--bg-secondary)',
+                    position: 'relative'
+                  }}>
+                    <img 
+                      src={imageFile ? URL.createObjectURL(imageFile) : resolveImageUrl(formData.imageUrl)} 
+                      alt="Preview" 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setImageFile(null);
+                        setFormData(prev => ({ ...prev, imageUrl: '' }));
+                        const fileInput = document.getElementById('imageFileInput');
+                        if (fileInput) fileInput.value = '';
+                      }}
+                      style={{
+                        position: 'absolute',
+                        top: '4px',
+                        right: '4px',
+                        backgroundColor: 'rgba(239, 68, 68, 0.9)',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '50%',
+                        width: '20px',
+                        height: '20px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        fontSize: '10px'
+                      }}
+                      title="Remove Image"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Featured checkbox */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '5px 0' }}>
