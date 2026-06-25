@@ -10,6 +10,7 @@ export default function Home() {
   const [allProducts, setAllProducts] = useState([]);
   const [slideIndex, setSlideIndex] = useState(0);
   const [autoSlide, setAutoSlide] = useState(true);
+  const [hoveredSlideId, setHoveredSlideId] = useState(null);
   const [isInquiryOpen, setIsInquiryOpen] = useState(false);
 
   useEffect(() => {
@@ -180,10 +181,10 @@ export default function Home() {
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: '48px' }}>
             <h2 className="serif-title" style={{ fontSize: 'clamp(26px, 3.5vw, 32px)', fontWeight: 'normal', margin: '0 0 12px 0' }}>
-              Collection Gallery
+              Our Collection
             </h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '14px', maxWidth: '500px', margin: '0 auto' }}>
-              Explore high-resolution highlights of our natural stone collection.
+              Explore high-resolution highlights of our natural stone products.
             </p>
           </div>
 
@@ -203,9 +204,9 @@ export default function Home() {
               style={{
                 position: 'relative',
                 width: '100%',
-                maxWidth: '960px',
+                maxWidth: '1080px',
                 margin: '0 auto',
-                height: 'clamp(320px, 50vh, 520px)',
+                height: 'clamp(360px, 58vh, 560px)',
                 borderRadius: 'var(--border-radius-lg)',
                 overflow: 'hidden',
                 boxShadow: '0 12px 40px rgba(0, 0, 0, 0.04)',
@@ -227,74 +228,56 @@ export default function Home() {
                       transition: 'opacity 0.8s ease, visibility 0.8s ease',
                       zIndex: isActive ? 2 : 1
                     }}
+                    onMouseEnter={() => setHoveredSlideId(p.id)}
+                    onMouseLeave={() => setHoveredSlideId(null)}
                   >
-                    <img 
-                      src={resolveImageUrl(p.images[0])} 
-                      alt={p.name} 
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      onError={(e) => {
-                        e.target.src = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop';
+                    <Link 
+                      to={`/products/${p.id}`}
+                      style={{ 
+                        display: 'block', 
+                        width: '100%', 
+                        height: '100%', 
+                        overflow: 'hidden',
+                        cursor: 'pointer'
                       }}
-                    />
-                    
-                    {/* Shadow Overlay for premium title contrast */}
-                    <div style={{
-                      position: 'absolute',
-                      inset: 0,
-                      background: 'linear-gradient(to top, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 50%)',
-                      zIndex: 3
-                    }} />
-                    
-                    {/* Text Details Overlay */}
-                    <div style={{
-                      position: 'absolute',
-                      bottom: '36px',
-                      left: '36px',
-                      right: '36px',
-                      zIndex: 4,
-                      color: '#FFFFFF',
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'flex-end',
-                      gap: '20px',
-                      flexWrap: 'wrap'
-                    }}>
-                      <div>
-                        <span style={{
-                          backgroundColor: 'var(--accent-gold)',
-                          color: '#FFFFFF',
-                          padding: '4px 10px',
-                          borderRadius: 'var(--border-radius-sm)',
-                          fontSize: '10px',
-                          fontWeight: 700,
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.08em',
-                          display: 'inline-block',
-                          marginBottom: '8px'
-                        }}>
-                          {p.category}
-                        </span>
-                        <h3 className="serif-title" style={{ fontSize: 'clamp(20px, 3vw, 28px)', color: '#FFFFFF', margin: 0 }}>
-                          {p.name}
-                        </h3>
-                        <p style={{ color: 'rgba(255, 255, 255, 0.85)', fontSize: '13px', margin: '4px 0 0 0' }}>
-                          Price: ₹{p.price} / {p.category === 'Tile' ? 'box' : 'sq.ft'}
-                        </p>
-                      </div>
-                      <Link 
-                        to={`/products/${p.id}`}
-                        className="btn btn-primary"
-                        style={{
-                          backgroundColor: '#FFFFFF',
-                          color: 'var(--text-primary)',
-                          borderRadius: 'var(--border-radius-sm)',
-                          padding: '10px 20px',
-                          fontSize: '12px',
-                          fontWeight: 700
+                    >
+                      <img 
+                        src={resolveImageUrl(p.images[0])} 
+                        alt={p.name} 
+                        style={{ 
+                          width: '100%', 
+                          height: '100%', 
+                          objectFit: 'cover',
+                          transform: hoveredSlideId === p.id ? 'scale(1.03)' : 'scale(1)',
+                          transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)'
                         }}
-                      >
-                        View Details
-                      </Link>
+                        onError={(e) => {
+                          e.target.src = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop';
+                        }}
+                      />
+                    </Link>
+
+                    {/* Minimal elegant label shown on hover */}
+                    <div style={{
+                      position: 'absolute',
+                      bottom: '24px',
+                      left: '24px',
+                      backgroundColor: 'rgba(252, 252, 252, 0.95)',
+                      color: 'var(--text-primary)',
+                      padding: '10px 20px',
+                      borderRadius: 'var(--border-radius-sm)',
+                      border: '1px solid var(--border-color)',
+                      boxShadow: '0 8px 30px rgba(0, 0, 0, 0.05)',
+                      fontFamily: 'var(--font-serif)',
+                      fontSize: '15px',
+                      letterSpacing: '0.03em',
+                      zIndex: 5,
+                      opacity: hoveredSlideId === p.id ? 1 : 0,
+                      transform: hoveredSlideId === p.id ? 'translateY(0)' : 'translateY(8px)',
+                      transition: 'opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                      pointerEvents: 'none'
+                    }}>
+                      {p.name}
                     </div>
                   </div>
                 );
@@ -320,10 +303,17 @@ export default function Home() {
                   cursor: 'pointer',
                   zIndex: 10,
                   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
-                  transition: 'background var(--transition-fast)'
+                  transition: 'background var(--transition-fast), opacity var(--transition-fast)',
+                  opacity: 0.8
                 }}
-                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#FFFFFF'}
-                onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'rgba(252, 252, 252, 0.85)'}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = '#FFFFFF';
+                  e.currentTarget.style.opacity = '1';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(252, 252, 252, 0.85)';
+                  e.currentTarget.style.opacity = '0.8';
+                }}
               >
                 <ChevronLeft size={18} />
               </button>
@@ -346,10 +336,17 @@ export default function Home() {
                   cursor: 'pointer',
                   zIndex: 10,
                   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
-                  transition: 'background var(--transition-fast)'
+                  transition: 'background var(--transition-fast), opacity var(--transition-fast)',
+                  opacity: 0.8
                 }}
-                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#FFFFFF'}
-                onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'rgba(252, 252, 252, 0.85)'}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = '#FFFFFF';
+                  e.currentTarget.style.opacity = '1';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(252, 252, 252, 0.85)';
+                  e.currentTarget.style.opacity = '0.8';
+                }}
               >
                 <ChevronRight size={18} />
               </button>
