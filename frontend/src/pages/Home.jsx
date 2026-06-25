@@ -33,7 +33,7 @@ export default function Home() {
         minHeight: 'var(--hero-min-height, clamp(480px, 85vh, 900px))',
         display: 'flex',
         alignItems: 'center',
-        background: `linear-gradient(rgba(15, 15, 17, 0.4), rgba(15, 15, 17, 0.85)), url("${import.meta.env.BASE_URL}indian_stone_showroom.png") no-repeat center center/cover`,
+        background: `linear-gradient(rgba(252, 252, 252, 0.55), rgba(252, 252, 252, 0.9)), url("${import.meta.env.BASE_URL}indian_stone_showroom.png") no-repeat center center/cover`,
         borderBottom: '1px solid var(--border-color)'
       }}>
         {/* Visual Overlay Layer for premium depth */}
@@ -43,7 +43,7 @@ export default function Home() {
           left: 0,
           right: 0,
           bottom: 0,
-          background: 'radial-gradient(circle at 20% 50%, rgba(15, 15, 17, 0.2) 0%, rgba(15, 15, 17, 0.8) 100%)',
+          background: 'radial-gradient(circle at 20% 50%, rgba(252, 252, 252, 0.35) 0%, rgba(252, 252, 252, 0.9) 100%)',
           zIndex: 1
         }} />
 

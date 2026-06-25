@@ -1,40 +1,40 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  /* Color Palette - Premium Stone & Charcoal Theme (Black Mode) */
-  --bg-primary: #0f0f11;
-  --bg-secondary: #16161a;
-  --bg-tertiary: #1f1f25;
-  --bg-card: #1c1c21;
+  /* Color Palette - Premium Stone & Ivory Theme (Light Mode) */
+  --bg-primary: #FCFCFC;
+  --bg-secondary: #F5F2EB;
+  --bg-tertiary: #EBE7DD;
+  --bg-card: #FFFFFF;
   
-  --text-primary: #f3f3f6;
-  --text-secondary: #a0a0ab;
-  --text-muted: #6e6e77;
+  --text-primary: #2C2C2C;
+  --text-secondary: #7A7A7A;
+  --text-muted: #9E9E9E;
   
-  --accent-gold: #c5a880;
-  --accent-gold-hover: #b3966e;
-  --accent-gold-light: rgba(197, 168, 128, 0.1);
+  --accent-gold: #C4A47C;
+  --accent-gold-hover: #B2926A;
+  --accent-gold-light: rgba(196, 164, 124, 0.15);
   
-  --accent-dark: #111111;
+  --accent-dark: #2C2C2C;
   
-  --border-color: #27272a;
-  --border-focus: #3f3f46;
+  --border-color: #EBEBEB;
+  --border-focus: #C4A47C;
   
   --success: #10b981;
   --danger: #ef4444;
   --warning: #f59e0b;
   
-  --font-serif: 'Manrope', Georgia, serif;
-  --font-sans: 'Manrope', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   
   --border-radius-sm: 4px;
   --border-radius-md: 8px;
   --border-radius-lg: 16px;
   
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
-  --shadow-gold: 0 0 15px rgba(197, 168, 128, 0.15);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+  --shadow-lg: 0 10px 25px -3px rgba(0, 0, 0, 0.05), 0 4px 10px -2px rgba(0, 0, 0, 0.03);
+  --shadow-gold: 0 8px 24px rgba(196, 164, 124, 0.15);
   
   --transition-fast: 0.15s ease;
   --transition-normal: 0.3s ease;
@@ -47,9 +47,9 @@
   --section-title-size: clamp(28px, 4vw, 36px);
   --page-title-size: clamp(36px, 6vw, 48px);
   
-  --section-padding-vertical: 60px;
-  --section-gap: 80px;
-  --banner-padding-vertical: 80px;
+  --section-padding-vertical: 120px;
+  --section-gap: 160px;
+  --banner-padding-vertical: 160px;
   
   --about-img-height: 400px;
   --card-image-height: 240px;
@@ -166,10 +166,10 @@ h1, h2, h3, h4, h5, h6 {
 .badge-outstock { background-color: rgba(239, 68, 68, 0.15); color: var(--danger); }
 
 .glass {
-  background: rgba(22, 22, 26, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(252, 252, 252, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 /* Modal */
@@ -223,11 +223,12 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: var(--border-radius-md);
   overflow: hidden;
   transition: all var(--transition-normal);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 .card:hover {
   transform: translateY(-4px);
   border-color: var(--accent-gold);
-  box-shadow: var(--shadow-lg), var(--shadow-gold);
+  box-shadow: 0 10px 30px rgba(196, 164, 124, 0.12), 0 4px 10px rgba(0, 0, 0, 0.02);
 }
 
 /* Form Elements */
@@ -447,7 +448,7 @@ select.form-control { cursor: pointer; }
     right: 0;
     width: min(85vw, 300px);
     height: calc(100dvh - 70px);
-    background: rgba(22, 22, 26, 0.98);
+    background: rgba(252, 252, 252, 0.98);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-left: 1px solid var(--border-color);
