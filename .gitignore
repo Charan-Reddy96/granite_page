@@ -29,3 +29,5 @@ backend/*.sqlite3
 .idea/
 .DS_Store
 Thumbs.db
+scratch/
+

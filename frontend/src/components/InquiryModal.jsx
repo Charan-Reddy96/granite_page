@@ -129,7 +129,7 @@ export default function InquiryModal({ isOpen, onClose, preFilledProduct = null 
               name="name"
               required
               className="form-control"
-              placeholder="e.g. John Doe"
+              placeholder="Full Name"
               value={formData.name}
               onChange={handleChange}
             />
@@ -144,7 +144,7 @@ export default function InquiryModal({ isOpen, onClose, preFilledProduct = null 
                 name="phone"
                 required
                 className="form-control"
-                placeholder="e.g. (555) 000-0000"
+                placeholder="+91XXXXXXXXXX"
                 value={formData.phone}
                 onChange={handleChange}
               />
@@ -156,7 +156,7 @@ export default function InquiryModal({ isOpen, onClose, preFilledProduct = null 
                 name="email"
                 required
                 className="form-control"
-                placeholder="e.g. john@example.com"
+                placeholder=""
                 value={formData.email}
                 onChange={handleChange}
               />

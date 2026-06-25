@@ -55,7 +55,7 @@ const defaultSeedProducts = [
     thickness: "3cm",
     dimensions: "120\" x 70\"",
     finish: "Leathered",
-    images: ["https://images.unsplash.com/photo-1615529182904-14819c35db37?w=800&auto=format&fit=crop"]
+    images: ["/tan_brown_granite.png"]
   },
   {
     id: 2,
@@ -69,7 +69,7 @@ const defaultSeedProducts = [
     thickness: "2cm",
     dimensions: "118\" x 70\"",
     finish: "Polished",
-    images: ["https://images.unsplash.com/photo-puHt0sQBucA?w=800&auto=format&fit=crop"]
+    images: ["/black_granite.png"]
   },
   {
     id: 3,
@@ -83,7 +83,7 @@ const defaultSeedProducts = [
     thickness: "3cm",
     dimensions: "120\" x 72\"",
     finish: "Honed",
-    images: ["https://images.unsplash.com/photo-1605281317010-fe5ffe798156?w=800&auto=format&fit=crop"]
+    images: ["/rosy_pink_granite.png"]
   },
   {
     id: 4,
@@ -97,7 +97,7 @@ const defaultSeedProducts = [
     thickness: "3cm",
     dimensions: "126\" x 74\"",
     finish: "Polished",
-    images: ["https://images.unsplash.com/photo-1618220179428-22790b461013?w=800&auto=format&fit=crop"]
+    images: ["/black_galaxy_granite_v2.png"]
   },
   {
     id: 5,
@@ -111,7 +111,7 @@ const defaultSeedProducts = [
     thickness: "2cm",
     dimensions: "115\" x 68\"",
     finish: "Polished",
-    images: ["https://images.unsplash.com/photo-1617806118233-18e1db207f62?w=800&auto=format&fit=crop"]
+    images: ["/black_pearl_granite.png"]
   },
   {
     id: 6,
@@ -125,7 +125,7 @@ const defaultSeedProducts = [
     thickness: "2cm",
     dimensions: "115\" x 68\"",
     finish: "Polished",
-    images: ["https://images.unsplash.com/photo-cAFiFHG66yk?w=800&auto=format&fit=crop"]
+    images: ["/blue_granite.png"]
   },
   {
     id: 7,
@@ -139,7 +139,7 @@ const defaultSeedProducts = [
     thickness: "3cm",
     dimensions: "120\" x 70\"",
     finish: "Leathered",
-    images: ["https://images.unsplash.com/photo-1599696838247-f0fd90093a8b?w=800&auto=format&fit=crop"]
+    images: ["/sierra_pearl_granite.png"]
   },
   {
     id: 8,
@@ -153,7 +153,7 @@ const defaultSeedProducts = [
     thickness: "2cm",
     dimensions: "122\" x 72\"",
     finish: "Polished",
-    images: ["https://images.unsplash.com/photo-li0iC0rjvvg?w=800&auto=format&fit=crop"]
+    images: ["/sadali_white_granite.png"]
   },
   {
     id: 9,
@@ -167,7 +167,7 @@ const defaultSeedProducts = [
     thickness: "3cm",
     dimensions: "120\" x 70\"",
     finish: "Honed",
-    images: ["https://images.unsplash.com/photo-ooQvQa6p9Vs?w=800&auto=format&fit=crop"]
+    images: ["/coffee_brown_granite.png"]
   },
   {
     id: 10,
@@ -181,7 +181,7 @@ const defaultSeedProducts = [
     thickness: "2cm",
     dimensions: "120\" x 70\"",
     finish: "Polished",
-    images: ["https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&auto=format&fit=crop"]
+    images: ["/steel_black_granite.png"]
   },
   {
     id: 11,
@@ -194,7 +194,7 @@ const defaultSeedProducts = [
     featured: true,
     dimensions: "4' x 2'",
     finish: "Polished",
-    images: ["https://images.unsplash.com/photo-vKv9lgz0pmU?w=800&auto=format&fit=crop"]
+    images: ["/tiles_4x2.png"]
   },
   {
     id: 12,
@@ -207,7 +207,7 @@ const defaultSeedProducts = [
     featured: false,
     dimensions: "2' x 2'",
     finish: "Matte",
-    images: ["https://images.unsplash.com/photo-ZVMlab81PFY?w=800&auto=format&fit=crop"]
+    images: ["/tiles_2x2.png"]
   },
   {
     id: 13,
@@ -220,7 +220,7 @@ const defaultSeedProducts = [
     featured: false,
     dimensions: "18\" x 12\"",
     finish: "Polished",
-    images: ["https://images.unsplash.com/photo-1523821741446-edb2b68bb7a0?w=800&auto=format&fit=crop"]
+    images: ["/tiles_18x12.png"]
   },
   {
     id: 14,
@@ -233,7 +233,7 @@ const defaultSeedProducts = [
     featured: false,
     dimensions: "16\" x 16\"",
     finish: "Matte",
-    images: ["https://images.unsplash.com/photo-nCkFRH2E9c0?w=800&auto=format&fit=crop"]
+    images: ["/tiles_16x16.png"]
   },
   {
     id: 15,
@@ -246,7 +246,7 @@ const defaultSeedProducts = [
     featured: false,
     dimensions: "8' x 2.5'",
     finish: "Polished",
-    images: ["https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=800&auto=format&fit=crop"]
+    images: ["/tiles_8x2_5.png"]
   }
 ];
 
@@ -260,9 +260,37 @@ const getLocalProducts = () => {
   let parsed = JSON.parse(p);
   const featuredCount = parsed.filter(item => item.featured).length;
   // Clear and re-seed if the image for id: 2 is not the new black granite close-up texture
+  const tanBrown = parsed.find(item => item.id === 1);
   const blackGranite = parsed.find(item => item.id === 2);
-  const hasNewImages = blackGranite && blackGranite.images && blackGranite.images[0] && blackGranite.images[0].includes('photo-puHt0sQBucA');
-  if (!parsed.some(item => item.name === 'Steel Black Granite') || featuredCount < 4 || !hasNewImages) {
+  const rosyPink = parsed.find(item => item.id === 3);
+  const blackGalaxy = parsed.find(item => item.id === 4);
+  const blackPearl = parsed.find(item => item.id === 5);
+  const blueGranite = parsed.find(item => item.id === 6);
+  const sierraPearl = parsed.find(item => item.id === 7);
+  const sadaliWhite = parsed.find(item => item.id === 8);
+  const coffeeBrown = parsed.find(item => item.id === 9);
+  const steelBlack = parsed.find(item => item.id === 10);
+  const tiles4x2 = parsed.find(item => item.id === 11);
+  const tiles2x2 = parsed.find(item => item.id === 12);
+  const tiles18x12 = parsed.find(item => item.id === 13);
+  const tiles16x16 = parsed.find(item => item.id === 14);
+  const tiles8x2_5 = parsed.find(item => item.id === 15);
+  const hasNewTanBrown = tanBrown && tanBrown.images && tanBrown.images[0] && tanBrown.images[0].includes('tan_brown_granite.png');
+  const hasNewImages = blackGranite && blackGranite.images && blackGranite.images[0] && blackGranite.images[0].includes('black_granite.png');
+  const hasNewRosy = rosyPink && rosyPink.images && rosyPink.images[0] && rosyPink.images[0].includes('rosy_pink_granite.png');
+  const hasNewGalaxy = blackGalaxy && blackGalaxy.images && blackGalaxy.images[0] && blackGalaxy.images[0].includes('black_galaxy_granite_v2.png');
+  const hasNewPearl = blackPearl && blackPearl.images && blackPearl.images[0] && blackPearl.images[0].includes('black_pearl_granite.png');
+  const hasNewBlue = blueGranite && blueGranite.images && blueGranite.images[0] && blueGranite.images[0].includes('blue_granite.png');
+  const hasNewSierra = sierraPearl && sierraPearl.images && sierraPearl.images[0] && sierraPearl.images[0].includes('sierra_pearl_granite.png');
+  const hasNewSadali = sadaliWhite && sadaliWhite.images && sadaliWhite.images[0] && sadaliWhite.images[0].includes('sadali_white_granite.png');
+  const hasNewCoffee = coffeeBrown && coffeeBrown.images && coffeeBrown.images[0] && coffeeBrown.images[0].includes('coffee_brown_granite.png');
+  const hasNewSteel = steelBlack && steelBlack.images && steelBlack.images[0] && steelBlack.images[0].includes('steel_black_granite.png');
+  const hasNewTiles4x2 = tiles4x2 && tiles4x2.images && tiles4x2.images[0] && tiles4x2.images[0].includes('tiles_4x2.png');
+  const hasNewTiles2x2 = tiles2x2 && tiles2x2.images && tiles2x2.images[0] && tiles2x2.images[0].includes('tiles_2x2.png');
+  const hasNewTiles18x12 = tiles18x12 && tiles18x12.images && tiles18x12.images[0] && tiles18x12.images[0].includes('tiles_18x12.png');
+  const hasNewTiles16x16 = tiles16x16 && tiles16x16.images && tiles16x16.images[0] && tiles16x16.images[0].includes('tiles_16x16.png');
+  const hasNewTiles8x2_5 = tiles8x2_5 && tiles8x2_5.images && tiles8x2_5.images[0] && tiles8x2_5.images[0].includes('tiles_8x2_5.png');
+  if (!parsed.some(item => item.name === 'Steel Black Granite') || featuredCount < 4 || !hasNewTanBrown || !hasNewImages || !hasNewRosy || !hasNewGalaxy || !hasNewPearl || !hasNewBlue || !hasNewSierra || !hasNewSadali || !hasNewCoffee || !hasNewSteel || !hasNewTiles4x2 || !hasNewTiles2x2 || !hasNewTiles18x12 || !hasNewTiles16x16 || !hasNewTiles8x2_5) {
     localStorage.setItem('aura_products', JSON.stringify(defaultSeedProducts));
     return defaultSeedProducts;
   }
@@ -392,7 +420,7 @@ export const api = {
           }
         };
       }
-      
+
       const userId = token.replace('mock_jwt_token_', '');
       const users = JSON.parse(localStorage.getItem('gs_mock_users') || '[]');
       const user = users.find(u => u.id === parseInt(userId));
@@ -416,9 +444,9 @@ export const api = {
       const username = formData.get('username');
       const password = formData.get('password');
       const profileImageFile = formData.get('profile_image');
-      
+
       let profile_image_url = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop'; // fallback placeholder
-      
+
       if (profileImageFile && profileImageFile.name) {
         // Read client file as data URL to keep offline flow completely active
         profile_image_url = await new Promise((resolve) => {
@@ -427,12 +455,12 @@ export const api = {
           reader.readAsDataURL(profileImageFile);
         });
       }
-      
+
       const users = JSON.parse(localStorage.getItem('gs_mock_users') || '[]');
       if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
         throw new Error('Username is already taken.');
       }
-      
+
       const newUser = {
         id: users.length + 10,
         username,
@@ -440,10 +468,10 @@ export const api = {
         profile_image: profile_image_url,
         created_at: new Date().toISOString().replace('T', ' ').substring(0, 19)
       };
-      
+
       users.push(newUser);
       localStorage.setItem('gs_mock_users', JSON.stringify(users));
-      
+
       return {
         message: 'Registration successful (standalone mock)',
         token: `mock_jwt_token_${newUser.id}`,
@@ -464,20 +492,24 @@ export const api = {
       if (filters.min_price) queryParams.append('min_price', filters.min_price);
       if (filters.max_price) queryParams.append('max_price', filters.max_price);
       if (filters.featured) queryParams.append('featured', 'true');
-      
+
       const res = await fetchWithTimeout(`${API_BASE}/api/products?${queryParams.toString()}`);
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to fetch products');
+      }
       return res.json();
     } else {
       // Mock Filtering
       let results = getLocalProducts();
-      
+
       if (filters.category) {
         results = results.filter(p => p.category.toLowerCase() === filters.category.toLowerCase());
       }
       if (filters.q) {
         const query = filters.q.toLowerCase();
-        results = results.filter(p => 
-          p.name.toLowerCase().includes(query) || 
+        results = results.filter(p =>
+          p.name.toLowerCase().includes(query) ||
           p.description.toLowerCase().includes(query) ||
           p.color.toLowerCase().includes(query)
         );
@@ -497,7 +529,7 @@ export const api = {
       if (filters.featured) {
         results = results.filter(p => p.featured === true);
       }
-      
+
       return results;
     }
   },
@@ -524,6 +556,10 @@ export const api = {
         headers: { ...getAuthHeaders() },
         body: formData // Form data with file
       });
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to create product');
+      }
       return res.json();
     } else {
       // Mock Create Product
@@ -539,7 +575,7 @@ export const api = {
       const finish = formData.get('finish');
       const coverage = formData.get('coverage');
       const size = formData.get('size');
-      
+
       const imageFile = formData.get('images');
       let imageUrl = formData.get('imageUrl') || 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=500&auto=format&fit=crop';
 
@@ -553,7 +589,7 @@ export const api = {
 
       const products = getLocalProducts();
       const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-      
+
       const newProduct = {
         id: newId,
         name,
@@ -570,7 +606,7 @@ export const api = {
         size,
         images: [imageUrl]
       };
-      
+
       products.push(newProduct);
       setLocalProducts(products);
       return newProduct;
@@ -585,6 +621,10 @@ export const api = {
         headers: { ...getAuthHeaders() },
         body: formData
       });
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to update product');
+      }
       return res.json();
     } else {
       // Mock Update Product
@@ -604,7 +644,7 @@ export const api = {
       const finish = formData.get('finish');
       const coverage = formData.get('coverage');
       const size = formData.get('size');
-      
+
       const imageFile = formData.get('images');
       let imageUrl = formData.get('imageUrl');
 
@@ -645,6 +685,10 @@ export const api = {
         method: 'DELETE',
         headers: { ...getAuthHeaders() }
       });
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to delete product');
+      }
       return res.json();
     } else {
       let products = getLocalProducts();
@@ -666,15 +710,19 @@ export const api = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(inquiryData)
       });
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to submit inquiry');
+      }
       return res.json();
     } else {
       const inquiries = getLocalInquiries();
       const products = getLocalProducts();
-      
+
       const newId = inquiries.length > 0 ? Math.max(...inquiries.map(i => i.id)) + 1 : 1;
       let prodName = "General Inquiry";
       let prodCat = null;
-      
+
       if (inquiryData.product_id && inquiryData.product_id !== 'general') {
         const prod = products.find(p => p.id === parseInt(inquiryData.product_id));
         if (prod) {
@@ -682,7 +730,7 @@ export const api = {
           prodCat = prod.category;
         }
       }
-      
+
       const newInquiry = {
         id: newId,
         name: inquiryData.name,
@@ -708,6 +756,10 @@ export const api = {
       const res = await fetchWithTimeout(`${API_BASE}/api/inquiries`, {
         headers: { ...getAuthHeaders() }
       });
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to fetch inquiries');
+      }
       return res.json();
     } else {
       return getLocalInquiries().reverse(); // Show newest first
@@ -722,6 +774,10 @@ export const api = {
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ status })
       });
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to update inquiry status');
+      }
       return res.json();
     } else {
       const inquiries = getLocalInquiries();
@@ -740,6 +796,10 @@ export const api = {
         method: 'DELETE',
         headers: { ...getAuthHeaders() }
       });
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to delete inquiry');
+      }
       return res.json();
     } else {
       let inquiries = getLocalInquiries();

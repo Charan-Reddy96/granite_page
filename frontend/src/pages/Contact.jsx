@@ -43,7 +43,7 @@ export default function Contact() {
 
   return (
     <div className="container" style={{ padding: '60px 24px 100px 24px' }}>
-      
+
       {/* Title */}
       <div style={{ textAlign: 'center', marginBottom: '60px' }}>
         <span style={{
@@ -67,10 +67,10 @@ export default function Contact() {
         gap: '50px',
         alignItems: 'start'
       }}>
-        
+
         {/* Left Column: Form & Info */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
-          
+
           {/* Quick Info - Horizontal Rows */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {/* Phone Card */}
@@ -99,8 +99,8 @@ export default function Contact() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
                 <h4 style={{ fontSize: '13px', margin: 0, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Phone Contact</h4>
                 <p style={{ margin: 0, fontSize: '15px', fontWeight: 600, whiteSpace: 'nowrap' }}>
-                  <a 
-                    href="tel:+919391666951" 
+                  <a
+                    href="tel:+919391666951"
                     style={{ color: 'var(--accent-gold)', textDecoration: 'none', transition: 'color var(--transition-fast)' }}
                     onMouseOver={(e) => e.target.style.color = 'var(--text-primary)'}
                     onMouseOut={(e) => e.target.style.color = 'var(--accent-gold)'}
@@ -110,7 +110,7 @@ export default function Contact() {
                 </p>
               </div>
             </div>
-            
+
             {/* Email Card */}
             <div style={{
               backgroundColor: 'var(--bg-secondary)',
@@ -137,8 +137,8 @@ export default function Contact() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', overflow: 'hidden' }}>
                 <h4 style={{ fontSize: '13px', margin: 0, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Email Contact</h4>
                 <p style={{ margin: 0, fontSize: '14px', fontWeight: 600, wordBreak: 'break-all' }}>
-                  <a 
-                    href="mailto:gsgranitesandmarbles@gmail.com" 
+                  <a
+                    href="mailto:gsgranitesandmarbles@gmail.com"
                     style={{ color: 'var(--accent-gold)', textDecoration: 'none', transition: 'color var(--transition-fast)' }}
                     onMouseOver={(e) => e.target.style.color = 'var(--text-primary)'}
                     onMouseOut={(e) => e.target.style.color = 'var(--accent-gold)'}
@@ -176,10 +176,10 @@ export default function Contact() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 <h4 style={{ fontSize: '13px', margin: 0, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Showroom Address</h4>
                 <p style={{ margin: 0, fontSize: '14.5px', lineHeight: '1.6' }}>
-                  <a 
-                    href="https://maps.app.goo.gl/TMdMDVnAZnbS2iGQ9" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
+                  <a
+                    href="https://maps.app.goo.gl/TMdMDVnAZnbS2iGQ9"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color var(--transition-fast)' }}
                     onMouseOver={(e) => e.target.style.color = 'var(--accent-gold)'}
                     onMouseOut={(e) => e.target.style.color = 'var(--text-secondary)'}
@@ -236,14 +236,14 @@ export default function Contact() {
             height: '280px',
             backgroundColor: 'var(--bg-secondary)'
           }}>
-            <iframe 
+            <iframe
               title="Showroom Location Map"
-              width="100%" 
-              height="100%" 
-              frameBorder="0" 
-              scrolling="no" 
-              marginHeight="0" 
-              marginWidth="0" 
+              width="100%"
+              height="100%"
+              frameBorder="0"
+              scrolling="no"
+              marginHeight="0"
+              marginWidth="0"
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3805.6383134396856!2d78.4220232!3d17.4770171!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb91aecdd3e1fd%3A0x58b0867381008a99!2sG.S.+Granites+And+Marbles!5e0!3m2!1sen!2sin"
               style={{ filter: 'grayscale(0.9) invert(0.9) contrast(1.2)' }}
             />
@@ -297,12 +297,12 @@ export default function Contact() {
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Full Name *</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 name="name"
                 required
-                className="form-control" 
-                placeholder="e.g. William Smith" 
+                className="form-control"
+                placeholder="Full Name"
                 value={formData.name}
                 onChange={handleChange}
               />
@@ -310,12 +310,12 @@ export default function Contact() {
 
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Phone Number *</label>
-              <input 
-                type="tel" 
+              <input
+                type="tel"
                 name="phone"
                 required
-                className="form-control" 
-                placeholder="e.g. (555) 123-4567" 
+                className="form-control"
+                placeholder="+91XXXXXXXXXX"
                 value={formData.phone}
                 onChange={handleChange}
               />
@@ -323,12 +323,12 @@ export default function Contact() {
 
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Email Address *</label>
-              <input 
-                type="email" 
+              <input
+                type="email"
                 name="email"
                 required
-                className="form-control" 
-                placeholder="e.g. william@example.com" 
+                className="form-control"
+                placeholder=""
                 value={formData.email}
                 onChange={handleChange}
               />
@@ -336,18 +336,18 @@ export default function Contact() {
 
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Message Details *</label>
-              <textarea 
+              <textarea
                 name="message"
                 required
-                className="form-control" 
-                placeholder="Please describe details of your project, stone, or tile requirements..." 
+                className="form-control"
+                placeholder="Please describe details of your project, stone, or tile requirements..."
                 value={formData.message}
                 onChange={handleChange}
               />
             </div>
 
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="btn btn-primary"
               disabled={isSubmitting}
               style={{ alignSelf: 'flex-start', padding: '12px 24px', marginTop: '10px' }}

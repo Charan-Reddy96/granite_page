@@ -46,12 +46,54 @@ def seed_database():
         
         # Clear out old seed data if we need the new Unsplash product textures
         try:
+            tan_brown = Product.query.filter_by(name="Tan Brown Granite").first()
             sample_product = Product.query.filter_by(name="Black Granite").first()
+            rosy_pink = Product.query.filter_by(name="Rosy Pink Granite").first()
+            galaxy_product = Product.query.filter_by(name="Black Galaxy Granite").first()
+            black_pearl = Product.query.filter_by(name="Black Pearl Granite").first()
+            blue_granite = Product.query.filter_by(name="Blue Granite").first()
+            sierra_pearl = Product.query.filter_by(name="Sierra Pearl Granite").first()
+            sadali_white = Product.query.filter_by(name="Sadali White Granite").first()
+            coffee_brown = Product.query.filter_by(name="Coffee Brown Granite").first()
+            steel_black = Product.query.filter_by(name="Steel Black Granite").first()
+            tiles_4x2 = Product.query.filter_by(name="4x2 Vitrified Tiles").first()
+            tiles_2x2 = Product.query.filter_by(name="2x2 Vitrified Tiles").first()
+            tiles_18x12 = Product.query.filter_by(name="18x12 Wall Tiles").first()
+            tiles_16x16 = Product.query.filter_by(name="16x16 Floor Tiles").first()
+            tiles_8x2_5 = Product.query.filter_by(name="8x2.5 Step Tiles").first()
             has_new = (
                 Product.query.filter_by(name="Steel Black Granite").count() > 0 
                 and Product.query.filter_by(featured=True).count() >= 4
+                and tan_brown is not None
+                and "tan_brown_granite.png" in tan_brown.image_paths
                 and sample_product is not None
-                and "photo-puHt0sQBucA" in sample_product.image_paths
+                and "black_granite.png" in sample_product.image_paths
+                and rosy_pink is not None
+                and "rosy_pink_granite.png" in rosy_pink.image_paths
+                and galaxy_product is not None
+                and "black_galaxy_granite_v2.png" in galaxy_product.image_paths
+                and black_pearl is not None
+                and "black_pearl_granite.png" in black_pearl.image_paths
+                and blue_granite is not None
+                and "blue_granite.png" in blue_granite.image_paths
+                and sierra_pearl is not None
+                and "sierra_pearl_granite.png" in sierra_pearl.image_paths
+                and sadali_white is not None
+                and "sadali_white_granite.png" in sadali_white.image_paths
+                and coffee_brown is not None
+                and "coffee_brown_granite.png" in coffee_brown.image_paths
+                and steel_black is not None
+                and "steel_black_granite.png" in steel_black.image_paths
+                and tiles_4x2 is not None
+                and "tiles_4x2.png" in tiles_4x2.image_paths
+                and tiles_2x2 is not None
+                and "tiles_2x2.png" in tiles_2x2.image_paths
+                and tiles_18x12 is not None
+                and "tiles_18x12.png" in tiles_18x12.image_paths
+                and tiles_16x16 is not None
+                and "tiles_16x16.png" in tiles_16x16.image_paths
+                and tiles_8x2_5 is not None
+                and "tiles_8x2_5.png" in tiles_8x2_5.image_paths
             )
             if not has_new:
                 print("Clearing old products to re-seed with pure close-up Unsplash slab textures...")
@@ -76,7 +118,7 @@ def seed_database():
                     thickness="3cm",
                     dimensions="120\" x 70\"",
                     finish="Leathered",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-1615529182904-14819c35db37?w=800&auto=format&fit=crop"])
+                    image_paths=json.dumps(["/static/uploads/tan_brown_granite.png"])
                 ),
                 Product(
                     name="Black Granite",
@@ -89,7 +131,7 @@ def seed_database():
                     thickness="2cm",
                     dimensions="118\" x 70\"",
                     finish="Polished",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-puHt0sQBucA?w=800&auto=format&fit=crop"])
+                    image_paths=json.dumps(["/static/uploads/black_granite.png"])
                 ),
                 Product(
                     name="Rosy Pink Granite",
@@ -102,7 +144,7 @@ def seed_database():
                     thickness="3cm",
                     dimensions="120\" x 72\"",
                     finish="Honed",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-1605281317010-fe5ffe798156?w=800&auto=format&fit=crop"])
+                    image_paths=json.dumps(["/static/uploads/rosy_pink_granite.png"])
                 ),
                 Product(
                     name="Black Galaxy Granite",
@@ -115,7 +157,7 @@ def seed_database():
                     thickness="3cm",
                     dimensions="126\" x 74\"",
                     finish="Polished",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-1618220179428-22790b461013?w=800&auto=format&fit=crop"])
+                    image_paths=json.dumps(["/static/uploads/black_galaxy_granite_v2.png"])
                 ),
                 Product(
                     name="Black Pearl Granite",
@@ -128,7 +170,7 @@ def seed_database():
                     thickness="2cm",
                     dimensions="115\" x 68\"",
                     finish="Polished",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-1617806118233-18e1db207f62?w=800&auto=format&fit=crop"])
+                    image_paths=json.dumps(["/static/uploads/black_pearl_granite.png"])
                 ),
                 Product(
                     name="Blue Granite",
@@ -141,7 +183,7 @@ def seed_database():
                     thickness="2cm",
                     dimensions="115\" x 68\"",
                     finish="Polished",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-cAFiFHG66yk?w=800&auto=format&fit=crop"])
+                    image_paths=json.dumps(["/static/uploads/blue_granite.png"])
                 ),
                 Product(
                     name="Sierra Pearl Granite",
@@ -154,7 +196,7 @@ def seed_database():
                     thickness="3cm",
                     dimensions="120\" x 70\"",
                     finish="Leathered",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-1599696838247-f0fd90093a8b?w=800&auto=format&fit=crop"])
+                    image_paths=json.dumps(["/static/uploads/sierra_pearl_granite.png"])
                 ),
                 Product(
                     name="Sadali White Granite",
@@ -167,7 +209,7 @@ def seed_database():
                     thickness="2cm",
                     dimensions="122\" x 72\"",
                     finish="Polished",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-li0iC0rjvvg?w=800&auto=format&fit=crop"])
+                    image_paths=json.dumps(["/static/uploads/sadali_white_granite.png"])
                 ),
                 Product(
                     name="Coffee Brown Granite",
@@ -180,7 +222,7 @@ def seed_database():
                     thickness="3cm",
                     dimensions="120\" x 70\"",
                     finish="Honed",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-ooQvQa6p9Vs?w=800&auto=format&fit=crop"])
+                    image_paths=json.dumps(["/static/uploads/coffee_brown_granite.png"])
                 ),
                 Product(
                     name="Steel Black Granite",
@@ -193,7 +235,7 @@ def seed_database():
                     thickness="2cm",
                     dimensions="120\" x 70\"",
                     finish="Polished",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&auto=format&fit=crop"])
+                    image_paths=json.dumps(["/static/uploads/steel_black_granite.png"])
                 ),
                 # Tiles (5 items, sold per box)
                 Product(
@@ -206,7 +248,7 @@ def seed_database():
                     featured=True,
                     dimensions="4' x 2'",
                     finish="Polished",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-vKv9lgz0pmU?w=800&auto=format&fit=crop"])
+                    image_paths=json.dumps(["/static/uploads/tiles_4x2.png"])
                 ),
                 Product(
                     name="2x2 Vitrified Tiles",
@@ -218,7 +260,7 @@ def seed_database():
                     featured=False,
                     dimensions="2' x 2'",
                     finish="Matte",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-ZVMlab81PFY?w=800&auto=format&fit=crop"])
+                    image_paths=json.dumps(["/static/uploads/tiles_2x2.png"])
                 ),
                 Product(
                     name="18x12 Wall Tiles",
@@ -230,7 +272,7 @@ def seed_database():
                     featured=False,
                     dimensions="18\" x 12\"",
                     finish="Polished",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-1523821741446-edb2b68bb7a0?w=800&auto=format&fit=crop"])
+                    image_paths=json.dumps(["/static/uploads/tiles_18x12.png"])
                 ),
                 Product(
                     name="16x16 Floor Tiles",
@@ -242,7 +284,7 @@ def seed_database():
                     featured=False,
                     dimensions="16\" x 16\"",
                     finish="Matte",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-nCkFRH2E9c0?w=800&auto=format&fit=crop"])
+                    image_paths=json.dumps(["/static/uploads/tiles_16x16.png"])
                 ),
                 Product(
                     name="8x2.5 Step Tiles",
@@ -254,7 +296,7 @@ def seed_database():
                     featured=False,
                     dimensions="8' x 2.5'",
                     finish="Polished",
-                    image_paths=json.dumps(["https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=800&auto=format&fit=crop"])
+                    image_paths=json.dumps(["/static/uploads/tiles_8x2_5.png"])
                 )
             ]
             for p in default_products:

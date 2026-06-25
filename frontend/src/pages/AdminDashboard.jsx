@@ -26,6 +26,7 @@ export default function AdminDashboard() {
   });
   const [imageFile, setImageFile] = useState(null);
   const [productMessage, setProductMessage] = useState(null);
+  const [deleteConfirm, setDeleteConfirm] = useState({ isOpen: false, type: '', id: null });
   
   const fetchProducts = () => {
     api.getProducts()
@@ -140,16 +141,27 @@ export default function AdminDashboard() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleDeleteProduct = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this product?")) return;
-
-    try {
-      await api.deleteProduct(id);
-      setProducts(products.filter(p => p.id !== id));
-      if (editingId === id) resetForm();
-    } catch (err) {
-      console.error(err);
-      alert("Failed to delete product.");
+  const handleConfirmDelete = async () => {
+    const { type, id } = deleteConfirm;
+    setDeleteConfirm({ isOpen: false, type: '', id: null });
+    
+    if (type === 'product') {
+      try {
+        await api.deleteProduct(id);
+        setProducts(products.filter(p => p.id !== id));
+        if (editingId === id) resetForm();
+      } catch (err) {
+        console.error(err);
+        alert("Failed to delete product.");
+      }
+    } else if (type === 'inquiry') {
+      try {
+        await api.deleteInquiry(id);
+        setInquiries(inquiries.filter(i => i.id !== id));
+      } catch (err) {
+        console.error(err);
+        alert("Failed to delete inquiry.");
+      }
     }
   };
 
@@ -160,18 +172,6 @@ export default function AdminDashboard() {
     } catch (err) {
       console.error(err);
       alert("Failed to update inquiry status.");
-    }
-  };
-
-  const handleDeleteInquiry = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this inquiry record?")) return;
-
-    try {
-      await api.deleteInquiry(id);
-      setInquiries(inquiries.filter(i => i.id !== id));
-    } catch (err) {
-      console.error(err);
-      alert("Failed to delete inquiry.");
     }
   };
 
@@ -530,7 +530,7 @@ export default function AdminDashboard() {
                             <Edit2 size={16} />
                           </button>
                           <button 
-                            onClick={() => handleDeleteProduct(p.id)}
+                            onClick={() => setDeleteConfirm({ isOpen: true, type: 'product', id: p.id })}
                             style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)' }}
                             title="Delete"
                             onMouseOver={(e) => e.currentTarget.style.color = 'var(--danger)'}
@@ -610,7 +610,7 @@ export default function AdminDashboard() {
                           </button>
                         )}
                         <button 
-                          onClick={() => handleDeleteInquiry(i.id)}
+                          onClick={() => setDeleteConfirm({ isOpen: true, type: 'inquiry', id: i.id })}
                           className="btn btn-danger btn-sm"
                           style={{ padding: '4px 8px', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '4px' }}
                         >
@@ -645,6 +645,35 @@ export default function AdminDashboard() {
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {/* Confirmation Modal */}
+      {deleteConfirm.isOpen && (
+        <div className="modal-overlay" onClick={() => setDeleteConfirm({ isOpen: false, type: '', id: null })} style={{ zIndex: 1100 }}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '400px', padding: '30px' }}>
+            <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '20px', marginBottom: '12px' }}>Confirm Deletion</h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '24px', lineHeight: '1.5' }}>
+              Are you sure you want to delete this {deleteConfirm.type === 'product' ? 'product' : 'customer inquiry'}?
+            </p>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+              <button 
+                onClick={() => setDeleteConfirm({ isOpen: false, type: '', id: null })}
+                className="btn btn-secondary"
+                style={{ padding: '8px 16px', fontSize: '13px' }}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleConfirmDelete}
+                className="btn btn-danger"
+                style={{ padding: '8px 16px', fontSize: '13px', backgroundColor: 'var(--danger)', borderColor: 'var(--danger)' }}
+                id="confirm-delete-btn"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
