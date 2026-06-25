@@ -1,13 +1,12 @@
 // API Service that handles server integration and local mock database fallback
 // enabling full interactive functionality on static environments like GitHub Pages.
 
-// Firebase Firestore + Storage — cross-device product and inquiry sync
-import { db, storage } from './firebase';
+// Firebase Firestore — cross-device product and inquiry sync (no Storage needed)
+import { db } from './firebase';
 import {
   collection, addDoc, getDocs, getDoc, doc, updateDoc, deleteDoc,
-  serverTimestamp, query, orderBy, getDocs as getDocsAlias
+  serverTimestamp, query, orderBy
 } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const INQUIRIES_COLLECTION = 'inquiries';
 const PRODUCTS_COLLECTION = 'products';
@@ -277,13 +276,15 @@ const seedFirestoreProducts = async () => {
   }
 };
 
-// Upload an image File to Firebase Storage and return the public download URL
-const uploadImageToStorage = async (imageFile) => {
-  const fileName = `${Date.now()}_${imageFile.name}`;
-  const storageRef = ref(storage, `product_images/${fileName}`);
-  await uploadBytes(storageRef, imageFile);
-  return getDownloadURL(storageRef);
-};
+// Convert an image File to a base64 data URL (stored directly in Firestore)
+// Works for images up to ~700KB. No external service required.
+const convertImageToBase64 = (imageFile) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(imageFile);
+  });
 
 // Convert a Firestore product doc to a plain object
 const docToProduct = (d) => ({ ...d.data(), id: d.id });
@@ -566,7 +567,7 @@ export const api = {
       let imageUrl = formData.get('imageUrl') || 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=500&auto=format&fit=crop';
 
       if (imageFile && imageFile.name) {
-        imageUrl = await uploadImageToStorage(imageFile);
+        imageUrl = await convertImageToBase64(imageFile);
       }
 
       const newData = {
@@ -614,7 +615,7 @@ export const api = {
       let imageUrl = formData.get('imageUrl') || null;
 
       if (imageFile && imageFile.name) {
-        imageUrl = await uploadImageToStorage(imageFile);
+        imageUrl = await convertImageToBase64(imageFile);
       }
 
       const updateData = {
