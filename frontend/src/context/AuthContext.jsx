@@ -48,14 +48,6 @@ export function AuthProvider({ children }) {
     return data;
   };
 
-  const loginWithOTP = async (identifier, token) => {
-    const data = await api.loginWithOTP(identifier, token);
-    localStorage.setItem('gs_auth_token', data.token);
-    setToken(data.token);
-    setUser(data.user);
-    return data;
-  };
-
   const register = async (formData) => {
     const data = await api.register(formData);
 
@@ -73,7 +65,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, isAdmin, loading, login, loginWithOTP, register, logout }}>
+    <AuthContext.Provider value={{ user, token, isAdmin, loading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

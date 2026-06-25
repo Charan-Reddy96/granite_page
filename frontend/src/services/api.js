@@ -134,42 +134,6 @@ export const api = {
     }
   },
 
-  loginWithOTP: async (identifier, token) => {
-    const isOnline = await checkServer();
-    if (isOnline) {
-      const res = await fetchWithTimeout(`${API_BASE}/api/auth/otp-login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ identifier, token })
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'OTP Login failed');
-      return data;
-    } else {
-      // Standalone / GitHub Pages Mode fallback
-      const users = JSON.parse(localStorage.getItem('gs_mock_users') || '[]');
-      let user = users.find(u => u.username.toLowerCase() === identifier.toLowerCase());
-      
-      if (!user) {
-        // Automatically create a new user on the fly if they successfully verified via OTP but don't exist yet
-        user = {
-          id: users.length + 10,
-          username: identifier,
-          role: 'user',
-          profile_image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop',
-          created_at: new Date().toISOString().replace('T', ' ').substring(0, 19)
-        };
-        users.push(user);
-        localStorage.setItem('gs_mock_users', JSON.stringify(users));
-      }
-      
-      return {
-        token: `mock_jwt_token_${user.id}`,
-        user
-      };
-    }
-  },
-
   getMe: async (token) => {
     const isOnline = await checkServer();
     if (isOnline) {
