@@ -10,7 +10,7 @@ export default function Catalog() {
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   // Filter States
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(categoryParam); // '', 'Granite', 'Tile'
@@ -84,7 +84,7 @@ export default function Catalog() {
 
   return (
     <div className="container" style={{ padding: '40px 24px 80px 24px' }}>
-      
+
       {/* Page Title */}
       <div style={{ marginBottom: '40px' }}>
         <h1 className="serif-title" style={{ fontSize: '36px' }}>Our Collection Catalog</h1>
@@ -94,7 +94,7 @@ export default function Catalog() {
       </div>
 
       {/* Mobile Filters Toggle Button — visible on mobile via CSS */}
-      <button 
+      <button
         className="btn btn-secondary mobile-filters-btn"
         onClick={() => setShowFiltersMobile(!showFiltersMobile)}
         style={{ width: '100%', marginBottom: '20px', gap: '8px' }}
@@ -104,15 +104,15 @@ export default function Catalog() {
 
       {/* Main Layout Grid: Sidebar + Products list */}
       <div className="catalog-layout">
-        
+
         {/* SIDEBAR FILTERS */}
         <aside className={`catalog-sidebar ${showFiltersMobile ? 'show' : ''}`}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600 }}>
               <Filter size={18} color="var(--accent-gold)" /> Filters
             </div>
-            <button 
-              onClick={resetFilters} 
+            <button
+              onClick={resetFilters}
               style={{
                 background: 'none',
                 border: 'none',
@@ -135,9 +135,9 @@ export default function Catalog() {
           {/* Category Selector */}
           <div className="form-group" style={{ marginBottom: 0 }}>
             <label className="form-label">Material Category</label>
-            <select 
-              className="form-control" 
-              value={selectedCategory} 
+            <select
+              className="form-control"
+              value={selectedCategory}
               onChange={(e) => handleCategoryChange(e.target.value)}
             >
               <option value="">All Categories</option>
@@ -148,10 +148,10 @@ export default function Catalog() {
 
           {/* Color Selector */}
           <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label">Color Profile</label>
-            <select 
-              className="form-control" 
-              value={selectedColor} 
+            <label className="form-label">Colour</label>
+            <select
+              className="form-control"
+              value={selectedColor}
               onChange={(e) => setSelectedColor(e.target.value)}
             >
               <option value="">All Colors</option>
@@ -161,10 +161,10 @@ export default function Catalog() {
 
           {/* Finish Selector */}
           <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label">Finish Profile</label>
-            <select 
-              className="form-control" 
-              value={selectedFinish} 
+            <label className="form-label">Finish Style</label>
+            <select
+              className="form-control"
+              value={selectedFinish}
               onChange={(e) => setSelectedFinish(e.target.value)}
             >
               <option value="">All Finishes</option>
@@ -176,19 +176,19 @@ export default function Catalog() {
           <div className="form-group" style={{ marginBottom: 0 }}>
             <label className="form-label">Price Range ({selectedCategory === 'Tile' ? '₹/box' : '₹/sqft'})</label>
             <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-              <input 
-                type="number" 
-                placeholder="Min" 
-                className="form-control" 
+              <input
+                type="number"
+                placeholder="Min"
+                className="form-control"
                 style={{ width: '100%', padding: '8px' }}
                 value={minPrice}
                 onChange={(e) => setMinPrice(e.target.value)}
               />
               <span style={{ color: 'var(--text-muted)' }}>-</span>
-              <input 
-                type="number" 
-                placeholder="Max" 
-                className="form-control" 
+              <input
+                type="number"
+                placeholder="Max"
+                className="form-control"
                 style={{ width: '100%', padding: '8px' }}
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
@@ -200,32 +200,32 @@ export default function Catalog() {
         {/* PRODUCTS GRID AREA */}
         <div>
           {/* Top Search Bar */}
-          <form onSubmit={handleSearchSubmit} className="glass" style={{ 
-            display: 'flex', 
-            padding: '10px 16px', 
-            borderRadius: 'var(--border-radius-md)', 
-            marginBottom: '30px', 
+          <form onSubmit={handleSearchSubmit} className="glass" style={{
+            display: 'flex',
+            padding: '10px 16px',
+            borderRadius: 'var(--border-radius-md)',
+            marginBottom: '30px',
             border: '1px solid var(--border-color)',
             alignItems: 'center',
             gap: '12px'
           }}>
             <Search size={20} color="var(--accent-gold)" style={{ flexShrink: 0 }} />
-            <input 
-              type="text" 
-              placeholder="Search by product name, description, color..." 
+            <input
+              type="text"
+              placeholder="Search by product name, description, color..."
               className="form-control"
-              style={{ 
-                border: 'none', 
-                backgroundColor: 'transparent', 
-                padding: '4px 0', 
-                width: '100%', 
-                fontSize: '15px' 
+              style={{
+                border: 'none',
+                backgroundColor: 'transparent',
+                padding: '4px 0',
+                width: '100%',
+                fontSize: '15px'
               }}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="btn btn-primary btn-sm"
               style={{ flexShrink: 0 }}
             >
@@ -255,9 +255,9 @@ export default function Catalog() {
             }}>
               <p style={{ fontSize: '16px', fontWeight: 500, marginBottom: '8px', color: 'var(--text-primary)' }}>No Materials Match Your Filters</p>
               <p style={{ fontSize: '13px' }}>Try resetting or modifying your filter parameters to view other products.</p>
-              <button 
-                onClick={resetFilters} 
-                className="btn btn-secondary" 
+              <button
+                onClick={resetFilters}
+                className="btn btn-secondary"
                 style={{ marginTop: '20px' }}
               >
                 Clear All Filters

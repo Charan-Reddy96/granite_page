@@ -283,7 +283,7 @@ export const api = {
         });
       }
       if (filters.featured) {
-        results = results.filter(p => p.featured === true);
+        results = results.filter(p => p.featured === true || p.featured === 'true');
       }
       return results;
     }
@@ -439,15 +439,20 @@ export const api = {
       return res.json();
     } else {
       // Standalone / GitHub Pages — write directly to Firestore
-      const products = getLocalProducts();
       let prodName = 'General Inquiry';
       let prodCat = null;
 
       if (inquiryData.product_id && inquiryData.product_id !== 'general') {
-        const prod = products.find(p => p.id === parseInt(inquiryData.product_id));
-        if (prod) {
-          prodName = prod.name;
-          prodCat = prod.category;
+        try {
+          const docRef = doc(db, PRODUCTS_COLLECTION, inquiryData.product_id);
+          const snap = await getDoc(docRef);
+          if (snap.exists()) {
+            const prod = snap.data();
+            prodName = prod.name;
+            prodCat = prod.category;
+          }
+        } catch (e) {
+          console.error("Error retrieving product for inquiry:", e);
         }
       }
 
@@ -455,7 +460,7 @@ export const api = {
         name: inquiryData.name,
         phone: inquiryData.phone,
         email: inquiryData.email,
-        product_id: inquiryData.product_id === 'general' ? null : parseInt(inquiryData.product_id),
+        product_id: inquiryData.product_id === 'general' ? null : inquiryData.product_id,
         product_name: prodName,
         product_category: prodCat,
         message: inquiryData.message,
