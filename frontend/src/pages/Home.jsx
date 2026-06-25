@@ -1,19 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import InquiryModal from '../components/InquiryModal';
-import { api } from '../services/api';
+import { api, resolveImageUrl } from '../services/api';
 
 export default function Home() {
   const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
+  const [slideIndex, setSlideIndex] = useState(0);
+  const [autoSlide, setAutoSlide] = useState(true);
   const [isInquiryOpen, setIsInquiryOpen] = useState(false);
 
   useEffect(() => {
     api.getProducts({ featured: true })
       .then(data => setFeaturedProducts(data))
       .catch(err => console.error("Error fetching featured products:", err));
+
+    api.getProducts()
+      .then(data => setAllProducts(data.filter(p => p.images && p.images.length > 0)))
+      .catch(err => console.error("Error fetching all products:", err));
   }, []);
+
+  const slides = allProducts.slice(0, 8); // show first 8 items for a concise, clean gallery slideshow
+
+  useEffect(() => {
+    if (!autoSlide || slides.length === 0) return;
+    const interval = setInterval(() => {
+      setSlideIndex(prev => (prev + 1) % slides.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [autoSlide, slides]);
+
+  const nextSlide = () => {
+    if (slides.length === 0) return;
+    setSlideIndex(prev => (prev + 1) % slides.length);
+  };
+
+  const prevSlide = () => {
+    if (slides.length === 0) return;
+    setSlideIndex(prev => (prev - 1 + slides.length) % slides.length);
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
@@ -144,69 +171,218 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3. FEATURED PROJECTS SECTION */}
+      {/* 3. COLLECTION SHOWCASE SLIDESHOW SECTION */}
       <section style={{ 
         backgroundColor: '#FCFCFC', 
         borderBottom: '1px solid var(--border-color)',
         padding: '80px 0'
       }}>
-        <div className="container" style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          gap: '64px',
-          alignItems: 'center'
-        }}>
-          {/* Left Column: Kitchen/Project Image */}
-          <div style={{
-            position: 'relative',
-            borderRadius: 'var(--border-radius-lg)',
-            overflow: 'hidden',
-            boxShadow: '0 8px 30px rgba(0, 0, 0, 0.03)',
-            border: '1px solid var(--border-color)',
-            height: 'clamp(280px, 40vh, 420px)'
-          }}>
-            <img 
-              src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop" 
-              alt="Featured Stone Project" 
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            />
+        <div className="container">
+          <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+            <h2 className="serif-title" style={{ fontSize: 'clamp(26px, 3.5vw, 32px)', fontWeight: 'normal', margin: '0 0 12px 0' }}>
+              Collection Gallery
+            </h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '14px', maxWidth: '500px', margin: '0 auto' }}>
+              Explore high-resolution highlights of our natural stone collection.
+            </p>
           </div>
 
-          {/* Right Column: Project Info */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', alignItems: 'flex-start' }}>
-            <h2 className="serif-title" style={{
-              fontSize: 'clamp(26px, 3.5vw, 32px)',
-              fontWeight: 'normal',
-              color: 'var(--text-primary)',
-              margin: 0
+          {slides.length === 0 ? (
+            <div style={{
+              textAlign: 'center',
+              padding: '100px 0',
+              backgroundColor: 'var(--bg-secondary)',
+              borderRadius: 'var(--border-radius-lg)',
+              border: '1px solid var(--border-color)',
+              color: 'var(--text-secondary)'
             }}>
-              Featured Projects
-            </h2>
-            <p style={{
-              fontSize: '15px',
-              color: 'var(--text-secondary)',
-              lineHeight: '1.7',
-              margin: 0,
-              maxWidth: '480px'
-            }}>
-              See how our premium white marble and custom-cut granite countertops transform modern kitchens, luxury bathrooms, and commercial lobbies into works of art.
-            </p>
-            <button 
-              onClick={() => setIsInquiryOpen(true)}
-              className="btn btn-primary"
+              Loading showcase gallery...
+            </div>
+          ) : (
+            <div 
               style={{
-                padding: '14px 28px',
-                fontSize: '13px',
-                fontWeight: 700,
-                textTransform: 'uppercase',
-                letterSpacing: '0.08em',
-                borderRadius: 'var(--border-radius-sm)',
-                color: '#FFFFFF'
+                position: 'relative',
+                width: '100%',
+                maxWidth: '960px',
+                margin: '0 auto',
+                height: 'clamp(320px, 50vh, 520px)',
+                borderRadius: 'var(--border-radius-lg)',
+                overflow: 'hidden',
+                boxShadow: '0 12px 40px rgba(0, 0, 0, 0.04)',
+                border: '1px solid var(--border-color)'
               }}
+              onMouseEnter={() => setAutoSlide(false)}
+              onMouseLeave={() => setAutoSlide(true)}
             >
-              View Project Details
-            </button>
-          </div>
+              {slides.map((p, idx) => {
+                const isActive = idx === slideIndex;
+                return (
+                  <div
+                    key={p.id}
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      opacity: isActive ? 1 : 0,
+                      visibility: isActive ? 'visible' : 'hidden',
+                      transition: 'opacity 0.8s ease, visibility 0.8s ease',
+                      zIndex: isActive ? 2 : 1
+                    }}
+                  >
+                    <img 
+                      src={resolveImageUrl(p.images[0])} 
+                      alt={p.name} 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      onError={(e) => {
+                        e.target.src = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop';
+                      }}
+                    />
+                    
+                    {/* Shadow Overlay for premium title contrast */}
+                    <div style={{
+                      position: 'absolute',
+                      inset: 0,
+                      background: 'linear-gradient(to top, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 50%)',
+                      zIndex: 3
+                    }} />
+                    
+                    {/* Text Details Overlay */}
+                    <div style={{
+                      position: 'absolute',
+                      bottom: '36px',
+                      left: '36px',
+                      right: '36px',
+                      zIndex: 4,
+                      color: '#FFFFFF',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'flex-end',
+                      gap: '20px',
+                      flexWrap: 'wrap'
+                    }}>
+                      <div>
+                        <span style={{
+                          backgroundColor: 'var(--accent-gold)',
+                          color: '#FFFFFF',
+                          padding: '4px 10px',
+                          borderRadius: 'var(--border-radius-sm)',
+                          fontSize: '10px',
+                          fontWeight: 700,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.08em',
+                          display: 'inline-block',
+                          marginBottom: '8px'
+                        }}>
+                          {p.category}
+                        </span>
+                        <h3 className="serif-title" style={{ fontSize: 'clamp(20px, 3vw, 28px)', color: '#FFFFFF', margin: 0 }}>
+                          {p.name}
+                        </h3>
+                        <p style={{ color: 'rgba(255, 255, 255, 0.85)', fontSize: '13px', margin: '4px 0 0 0' }}>
+                          Price: ₹{p.price} / {p.category === 'Tile' ? 'box' : 'sq.ft'}
+                        </p>
+                      </div>
+                      <Link 
+                        to={`/products/${p.id}`}
+                        className="btn btn-primary"
+                        style={{
+                          backgroundColor: '#FFFFFF',
+                          color: 'var(--text-primary)',
+                          borderRadius: 'var(--border-radius-sm)',
+                          padding: '10px 20px',
+                          fontSize: '12px',
+                          fontWeight: 700
+                        }}
+                      >
+                        View Details
+                      </Link>
+                    </div>
+                  </div>
+                );
+              })}
+
+              {/* Slider Controls */}
+              <button
+                onClick={prevSlide}
+                style={{
+                  position: 'absolute',
+                  left: '20px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(252, 252, 252, 0.85)',
+                  border: '1px solid var(--border-color)',
+                  color: 'var(--text-primary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  zIndex: 10,
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
+                  transition: 'background var(--transition-fast)'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#FFFFFF'}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'rgba(252, 252, 252, 0.85)'}
+              >
+                <ChevronLeft size={18} />
+              </button>
+              <button
+                onClick={nextSlide}
+                style={{
+                  position: 'absolute',
+                  right: '20px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(252, 252, 252, 0.85)',
+                  border: '1px solid var(--border-color)',
+                  color: 'var(--text-primary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  zIndex: 10,
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
+                  transition: 'background var(--transition-fast)'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#FFFFFF'}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'rgba(252, 252, 252, 0.85)'}
+              >
+                <ChevronRight size={18} />
+              </button>
+
+              {/* Slider dots indicator */}
+              <div style={{
+                position: 'absolute',
+                bottom: '16px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                display: 'flex',
+                gap: '8px',
+                zIndex: 10
+              }}>
+                {slides.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setSlideIndex(idx)}
+                    style={{
+                      width: '8px',
+                      height: '8px',
+                      borderRadius: '50%',
+                      padding: 0,
+                      border: 'none',
+                      backgroundColor: idx === slideIndex ? 'var(--accent-gold)' : 'rgba(255, 255, 255, 0.4)',
+                      cursor: 'pointer',
+                      transition: 'background var(--transition-fast)'
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
