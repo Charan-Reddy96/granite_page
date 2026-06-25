@@ -1,6 +1,15 @@
 // API Service that handles server integration and local mock database fallback
 // enabling full interactive functionality on static environments like GitHub Pages.
 
+// Firebase Firestore — used for cross-device inquiry storage
+import { db } from './firebase';
+import {
+  collection, addDoc, getDocs, doc, updateDoc, deleteDoc,
+  serverTimestamp, query, orderBy
+} from 'firebase/firestore';
+
+const INQUIRIES_COLLECTION = 'inquiries';
+
 const isGitHubPages = window.location.hostname.includes('github.io');
 const API_BASE = ''; // proxied via Vite config locally
 
@@ -701,10 +710,11 @@ export const api = {
     }
   },
 
-  // 2. INQUIRIES API
+  // 2. INQUIRIES API — powered by Firebase Firestore for cross-device sync
   submitInquiry: async (inquiryData) => {
     const isOnline = await checkServer();
     if (isOnline) {
+      // Flask backend available — use REST API
       const res = await fetchWithTimeout(`${API_BASE}/api/inquiries`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -716,11 +726,9 @@ export const api = {
       }
       return res.json();
     } else {
-      const inquiries = getLocalInquiries();
+      // Standalone / GitHub Pages — write directly to Firestore
       const products = getLocalProducts();
-
-      const newId = inquiries.length > 0 ? Math.max(...inquiries.map(i => i.id)) + 1 : 1;
-      let prodName = "General Inquiry";
+      let prodName = 'General Inquiry';
       let prodCat = null;
 
       if (inquiryData.product_id && inquiryData.product_id !== 'general') {
@@ -731,8 +739,7 @@ export const api = {
         }
       }
 
-      const newInquiry = {
-        id: newId,
+      const docRef = await addDoc(collection(db, INQUIRIES_COLLECTION), {
         name: inquiryData.name,
         phone: inquiryData.phone,
         email: inquiryData.email,
@@ -740,19 +747,18 @@ export const api = {
         product_name: prodName,
         product_category: prodCat,
         message: inquiryData.message,
-        status: "New",
-        created_at: new Date().toISOString().replace('T', ' ').substring(0, 19)
-      };
+        status: 'New',
+        created_at: serverTimestamp()
+      });
 
-      inquiries.push(newInquiry);
-      setLocalInquiries(inquiries);
-      return newInquiry;
+      return { id: docRef.id, message: 'Inquiry submitted successfully' };
     }
   },
 
   getInquiries: async () => {
     const isOnline = await checkServer();
     if (isOnline) {
+      // Flask backend available — use REST API
       const res = await fetchWithTimeout(`${API_BASE}/api/inquiries`, {
         headers: { ...getAuthHeaders() }
       });
@@ -762,13 +768,28 @@ export const api = {
       }
       return res.json();
     } else {
-      return getLocalInquiries().reverse(); // Show newest first
+      // Standalone / GitHub Pages — read from Firestore, newest first
+      const q = query(
+        collection(db, INQUIRIES_COLLECTION),
+        orderBy('created_at', 'desc')
+      );
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map(d => {
+        const data = d.data();
+        // Convert Firestore Timestamp to readable string
+        const ts = data.created_at;
+        const created_at = ts && ts.toDate
+          ? ts.toDate().toISOString().replace('T', ' ').substring(0, 19)
+          : (ts || '');
+        return { ...data, id: d.id, created_at };
+      });
     }
   },
 
   updateInquiryStatus: async (id, status) => {
     const isOnline = await checkServer();
     if (isOnline) {
+      // Flask backend available — use REST API
       const res = await fetchWithTimeout(`${API_BASE}/api/inquiries/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
@@ -780,18 +801,17 @@ export const api = {
       }
       return res.json();
     } else {
-      const inquiries = getLocalInquiries();
-      const index = inquiries.findIndex(i => i.id === parseInt(id));
-      if (index === -1) throw new Error("Inquiry not found");
-      inquiries[index].status = status;
-      setLocalInquiries(inquiries);
-      return inquiries[index];
+      // Standalone / GitHub Pages — update Firestore doc
+      const docRef = doc(db, INQUIRIES_COLLECTION, id);
+      await updateDoc(docRef, { status });
+      return { id, status };
     }
   },
 
   deleteInquiry: async (id) => {
     const isOnline = await checkServer();
     if (isOnline) {
+      // Flask backend available — use REST API
       const res = await fetchWithTimeout(`${API_BASE}/api/inquiries/${id}`, {
         method: 'DELETE',
         headers: { ...getAuthHeaders() }
@@ -802,10 +822,9 @@ export const api = {
       }
       return res.json();
     } else {
-      let inquiries = getLocalInquiries();
-      inquiries = inquiries.filter(i => i.id.toString() !== id.toString());
-      setLocalInquiries(inquiries);
-      return { message: "Inquiry deleted successfully" };
+      // Standalone / GitHub Pages — delete Firestore doc
+      await deleteDoc(doc(db, INQUIRIES_COLLECTION, id));
+      return { message: 'Inquiry deleted successfully' };
     }
   }
 };
