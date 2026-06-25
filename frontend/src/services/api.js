@@ -264,6 +264,24 @@ export const api = {
       if (filters.finish) {
         results = results.filter(p => p.finish && p.finish.toLowerCase() === filters.finish.toLowerCase());
       }
+      if (filters.min_price || filters.max_price) {
+        const minF = filters.min_price ? parseFloat(filters.min_price) : null;
+        const maxF = filters.max_price ? parseFloat(filters.max_price) : null;
+        
+        results = results.filter(p => {
+          if (!p.price) return false;
+          const matches = String(p.price).match(/\d+(\.\d+)?/g);
+          if (!matches || matches.length === 0) return false;
+          
+          const numbers = matches.map(Number);
+          const pMin = Math.min(...numbers);
+          const pMax = Math.max(...numbers);
+          
+          if (minF !== null && !isNaN(minF) && pMax < minF) return false;
+          if (maxF !== null && !isNaN(maxF) && pMin > maxF) return false;
+          return true;
+        });
+      }
       if (filters.featured) {
         results = results.filter(p => p.featured === true);
       }

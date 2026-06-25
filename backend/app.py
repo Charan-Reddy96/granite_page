@@ -466,27 +466,44 @@ def get_products():
     if finish:
         query = query.filter(Product.finish == finish)
         
-    # Apply price filters
-    min_price = request.args.get('min_price')
-    if min_price:
-        try:
-            query = query.filter(cast(Product.price, Float) >= float(min_price))
-        except ValueError:
-            pass
-            
-    max_price = request.args.get('max_price')
-    if max_price:
-        try:
-            query = query.filter(cast(Product.price, Float) <= float(max_price))
-        except ValueError:
-            pass
-            
     # Check if featured items are requested
     featured = request.args.get('featured')
     if featured == 'true':
         query = query.filter(Product.featured == True)
         
     products = query.all()
+    
+    # Apply price filters in Python to support range strings (e.g. "180 - 280")
+    min_price = request.args.get('min_price')
+    max_price = request.args.get('max_price')
+    if min_price or max_price:
+        import re
+        filtered_products = []
+        try:
+            min_f = float(min_price) if min_price else None
+        except ValueError:
+            min_f = None
+        try:
+            max_f = float(max_price) if max_price else None
+        except ValueError:
+            max_f = None
+            
+        for p in products:
+            if not p.price:
+                continue
+            numbers = [float(x) for x in re.findall(r'\d+(?:\.\d+)?', p.price)]
+            if not numbers:
+                continue
+            p_min = min(numbers)
+            p_max = max(numbers)
+            
+            if min_f is not None and p_max < min_f:
+                continue
+            if max_f is not None and p_min > max_f:
+                continue
+            filtered_products.append(p)
+        products = filtered_products
+        
     return jsonify([p.to_dict() for p in products])
 
 

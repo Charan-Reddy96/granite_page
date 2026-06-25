@@ -298,7 +298,7 @@ export default function AdminDashboard() {
               {/* Price & Availability row */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                 <div className="form-group" style={{ marginBottom: 0 }}>
-                  <label className="form-label">Price Range (₹/sqft) *</label>
+                  <label className="form-label">Price per Unit (₹) *</label>
                   <input 
                     type="text" 
                     name="price" 
