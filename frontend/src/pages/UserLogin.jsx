@@ -60,9 +60,6 @@ export default function UserLogin() {
       script.async = true;
       script.onload = () => {
         console.log("MSG91 script onload event triggered");
-        if (window.initSendOTP) {
-          window.initSendOTP(window.configuration);
-        }
       };
       document.body.appendChild(script);
     } else {
