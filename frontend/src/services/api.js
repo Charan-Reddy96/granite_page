@@ -1,14 +1,16 @@
 // API Service that handles server integration and local mock database fallback
 // enabling full interactive functionality on static environments like GitHub Pages.
 
-// Firebase Firestore — used for cross-device inquiry storage
-import { db } from './firebase';
+// Firebase Firestore + Storage — cross-device product and inquiry sync
+import { db, storage } from './firebase';
 import {
-  collection, addDoc, getDocs, doc, updateDoc, deleteDoc,
-  serverTimestamp, query, orderBy
+  collection, addDoc, getDocs, getDoc, doc, updateDoc, deleteDoc,
+  serverTimestamp, query, orderBy, getDocs as getDocsAlias
 } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const INQUIRIES_COLLECTION = 'inquiries';
+const PRODUCTS_COLLECTION = 'products';
 
 const isGitHubPages = window.location.hostname.includes('github.io');
 const API_BASE = ''; // proxied via Vite config locally
@@ -259,56 +261,32 @@ const defaultSeedProducts = [
   }
 ];
 
-// LocalStorage helpers
-const getLocalProducts = () => {
-  const p = localStorage.getItem('aura_products');
-  if (!p) {
-    localStorage.setItem('aura_products', JSON.stringify(defaultSeedProducts));
-    return defaultSeedProducts;
+// ─── Firestore Product Helpers ─────────────────────────────────────────────
+
+// Seed default products to Firestore if the collection is empty (one-time setup)
+let _seeded = false;
+const seedFirestoreProducts = async () => {
+  if (_seeded) return;
+  _seeded = true;
+  const snapshot = await getDocs(collection(db, PRODUCTS_COLLECTION));
+  if (snapshot.empty) {
+    const batch = defaultSeedProducts.map(p =>
+      addDoc(collection(db, PRODUCTS_COLLECTION), { ...p, _seeded: true })
+    );
+    await Promise.all(batch);
   }
-  let parsed = JSON.parse(p);
-  const featuredCount = parsed.filter(item => item.featured).length;
-  // Clear and re-seed if the image for id: 2 is not the new black granite close-up texture
-  const tanBrown = parsed.find(item => item.id === 1);
-  const blackGranite = parsed.find(item => item.id === 2);
-  const rosyPink = parsed.find(item => item.id === 3);
-  const blackGalaxy = parsed.find(item => item.id === 4);
-  const blackPearl = parsed.find(item => item.id === 5);
-  const blueGranite = parsed.find(item => item.id === 6);
-  const sierraPearl = parsed.find(item => item.id === 7);
-  const sadaliWhite = parsed.find(item => item.id === 8);
-  const coffeeBrown = parsed.find(item => item.id === 9);
-  const steelBlack = parsed.find(item => item.id === 10);
-  const tiles4x2 = parsed.find(item => item.id === 11);
-  const tiles2x2 = parsed.find(item => item.id === 12);
-  const tiles18x12 = parsed.find(item => item.id === 13);
-  const tiles16x16 = parsed.find(item => item.id === 14);
-  const tiles8x2_5 = parsed.find(item => item.id === 15);
-  const hasNewTanBrown = tanBrown && tanBrown.images && tanBrown.images[0] && tanBrown.images[0].includes('tan_brown_granite.png');
-  const hasNewImages = blackGranite && blackGranite.images && blackGranite.images[0] && blackGranite.images[0].includes('black_granite.png');
-  const hasNewRosy = rosyPink && rosyPink.images && rosyPink.images[0] && rosyPink.images[0].includes('rosy_pink_granite.png');
-  const hasNewGalaxy = blackGalaxy && blackGalaxy.images && blackGalaxy.images[0] && blackGalaxy.images[0].includes('black_galaxy_granite_v2.png');
-  const hasNewPearl = blackPearl && blackPearl.images && blackPearl.images[0] && blackPearl.images[0].includes('black_pearl_granite.png');
-  const hasNewBlue = blueGranite && blueGranite.images && blueGranite.images[0] && blueGranite.images[0].includes('blue_granite.png');
-  const hasNewSierra = sierraPearl && sierraPearl.images && sierraPearl.images[0] && sierraPearl.images[0].includes('sierra_pearl_granite.png');
-  const hasNewSadali = sadaliWhite && sadaliWhite.images && sadaliWhite.images[0] && sadaliWhite.images[0].includes('sadali_white_granite.png');
-  const hasNewCoffee = coffeeBrown && coffeeBrown.images && coffeeBrown.images[0] && coffeeBrown.images[0].includes('coffee_brown_granite.png');
-  const hasNewSteel = steelBlack && steelBlack.images && steelBlack.images[0] && steelBlack.images[0].includes('steel_black_granite.png');
-  const hasNewTiles4x2 = tiles4x2 && tiles4x2.images && tiles4x2.images[0] && tiles4x2.images[0].includes('tiles_4x2.png');
-  const hasNewTiles2x2 = tiles2x2 && tiles2x2.images && tiles2x2.images[0] && tiles2x2.images[0].includes('tiles_2x2.png');
-  const hasNewTiles18x12 = tiles18x12 && tiles18x12.images && tiles18x12.images[0] && tiles18x12.images[0].includes('tiles_18x12.png');
-  const hasNewTiles16x16 = tiles16x16 && tiles16x16.images && tiles16x16.images[0] && tiles16x16.images[0].includes('tiles_16x16.png');
-  const hasNewTiles8x2_5 = tiles8x2_5 && tiles8x2_5.images && tiles8x2_5.images[0] && tiles8x2_5.images[0].includes('tiles_8x2_5.png');
-  if (!parsed.some(item => item.name === 'Steel Black Granite') || featuredCount < 4 || !hasNewTanBrown || !hasNewImages || !hasNewRosy || !hasNewGalaxy || !hasNewPearl || !hasNewBlue || !hasNewSierra || !hasNewSadali || !hasNewCoffee || !hasNewSteel || !hasNewTiles4x2 || !hasNewTiles2x2 || !hasNewTiles18x12 || !hasNewTiles16x16 || !hasNewTiles8x2_5) {
-    localStorage.setItem('aura_products', JSON.stringify(defaultSeedProducts));
-    return defaultSeedProducts;
-  }
-  return parsed;
 };
 
-const setLocalProducts = (products) => {
-  localStorage.setItem('aura_products', JSON.stringify(products));
+// Upload an image File to Firebase Storage and return the public download URL
+const uploadImageToStorage = async (imageFile) => {
+  const fileName = `${Date.now()}_${imageFile.name}`;
+  const storageRef = ref(storage, `product_images/${fileName}`);
+  await uploadBytes(storageRef, imageFile);
+  return getDownloadURL(storageRef);
 };
+
+// Convert a Firestore product doc to a plain object
+const docToProduct = (d) => ({ ...d.data(), id: d.id });
 
 const getLocalInquiries = () => {
   const i = localStorage.getItem('aura_inquiries');
@@ -489,10 +467,11 @@ export const api = {
     }
   },
 
-  // 1. PRODUCTS API
+  // 1. PRODUCTS API — powered by Firebase Firestore for cross-device sync
   getProducts: async (filters = {}) => {
     const isOnline = await checkServer();
     if (isOnline) {
+      // Flask backend available — use REST API
       let queryParams = new URLSearchParams();
       if (filters.category) queryParams.append('category', filters.category);
       if (filters.q) queryParams.append('q', filters.q);
@@ -501,7 +480,6 @@ export const api = {
       if (filters.min_price) queryParams.append('min_price', filters.min_price);
       if (filters.max_price) queryParams.append('max_price', filters.max_price);
       if (filters.featured) queryParams.append('featured', 'true');
-
       const res = await fetchWithTimeout(`${API_BASE}/api/products?${queryParams.toString()}`);
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
@@ -509,36 +487,32 @@ export const api = {
       }
       return res.json();
     } else {
-      // Mock Filtering
-      let results = getLocalProducts();
+      // Standalone / GitHub Pages — read from Firestore, seed if empty
+      await seedFirestoreProducts();
+      const snapshot = await getDocs(collection(db, PRODUCTS_COLLECTION));
+      let results = snapshot.docs.map(docToProduct);
 
+      // Apply filters client-side
       if (filters.category) {
-        results = results.filter(p => p.category.toLowerCase() === filters.category.toLowerCase());
+        results = results.filter(p => p.category && p.category.toLowerCase() === filters.category.toLowerCase());
       }
       if (filters.q) {
-        const query = filters.q.toLowerCase();
+        const q = filters.q.toLowerCase();
         results = results.filter(p =>
-          p.name.toLowerCase().includes(query) ||
-          p.description.toLowerCase().includes(query) ||
-          p.color.toLowerCase().includes(query)
+          (p.name || '').toLowerCase().includes(q) ||
+          (p.description || '').toLowerCase().includes(q) ||
+          (p.color || '').toLowerCase().includes(q)
         );
       }
       if (filters.color) {
-        results = results.filter(p => p.color.toLowerCase() === filters.color.toLowerCase());
+        results = results.filter(p => p.color && p.color.toLowerCase() === filters.color.toLowerCase());
       }
       if (filters.finish) {
-        results = results.filter(p => p.finish.toLowerCase() === filters.finish.toLowerCase());
-      }
-      if (filters.min_price) {
-        results = results.filter(p => p.price >= parseFloat(filters.min_price));
-      }
-      if (filters.max_price) {
-        results = results.filter(p => p.price <= parseFloat(filters.max_price));
+        results = results.filter(p => p.finish && p.finish.toLowerCase() === filters.finish.toLowerCase());
       }
       if (filters.featured) {
         results = results.filter(p => p.featured === true);
       }
-
       return results;
     }
   },
@@ -546,24 +520,27 @@ export const api = {
   getProductById: async (id) => {
     const isOnline = await checkServer();
     if (isOnline) {
+      // Flask backend available — use REST API
       const res = await fetchWithTimeout(`${API_BASE}/api/products/${id}`);
-      if (!res.ok) throw new Error("Product not found");
+      if (!res.ok) throw new Error('Product not found');
       return res.json();
     } else {
-      const products = getLocalProducts();
-      const product = products.find(p => p.id.toString() === id.toString());
-      if (!product) throw new Error("Product not found");
-      return product;
+      // Standalone / GitHub Pages — read from Firestore
+      const docRef = doc(db, PRODUCTS_COLLECTION, id);
+      const snap = await getDoc(docRef);
+      if (!snap.exists()) throw new Error('Product not found');
+      return docToProduct(snap);
     }
   },
 
   createProduct: async (formData) => {
     const isOnline = await checkServer();
     if (isOnline) {
+      // Flask backend available — use REST API
       const res = await fetchWithTimeout(`${API_BASE}/api/products`, {
         method: 'POST',
         headers: { ...getAuthHeaders() },
-        body: formData // Form data with file
+        body: formData
       });
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
@@ -571,60 +548,43 @@ export const api = {
       }
       return res.json();
     } else {
-      // Mock Create Product
+      // Standalone / GitHub Pages — write to Firestore, image to Storage
       const name = formData.get('name');
       const category = formData.get('category');
       const color = formData.get('color');
-      const price = parseFloat(formData.get('price'));
+      const price = formData.get('price');
       const availability = formData.get('availability') || 'In Stock';
       const description = formData.get('description') || '';
       const featured = formData.get('featured') === 'true';
-      const thickness = formData.get('thickness');
-      const dimensions = formData.get('dimensions');
-      const finish = formData.get('finish');
-      const coverage = formData.get('coverage');
-      const size = formData.get('size');
+      const thickness = formData.get('thickness') || '';
+      const dimensions = formData.get('dimensions') || '';
+      const finish = formData.get('finish') || 'Polished';
+      const coverage = formData.get('coverage') || '';
+      const size = formData.get('size') || '';
 
       const imageFile = formData.get('images');
       let imageUrl = formData.get('imageUrl') || 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=500&auto=format&fit=crop';
 
       if (imageFile && imageFile.name) {
-        imageUrl = await new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
-          reader.readAsDataURL(imageFile);
-        });
+        imageUrl = await uploadImageToStorage(imageFile);
       }
 
-      const products = getLocalProducts();
-      const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-
-      const newProduct = {
-        id: newId,
-        name,
-        category,
-        color,
-        price,
-        availability,
-        description,
-        featured,
-        thickness,
-        dimensions,
-        finish,
-        coverage,
-        size,
-        images: [imageUrl]
+      const newData = {
+        name, category, color, price, availability, description,
+        featured, thickness, dimensions, finish, coverage, size,
+        images: [imageUrl],
+        created_at: serverTimestamp()
       };
 
-      products.push(newProduct);
-      setLocalProducts(products);
-      return newProduct;
+      const docRef = await addDoc(collection(db, PRODUCTS_COLLECTION), newData);
+      return { ...newData, id: docRef.id };
     }
   },
 
   updateProduct: async (id, formData) => {
     const isOnline = await checkServer();
     if (isOnline) {
+      // Flask backend available — use REST API
       const res = await fetchWithTimeout(`${API_BASE}/api/products/${id}`, {
         method: 'PUT',
         headers: { ...getAuthHeaders() },
@@ -636,60 +596,44 @@ export const api = {
       }
       return res.json();
     } else {
-      // Mock Update Product
-      const products = getLocalProducts();
-      const index = products.findIndex(p => p.id === parseInt(id));
-      if (index === -1) throw new Error("Product not found");
-
+      // Standalone / GitHub Pages — update Firestore doc
       const name = formData.get('name');
       const category = formData.get('category');
       const color = formData.get('color');
-      const price = parseFloat(formData.get('price'));
+      const price = formData.get('price');
       const availability = formData.get('availability');
       const description = formData.get('description');
       const featured = formData.get('featured') === 'true';
-      const thickness = formData.get('thickness');
-      const dimensions = formData.get('dimensions');
-      const finish = formData.get('finish');
-      const coverage = formData.get('coverage');
-      const size = formData.get('size');
+      const thickness = formData.get('thickness') || '';
+      const dimensions = formData.get('dimensions') || '';
+      const finish = formData.get('finish') || 'Polished';
+      const coverage = formData.get('coverage') || '';
+      const size = formData.get('size') || '';
 
       const imageFile = formData.get('images');
-      let imageUrl = formData.get('imageUrl');
+      let imageUrl = formData.get('imageUrl') || null;
 
       if (imageFile && imageFile.name) {
-        imageUrl = await new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
-          reader.readAsDataURL(imageFile);
-        });
+        imageUrl = await uploadImageToStorage(imageFile);
       }
 
-      products[index] = {
-        ...products[index],
-        name: name || products[index].name,
-        category: category || products[index].category,
-        color: color || products[index].color,
-        price: !isNaN(price) ? price : products[index].price,
-        availability: availability || products[index].availability,
-        description: description !== null ? description : products[index].description,
-        featured: featured,
-        thickness: thickness !== undefined ? thickness : products[index].thickness,
-        dimensions: dimensions !== undefined ? dimensions : products[index].dimensions,
-        finish: finish !== undefined ? finish : products[index].finish,
-        coverage: coverage !== undefined ? coverage : products[index].coverage,
-        size: size !== undefined ? size : products[index].size,
-        images: imageUrl ? [imageUrl] : products[index].images
+      const updateData = {
+        name, category, color, price, availability, description,
+        featured, thickness, dimensions, finish, coverage, size,
+        updated_at: serverTimestamp()
       };
+      if (imageUrl) updateData.images = [imageUrl];
 
-      setLocalProducts(products);
-      return products[index];
+      const docRef = doc(db, PRODUCTS_COLLECTION, id);
+      await updateDoc(docRef, updateData);
+      return { ...updateData, id };
     }
   },
 
   deleteProduct: async (id) => {
     const isOnline = await checkServer();
     if (isOnline) {
+      // Flask backend available — use REST API
       const res = await fetchWithTimeout(`${API_BASE}/api/products/${id}`, {
         method: 'DELETE',
         headers: { ...getAuthHeaders() }
@@ -700,13 +644,9 @@ export const api = {
       }
       return res.json();
     } else {
-      let products = getLocalProducts();
-      const index = products.findIndex(p => p.id.toString() === id.toString());
-      if (index !== -1) {
-        products.splice(index, 1);
-        setLocalProducts(products);
-      }
-      return { message: "Product deleted successfully" };
+      // Standalone / GitHub Pages — delete Firestore doc
+      await deleteDoc(doc(db, PRODUCTS_COLLECTION, id));
+      return { message: 'Product deleted successfully' };
     }
   },
 
