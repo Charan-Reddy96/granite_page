@@ -298,13 +298,12 @@ export default function AdminDashboard() {
               {/* Price & Availability row */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                 <div className="form-group" style={{ marginBottom: 0 }}>
-                  <label className="form-label">Price per Unit (₹) *</label>
+                  <label className="form-label">Price Range (₹/sqft) *</label>
                   <input 
-                    type="number" 
-                    step="0.01"
+                    type="text" 
                     name="price" 
                     required
-                    placeholder={formData.category === 'Tile' ? 'e.g. 800.00 (per box)' : 'e.g. 180.00 (per sqft)'} 
+                    placeholder={formData.category === 'Tile' ? 'e.g. 800 - 1200 (per box)' : 'e.g. 180 - 280 (per sqft)'} 
                     className="form-control"
                     value={formData.price}
                     onChange={handleInputChange}
