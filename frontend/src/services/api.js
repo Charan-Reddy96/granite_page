@@ -51,230 +51,11 @@ const getAuthHeaders = () => {
   return headers;
 };
 
-// Seed data for standalone mode (16 items)
-const defaultSeedProducts = [
-  {
-    id: 1,
-    name: "Tan Brown Granite",
-    category: "Granite",
-    color: "Brown",
-    price: "60 - 80",
-    availability: "In Stock",
-    description: "Dark black-brown background with large, chocolate-brown and bronze mineral crystals. Highly unique leathered texture.",
-    featured: false,
-    thickness: "3cm",
-    dimensions: "120\" x 70\"",
-    finish: "Leathered",
-    images: ["/tan_brown_granite.png"]
-  },
-  {
-    id: 2,
-    name: "Black Granite",
-    category: "Granite",
-    color: "Black",
-    price: "120 - 280",
-    availability: "In Stock",
-    description: "Deep black solid granite texture. Elegant choice for premium heavy-duty kitchen countertops and flooring.",
-    featured: true,
-    thickness: "2cm",
-    dimensions: "118\" x 70\"",
-    finish: "Polished",
-    images: ["/black_granite.png"]
-  },
-  {
-    id: 3,
-    name: "Rosy Pink Granite",
-    category: "Granite",
-    color: "Pink",
-    price: "80 - 120",
-    availability: "In Stock",
-    description: "Delicate rose-colored minerals embedded in clean quartz. Brings soft warmth to decorative architecture.",
-    featured: false,
-    thickness: "3cm",
-    dimensions: "120\" x 72\"",
-    finish: "Honed",
-    images: ["/rosy_pink_granite.png"]
-  },
-  {
-    id: 4,
-    name: "Black Galaxy Granite",
-    category: "Granite",
-    color: "Black",
-    price: "170 - 280",
-    availability: "In Stock",
-    description: "Stunning black granite with golden and white specks. Perfect for premium countertops and accent walls.",
-    featured: true,
-    thickness: "3cm",
-    dimensions: "126\" x 74\"",
-    finish: "Polished",
-    images: ["/black_galaxy_granite_v2.png"]
-  },
-  {
-    id: 5,
-    name: "Black Pearl Granite",
-    category: "Granite",
-    color: "Black",
-    price: "120 - 180",
-    availability: "In Stock",
-    description: "Deep dark granite with subtle metallic silver mineral pearls, highly resistant and durable surface.",
-    featured: false,
-    thickness: "2cm",
-    dimensions: "115\" x 68\"",
-    finish: "Polished",
-    images: ["/black_pearl_granite.png"]
-  },
-  {
-    id: 6,
-    name: "Blue Granite",
-    category: "Granite",
-    color: "Blue",
-    price: "70 - 110",
-    availability: "In Stock",
-    description: "Vibrant blue reflections on slate-grey base stone. Extremely beautiful and modern accent cladding.",
-    featured: false,
-    thickness: "2cm",
-    dimensions: "115\" x 68\"",
-    finish: "Polished",
-    images: ["/blue_granite.png"]
-  },
-  {
-    id: 7,
-    name: "Sierra Pearl Granite",
-    category: "Granite",
-    color: "Grey",
-    price: "80 - 120",
-    availability: "In Stock",
-    description: "Classic grey stone dotted with quartz pearls. Highly recommended for commercial lobby flooring.",
-    featured: false,
-    thickness: "3cm",
-    dimensions: "120\" x 70\"",
-    finish: "Leathered",
-    images: ["/sierra_pearl_granite.png"]
-  },
-  {
-    id: 8,
-    name: "Sadali White Granite",
-    category: "Granite",
-    color: "White",
-    price: "75 - 110",
-    availability: "In Stock",
-    description: "Renowned Sadali white granite, featuring balanced grey salt-and-pepper mineral patterns.",
-    featured: false,
-    thickness: "2cm",
-    dimensions: "122\" x 72\"",
-    finish: "Polished",
-    images: ["/sadali_white_granite.png"]
-  },
-  {
-    id: 9,
-    name: "Coffee Brown Granite",
-    category: "Granite",
-    color: "Brown",
-    price: "100 - 120",
-    availability: "In Stock",
-    description: "Warm brown coffee-toned natural stone. Exudes luxurious comfort for residential designs.",
-    featured: false,
-    thickness: "3cm",
-    dimensions: "120\" x 70\"",
-    finish: "Honed",
-    images: ["/coffee_brown_granite.png"]
-  },
-  {
-    id: 10,
-    name: "Steel Black Granite",
-    category: "Granite",
-    color: "Black",
-    price: "120 - 150",
-    availability: "In Stock",
-    description: "Premium steel black granite with textured metallic highlights. Exquisite durability and sleek appearance.",
-    featured: true,
-    thickness: "2cm",
-    dimensions: "120\" x 70\"",
-    finish: "Polished",
-    images: ["/steel_black_granite.png"]
-  },
-  {
-    id: 11,
-    name: "4x2 Vitrified Tiles",
-    category: "Tile",
-    color: "White",
-    price: "800 - 1200",
-    availability: "In Stock",
-    description: "Stunning high-gloss 4' x 2' vitrified floor tiles. Box pack covers multiple pieces.",
-    featured: true,
-    dimensions: "4' x 2'",
-    finish: "Polished",
-    images: ["/tiles_4x2.png"]
-  },
-  {
-    id: 12,
-    name: "2x2 Vitrified Tiles",
-    category: "Tile",
-    color: "White",
-    price: "700 - 900",
-    availability: "In Stock",
-    description: "Durable 2' x 2' satin-finish vitrified floor tiles. Convenient box packaging.",
-    featured: false,
-    dimensions: "2' x 2'",
-    finish: "Matte",
-    images: ["/tiles_2x2.png"]
-  },
-  {
-    id: 13,
-    name: "18x12 Wall Tiles",
-    category: "Tile",
-    color: "Gold",
-    price: "280 - 600",
-    availability: "In Stock",
-    description: "Exquisite 18\" x 12\" ceramic wall tiles. Perfect for bathrooms and kitchen backsplashes.",
-    featured: false,
-    dimensions: "18\" x 12\"",
-    finish: "Polished",
-    images: ["/tiles_18x12.png"]
-  },
-  {
-    id: 14,
-    name: "16x16 Floor Tiles",
-    category: "Tile",
-    color: "Grey",
-    price: "400 - 700",
-    availability: "In Stock",
-    description: "Rustic 16\" x 16\" non-slip parking and floor tiles. Durable, heavy-traffic resistance.",
-    featured: false,
-    dimensions: "16\" x 16\"",
-    finish: "Matte",
-    images: ["/tiles_16x16.png"]
-  },
-  {
-    id: 15,
-    name: "8x2.5 Step Tiles",
-    category: "Tile",
-    color: "Brown",
-    price: "2200 - 2800",
-    availability: "In Stock",
-    description: "Magnificent step tiles in 8' x 2.5' dimensions. Perfect for stairs and pathways.",
-    featured: false,
-    dimensions: "8' x 2.5'",
-    finish: "Polished",
-    images: ["/tiles_8x2_5.png"]
-  }
-];
+// Clear any stale localStorage product/inquiry data left from the old mock system
+// All data now lives exclusively in Firestore
+['aura_products', 'aura_inquiries'].forEach(key => localStorage.removeItem(key));
 
-// ─── Firestore Product Helpers ─────────────────────────────────────────────
-
-// Seed default products to Firestore if the collection is empty (one-time setup)
-let _seeded = false;
-const seedFirestoreProducts = async () => {
-  if (_seeded) return;
-  _seeded = true;
-  const snapshot = await getDocs(collection(db, PRODUCTS_COLLECTION));
-  if (snapshot.empty) {
-    const batch = defaultSeedProducts.map(p =>
-      addDoc(collection(db, PRODUCTS_COLLECTION), { ...p, _seeded: true })
-    );
-    await Promise.all(batch);
-  }
-};
+// ─── Firestore Helpers ──────────────────────────────────────────────────────
 
 // Convert an image File to a base64 data URL (stored directly in Firestore)
 // Works for images up to ~700KB. No external service required.
@@ -286,35 +67,8 @@ const convertImageToBase64 = (imageFile) =>
     reader.readAsDataURL(imageFile);
   });
 
-// Convert a Firestore product doc to a plain object
+// Convert a Firestore doc snapshot to a plain product object
 const docToProduct = (d) => ({ ...d.data(), id: d.id });
-
-const getLocalInquiries = () => {
-  const i = localStorage.getItem('aura_inquiries');
-  if (!i) {
-    const defaultInquiries = [
-      {
-        id: 1,
-        name: "Devin Sharma",
-        phone: "+91 98765 43210",
-        email: "devin@example.com",
-        product_id: 1,
-        product_name: "Black Galaxy Granite",
-        product_category: "Granite",
-        message: "Requesting a quote for 400 sq.ft of polished Black Galaxy slab.",
-        status: "New",
-        created_at: "2026-06-04 18:30:15"
-      }
-    ];
-    localStorage.setItem('aura_inquiries', JSON.stringify(defaultInquiries));
-    return defaultInquiries;
-  }
-  return JSON.parse(i);
-};
-
-const setLocalInquiries = (inquiries) => {
-  localStorage.setItem('aura_inquiries', JSON.stringify(inquiries));
-};
 
 // Check if Flask server is responsive
 async function checkServer() {
@@ -488,8 +242,7 @@ export const api = {
       }
       return res.json();
     } else {
-      // Standalone / GitHub Pages — read from Firestore, seed if empty
-      await seedFirestoreProducts();
+      // Standalone / GitHub Pages — read all products from Firestore
       const snapshot = await getDocs(collection(db, PRODUCTS_COLLECTION));
       let results = snapshot.docs.map(docToProduct);
 
