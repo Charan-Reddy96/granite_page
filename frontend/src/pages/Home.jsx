@@ -33,7 +33,7 @@ export default function Home() {
         minHeight: 'var(--hero-min-height, clamp(480px, 85vh, 900px))',
         display: 'flex',
         alignItems: 'center',
-        background: `linear-gradient(rgba(15, 15, 17, 0.4), rgba(15, 15, 17, 0.85)), url("${import.meta.env.BASE_URL}hero_dark_showroom.png") no-repeat center center/cover`,
+        background: `linear-gradient(rgba(15, 15, 17, 0.4), rgba(15, 15, 17, 0.85)), url("${import.meta.env.BASE_URL}indian_stone_showroom.png") no-repeat center center/cover`,
         borderBottom: '1px solid var(--border-color)'
       }}>
         {/* Visual Overlay Layer for premium depth */}
