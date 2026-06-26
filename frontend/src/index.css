@@ -200,6 +200,13 @@ h1, h2, h3, h4, h5, h6 {
   animation: slideUp 0.3s ease;
 }
 
+/* Contact row - 2 columns on desktop, stacks on mobile */
+.modal-contact-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
 .modal-close {
   position: absolute;
   top: 20px; right: 20px;
@@ -522,7 +529,14 @@ select.form-control { cursor: pointer; }
   .modal-content {
     padding: 24px 20px;
     border-radius: var(--border-radius-md);
-    max-height: 95vh;
+    max-height: 92vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Stack phone and email vertically on mobile */
+  .modal-contact-row {
+    grid-template-columns: 1fr;
   }
 
   /* Hero CTA banner stacks and paddings */

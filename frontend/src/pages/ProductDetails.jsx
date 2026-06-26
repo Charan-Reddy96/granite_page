@@ -217,13 +217,31 @@ export default function ProductDetails() {
           </div>
 
           {/* Action: Send Inquiry */}
-          <button 
-            onClick={() => setIsInquiryOpen(true)}
-            className="btn btn-primary"
-            style={{ width: '100%', padding: '14px', fontSize: '16px' }}
-          >
-            Submit Inquiry for Quote <MessageSquare size={18} />
-          </button>
+          {product.availability && product.availability.toLowerCase().replace(/\s+/g, '') === 'outofstock' ? (
+            <div style={{
+              padding: '16px',
+              backgroundColor: 'rgba(239, 68, 68, 0.05)',
+              border: '1px solid var(--danger)',
+              borderRadius: 'var(--border-radius-md)',
+              color: 'var(--danger)',
+              fontSize: '14px',
+              textAlign: 'center',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '6px'
+            }}>
+              <span style={{ fontWeight: 600 }}>Currently Out of Stock</span>
+              <span>We cannot accept custom inquiries for this item at this time. Please check back later or explore other catalog slabs.</span>
+            </div>
+          ) : (
+            <button 
+              onClick={() => setIsInquiryOpen(true)}
+              className="btn btn-primary"
+              style={{ width: '100%', padding: '14px', fontSize: '16px' }}
+            >
+              Submit Inquiry for Quote <MessageSquare size={18} />
+            </button>
+          )}
 
         </div>
 

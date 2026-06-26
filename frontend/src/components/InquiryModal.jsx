@@ -136,7 +136,7 @@ export default function InquiryModal({ isOpen, onClose, preFilledProduct = null 
           </div>
 
           {/* Contact Row */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <div className="modal-contact-row">
             <div className="form-group">
               <label className="form-label">Phone Number *</label>
               <input
@@ -184,11 +184,13 @@ export default function InquiryModal({ isOpen, onClose, preFilledProduct = null 
               >
                 <option value="">-- Select Product --</option>
                 <option value="general">General Consultation Inquiry</option>
-                {products.map(p => (
-                  <option key={p.id} value={p.id}>
-                    [{p.category}] {p.name}
-                  </option>
-                ))}
+                {products
+                  .filter(p => !p.availability || p.availability.toLowerCase().replace(/\s+/g, '') !== 'outofstock')
+                  .map(p => (
+                    <option key={p.id} value={p.id}>
+                      [{p.category}] {p.name}
+                    </option>
+                  ))}
               </select>
             )}
           </div>

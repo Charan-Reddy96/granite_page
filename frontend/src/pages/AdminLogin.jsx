@@ -146,7 +146,7 @@ export default function AdminLogin() {
             <input
               type="password"
               className="form-control"
-              placeholder="e.g. gs_dev_device_sig_2026"
+              placeholder="Enter Authorization Key"
               value={deviceSignature}
               onChange={(e) => setDeviceSignature(e.target.value)}
               required
