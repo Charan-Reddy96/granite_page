@@ -180,9 +180,29 @@ export const api = {
       // Regular user — restore from Firebase Auth session + Firestore profile
       const currentFBUser = await waitForFirebaseUser();
       if (!currentFBUser) throw new Error('Not authenticated');
-      const userDocSnap = await getDoc(doc(db, 'users', currentFBUser.uid));
-      if (!userDocSnap.exists()) throw new Error('Not authenticated');
-      return { user: userDocSnap.data() };
+
+      // Try Firestore first, fall back to locally cached profile
+      try {
+        const userDocSnap = await getDoc(doc(db, 'users', currentFBUser.uid));
+        if (userDocSnap.exists()) return { user: userDocSnap.data() };
+      } catch (e) {
+        console.warn('[Auth] Firestore profile read failed, checking local fallback.', e.message);
+      }
+
+      // Fallback: check locally cached profile (saved when Firestore write failed)
+      const cached = JSON.parse(localStorage.getItem('gs_fb_profiles') || '{}');
+      if (cached[currentFBUser.uid]) return { user: cached[currentFBUser.uid] };
+
+      // Last resort: build minimal profile from Firebase Auth data
+      return {
+        user: {
+          id: currentFBUser.uid,
+          username: currentFBUser.displayName || currentFBUser.email?.split('@')[0] || 'User',
+          role: 'user',
+          profile_image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop',
+          created_at: currentFBUser.metadata?.creationTime || new Date().toISOString()
+        }
+      };
     }
   },
 
@@ -229,7 +249,17 @@ export const api = {
       };
 
       // Store user profile in Firestore for cross-device retrieval
-      await setDoc(doc(db, 'users', firebaseCredential.user.uid), newUser);
+      // Non-fatal: if Firestore rules block write, Firebase Auth user is still created
+      try {
+        await setDoc(doc(db, 'users', firebaseCredential.user.uid), newUser);
+        console.log('[Auth] User profile saved to Firestore:', firebaseCredential.user.uid);
+      } catch (firestoreErr) {
+        console.warn('[Auth] Firestore profile write failed (check Firestore rules). User is still registered in Firebase Auth.', firestoreErr.message);
+        // Store minimal profile locally as fallback until Firestore rules are fixed
+        const stored = JSON.parse(localStorage.getItem('gs_fb_profiles') || '{}');
+        stored[firebaseCredential.user.uid] = newUser;
+        localStorage.setItem('gs_fb_profiles', JSON.stringify(stored));
+      }
 
       const idToken = await firebaseCredential.user.getIdToken();
       return {
