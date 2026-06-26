@@ -3,9 +3,11 @@ import { Plus, Trash2, Edit2, Mail, CheckCircle2, Phone, AlertCircle, Upload, Ar
 import { api, resolveImageUrl } from '../services/api';
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState('products'); // 'products' | 'inquiries'
+  const [activeTab, setActiveTab] = useState('products');
   const [products, setProducts] = useState([]);
   const [inquiries, setInquiries] = useState([]);
+  const [newInquiryToast, setNewInquiryToast] = useState(false);
+  const prevInquiryCount = React.useRef(0);
   
   // Product Form State
   const [editingId, setEditingId] = useState(null); // null means adding new
@@ -43,14 +45,19 @@ export default function AdminDashboard() {
   // Real-time Firestore listener for inquiries
   useEffect(() => {
     fetchProducts();
-    fetchInquiries(); // initial load
 
     // Subscribe to real-time updates from Firestore
     const unsubscribe = api.subscribeToInquiries((liveInquiries) => {
       setInquiries(liveInquiries);
+      // Show toast when a NEW inquiry arrives (not on initial load)
+      if (prevInquiryCount.current > 0 && liveInquiries.length > prevInquiryCount.current) {
+        setNewInquiryToast(true);
+        setTimeout(() => setNewInquiryToast(false), 5000);
+      }
+      prevInquiryCount.current = liveInquiries.length;
     });
 
-    return () => unsubscribe(); // cleanup on unmount
+    return () => unsubscribe();
   }, []);
 
   const handleInputChange = (e) => {
@@ -185,6 +192,32 @@ export default function AdminDashboard() {
 
   return (
     <div className="container" style={{ padding: '40px 24px 80px 24px' }}>
+
+      {/* New Inquiry Toast */}
+      {newInquiryToast && (
+        <div style={{
+          position: 'fixed', bottom: '28px', right: '28px', zIndex: 9999,
+          backgroundColor: 'var(--accent-gold)', color: 'var(--accent-dark)',
+          padding: '14px 22px', borderRadius: '12px',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
+          display: 'flex', alignItems: 'center', gap: '10px',
+          fontWeight: 700, fontSize: '14px',
+          animation: 'slideUp 0.3s ease'
+        }}>
+          <Mail size={18} />
+          New inquiry received!
+          <button
+            onClick={() => { setNewInquiryToast(false); setActiveTab('inquiries'); }}
+            style={{
+              marginLeft: '8px', padding: '4px 10px', borderRadius: '6px',
+              border: 'none', backgroundColor: 'rgba(0,0,0,0.15)',
+              color: 'inherit', cursor: 'pointer', fontWeight: 700, fontSize: '12px'
+            }}
+          >
+            View
+          </button>
+        </div>
+      )}
       
       {/* Dashboard Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px', flexWrap: 'wrap', gap: '20px' }}>
@@ -227,7 +260,7 @@ export default function AdminDashboard() {
               transition: 'all var(--transition-normal)'
             }}
           >
-            Customer Inquiries ({inquiries.length}) {activeTab === 'inquiries' && <span style={{ fontSize: '10px', marginLeft: '4px', opacity: 0.7 }}>● LIVE</span>}
+            Customer Inquiries ({inquiries.length}) <span className="live-dot" title="Live updates" />
           </button>
         </div>
       </div>

@@ -633,44 +633,57 @@ export const api = {
       }
       return res.json();
     } else {
-      // Standalone / GitHub Pages — read from Firestore, newest first
-      const q = query(
-        collection(db, INQUIRIES_COLLECTION),
-        orderBy('created_at', 'desc')
-      );
-      const snapshot = await getDocs(q);
-      return snapshot.docs.map(d => {
+      // Standalone / GitHub Pages — read all from Firestore, sort client-side
+      // (avoids needing a Firestore composite index)
+      const snapshot = await getDocs(collection(db, INQUIRIES_COLLECTION));
+      const results = snapshot.docs.map(d => {
         const data = d.data();
-        // Convert Firestore Timestamp to readable string
         const ts = data.created_at;
         const created_at = ts && ts.toDate
           ? ts.toDate().toISOString().replace('T', ' ').substring(0, 19)
           : (ts || '');
         return { ...data, id: d.id, created_at };
       });
+      // Sort newest first client-side
+      return results.sort((a, b) => b.created_at.localeCompare(a.created_at));
     }
   },
 
-  // Real-time inquiry listener — calls callback(inquiries[]) whenever Firestore changes
-  // Returns an unsubscribe function. Use this in the Admin Dashboard.
+  // Real-time inquiry listener — calls callback(inquiries[]) whenever Firestore changes.
+  // Does NOT use orderBy (avoids Firestore index requirement) — sorts client-side.
+  // Returns an unsubscribe function.
   subscribeToInquiries: (callback) => {
-    const q = query(
+    const unsub = onSnapshot(
       collection(db, INQUIRIES_COLLECTION),
-      orderBy('created_at', 'desc')
+      (snapshot) => {
+        const inquiries = snapshot.docs.map(d => {
+          const data = d.data();
+          const ts = data.created_at;
+          const created_at = ts && ts.toDate
+            ? ts.toDate().toISOString().replace('T', ' ').substring(0, 19)
+            : (ts || new Date().toISOString().replace('T', ' ').substring(0, 19));
+          return { ...data, id: d.id, created_at };
+        });
+        // Sort newest first client-side
+        inquiries.sort((a, b) => b.created_at.localeCompare(a.created_at));
+        callback(inquiries);
+      },
+      (err) => {
+        console.error('[Firestore] Real-time inquiry subscription error:', err.message);
+        // On error, try a one-time fetch as fallback
+        getDocs(collection(db, INQUIRIES_COLLECTION)).then(snap => {
+          const fallback = snap.docs.map(d => {
+            const data = d.data();
+            const ts = data.created_at;
+            const created_at = ts && ts.toDate
+              ? ts.toDate().toISOString().replace('T', ' ').substring(0, 19)
+              : (ts || '');
+            return { ...data, id: d.id, created_at };
+          }).sort((a, b) => b.created_at.localeCompare(a.created_at));
+          callback(fallback);
+        }).catch(() => {});
+      }
     );
-    const unsub = onSnapshot(q, (snapshot) => {
-      const inquiries = snapshot.docs.map(d => {
-        const data = d.data();
-        const ts = data.created_at;
-        const created_at = ts && ts.toDate
-          ? ts.toDate().toISOString().replace('T', ' ').substring(0, 19)
-          : (ts || new Date().toISOString().replace('T', ' ').substring(0, 19));
-        return { ...data, id: d.id, created_at };
-      });
-      callback(inquiries);
-    }, (err) => {
-      console.error('[Firestore] Real-time inquiry subscription error:', err.message);
-    });
     return unsub;
   },
 
