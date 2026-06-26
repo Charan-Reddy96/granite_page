@@ -61,7 +61,11 @@ export default function UserSignup() {
       await loginWithGoogle();
       navigate('/', { replace: true });
     } catch (err) {
-      if (err.message !== 'Google sign-in was cancelled.') {
+      if (err.message === 'Google sign-in was cancelled.') {
+        // silently ignore popup close
+      } else if (err.message && err.message.includes('unauthorized-domain')) {
+        setError('Google sign-in is blocked: this site\'s domain is not yet authorized in Firebase. Please use username/password signup for now.');
+      } else {
         setError(err.message || 'Google sign-in failed. Please try again.');
       }
     } finally {

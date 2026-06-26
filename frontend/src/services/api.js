@@ -5,7 +5,7 @@
 import { db, auth } from './firebase';
 import {
   collection, addDoc, getDocs, getDoc, doc, updateDoc, deleteDoc,
-  serverTimestamp, query, orderBy, setDoc
+  serverTimestamp, query, orderBy, setDoc, onSnapshot
 } from 'firebase/firestore';
 import {
   createUserWithEmailAndPassword,
@@ -283,6 +283,12 @@ export const api = {
     } catch (err) {
       if (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request') {
         throw new Error('Google sign-in was cancelled.');
+      }
+      if (err.code === 'auth/unauthorized-domain') {
+        throw new Error(
+          'Google sign-in is not authorized for this domain. ' +
+          'Please add "charan-reddy96.github.io" to Firebase Console → Authentication → Authorized Domains.'
+        );
       }
       throw new Error(err.message || 'Google sign-in failed.');
     }
@@ -613,6 +619,29 @@ export const api = {
         return { ...data, id: d.id, created_at };
       });
     }
+  },
+
+  // Real-time inquiry listener — calls callback(inquiries[]) whenever Firestore changes
+  // Returns an unsubscribe function. Use this in the Admin Dashboard.
+  subscribeToInquiries: (callback) => {
+    const q = query(
+      collection(db, INQUIRIES_COLLECTION),
+      orderBy('created_at', 'desc')
+    );
+    const unsub = onSnapshot(q, (snapshot) => {
+      const inquiries = snapshot.docs.map(d => {
+        const data = d.data();
+        const ts = data.created_at;
+        const created_at = ts && ts.toDate
+          ? ts.toDate().toISOString().replace('T', ' ').substring(0, 19)
+          : (ts || new Date().toISOString().replace('T', ' ').substring(0, 19));
+        return { ...data, id: d.id, created_at };
+      });
+      callback(inquiries);
+    }, (err) => {
+      console.error('[Firestore] Real-time inquiry subscription error:', err.message);
+    });
+    return unsub;
   },
 
   updateInquiryStatus: async (id, status) => {

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, Edit2, Mail, CheckCircle2, Phone, AlertCircle, Upload, Archive } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Plus, Trash2, Edit2, Mail, CheckCircle2, Phone, AlertCircle, Upload, Archive, RefreshCw } from 'lucide-react';
 import { api, resolveImageUrl } from '../services/api';
 
 export default function AdminDashboard() {
@@ -40,9 +40,17 @@ export default function AdminDashboard() {
       .catch(err => console.error("Error loading inquiries:", err));
   };
 
+  // Real-time Firestore listener for inquiries
   useEffect(() => {
     fetchProducts();
-    fetchInquiries();
+    fetchInquiries(); // initial load
+
+    // Subscribe to real-time updates from Firestore
+    const unsubscribe = api.subscribeToInquiries((liveInquiries) => {
+      setInquiries(liveInquiries);
+    });
+
+    return () => unsubscribe(); // cleanup on unmount
   }, []);
 
   const handleInputChange = (e) => {
@@ -219,7 +227,7 @@ export default function AdminDashboard() {
               transition: 'all var(--transition-normal)'
             }}
           >
-            Customer Inquiries ({inquiries.length})
+            Customer Inquiries ({inquiries.length}) {activeTab === 'inquiries' && <span style={{ fontSize: '10px', marginLeft: '4px', opacity: 0.7 }}>● LIVE</span>}
           </button>
         </div>
       </div>
