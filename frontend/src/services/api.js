@@ -133,7 +133,7 @@ export const api = {
           user: adminUser
         };
       } else {
-        // Sign in with Firebase Auth — username is stored as username@gs-granites.app internally
+        // Sign in with Firebase Auth — username stored as username@gs-granites.app internally
         const fakeEmail = `${trimUser.toLowerCase().replace(/[^a-z0-9]/g, '_')}@gs-granites.app`;
         let firebaseCredential;
         try {
@@ -141,10 +141,40 @@ export const api = {
         } catch {
           throw new Error('Invalid username or password.');
         }
-        const userDocSnap = await getDoc(doc(db, 'users', firebaseCredential.user.uid));
-        if (!userDocSnap.exists()) throw new Error('Account not found. Please register again.');
-        const userData = userDocSnap.data();
-        const idToken = await firebaseCredential.user.getIdToken();
+
+        const fbUser = firebaseCredential.user;
+        let userData;
+
+        // 1. Try Firestore profile first
+        try {
+          const userDocSnap = await getDoc(doc(db, 'users', fbUser.uid));
+          if (userDocSnap.exists()) {
+            userData = userDocSnap.data();
+          }
+        } catch (fsErr) {
+          console.warn('[Login] Firestore read failed, trying fallbacks.', fsErr.message);
+        }
+
+        // 2. Fall back to localStorage cached profile (saved when Firestore write failed at signup)
+        if (!userData) {
+          const cached = JSON.parse(localStorage.getItem('gs_fb_profiles') || '{}');
+          if (cached[fbUser.uid]) {
+            userData = cached[fbUser.uid];
+          }
+        }
+
+        // 3. Last resort: build profile from Firebase Auth data
+        if (!userData) {
+          userData = {
+            id: fbUser.uid,
+            username: fbUser.displayName || trimUser,
+            role: 'user',
+            profile_image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop',
+            created_at: new Date().toISOString().replace('T', ' ').substring(0, 19)
+          };
+        }
+
+        const idToken = await fbUser.getIdToken();
         return { token: idToken, user: userData };
       }
     }
