@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { api } from '../services/api';
+import { auth } from '../services/firebase';
+import { signOut as firebaseSignOut } from 'firebase/auth';
 
 const AuthContext = createContext(null);
 
@@ -57,9 +59,11 @@ export function AuthProvider({ children }) {
     return data;
   };
 
-  const logout = () => {
+  const logout = async () => {
     localStorage.removeItem('gs_auth_token');
     localStorage.removeItem('gs_device_signature');
+    // Clear Firebase Auth session if active (for regular users)
+    try { await firebaseSignOut(auth); } catch { /* ignore if no Firebase session */ }
     setToken(null);
     setUser(null);
   };

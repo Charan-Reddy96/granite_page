@@ -2,11 +2,17 @@
 // enabling full interactive functionality on static environments like GitHub Pages.
 
 // Firebase Firestore — cross-device product and inquiry sync (no Storage needed)
-import { db } from './firebase';
+import { db, auth } from './firebase';
 import {
   collection, addDoc, getDocs, getDoc, doc, updateDoc, deleteDoc,
-  serverTimestamp, query, orderBy
+  serverTimestamp, query, orderBy, setDoc
 } from 'firebase/firestore';
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+  onAuthStateChanged
+} from 'firebase/auth';
 
 const INQUIRIES_COLLECTION = 'inquiries';
 const PRODUCTS_COLLECTION = 'products';
@@ -51,9 +57,14 @@ const getAuthHeaders = () => {
   return headers;
 };
 
-// Clear any stale localStorage product/inquiry data left from the old mock system
-// All data now lives exclusively in Firestore
-['aura_products', 'aura_inquiries'].forEach(key => localStorage.removeItem(key));
+// Clear any stale localStorage data — products/inquiries are in Firestore, users are in Firebase Auth
+['aura_products', 'aura_inquiries', 'gs_mock_users'].forEach(key => localStorage.removeItem(key));
+
+// Waits for Firebase Auth to restore its persisted session (handles page-reload race condition)
+const waitForFirebaseUser = () => new Promise((resolve) => {
+  if (auth.currentUser) { resolve(auth.currentUser); return; }
+  const unsub = onAuthStateChanged(auth, (user) => { unsub(); resolve(user); });
+});
 
 // ─── Firestore Helpers ──────────────────────────────────────────────────────
 
@@ -120,16 +131,19 @@ export const api = {
           user: adminUser
         };
       } else {
-        // Check local users
-        const users = JSON.parse(localStorage.getItem('gs_mock_users') || '[]');
-        const user = users.find(u => u.username === trimUser);
-        if (!user || password === '') {
+        // Sign in with Firebase Auth — username is stored as username@gs-granites.app internally
+        const fakeEmail = `${trimUser.toLowerCase().replace(/[^a-z0-9]/g, '_')}@gs-granites.app`;
+        let firebaseCredential;
+        try {
+          firebaseCredential = await signInWithEmailAndPassword(auth, fakeEmail, password);
+        } catch {
           throw new Error('Invalid username or password.');
         }
-        return {
-          token: `mock_jwt_token_${user.id}`,
-          user
-        };
+        const userDocSnap = await getDoc(doc(db, 'users', firebaseCredential.user.uid));
+        if (!userDocSnap.exists()) throw new Error('Account not found. Please register again.');
+        const userData = userDocSnap.data();
+        const idToken = await firebaseCredential.user.getIdToken();
+        return { token: idToken, user: userData };
       }
     }
   },
@@ -163,11 +177,12 @@ export const api = {
         };
       }
 
-      const userId = token.replace('mock_jwt_token_', '');
-      const users = JSON.parse(localStorage.getItem('gs_mock_users') || '[]');
-      const user = users.find(u => u.id === parseInt(userId));
-      if (!user) throw new Error('Not authenticated');
-      return { user };
+      // Regular user — restore from Firebase Auth session + Firestore profile
+      const currentFBUser = await waitForFirebaseUser();
+      if (!currentFBUser) throw new Error('Not authenticated');
+      const userDocSnap = await getDoc(doc(db, 'users', currentFBUser.uid));
+      if (!userDocSnap.exists()) throw new Error('Not authenticated');
+      return { user: userDocSnap.data() };
     }
   },
 
@@ -182,41 +197,44 @@ export const api = {
       if (!res.ok) throw new Error(data.error || 'Registration failed');
       return data;
     } else {
-      // Mock Register in Standalone Mode
+      // Register with Firebase Auth — username is stored as username@gs-granites.app internally
       const username = formData.get('username');
       const password = formData.get('password');
       const profileImageFile = formData.get('profile_image');
 
-      let profile_image_url = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop'; // fallback placeholder
-
+      let profile_image_url = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop';
       if (profileImageFile && profileImageFile.name) {
-        // Read client file as data URL to keep offline flow completely active
-        profile_image_url = await new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
-          reader.readAsDataURL(profileImageFile);
-        });
+        profile_image_url = await convertImageToBase64(profileImageFile);
       }
 
-      const users = JSON.parse(localStorage.getItem('gs_mock_users') || '[]');
-      if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
-        throw new Error('Username is already taken.');
+      const fakeEmail = `${username.toLowerCase().replace(/[^a-z0-9]/g, '_')}@gs-granites.app`;
+      let firebaseCredential;
+      try {
+        firebaseCredential = await createUserWithEmailAndPassword(auth, fakeEmail, password);
+      } catch (firebaseErr) {
+        if (firebaseErr.code === 'auth/email-already-in-use') {
+          throw new Error('Username is already taken.');
+        }
+        throw new Error(firebaseErr.message || 'Registration failed. Please try again.');
       }
+
+      await updateProfile(firebaseCredential.user, { displayName: username });
 
       const newUser = {
-        id: users.length + 10,
+        id: firebaseCredential.user.uid,
         username,
         role: 'user',
         profile_image: profile_image_url,
         created_at: new Date().toISOString().replace('T', ' ').substring(0, 19)
       };
 
-      users.push(newUser);
-      localStorage.setItem('gs_mock_users', JSON.stringify(users));
+      // Store user profile in Firestore for cross-device retrieval
+      await setDoc(doc(db, 'users', firebaseCredential.user.uid), newUser);
 
+      const idToken = await firebaseCredential.user.getIdToken();
       return {
-        message: 'Registration successful (standalone mock)',
-        token: `mock_jwt_token_${newUser.id}`,
+        message: 'Registration successful',
+        token: idToken,
         user: newUser
       };
     }
