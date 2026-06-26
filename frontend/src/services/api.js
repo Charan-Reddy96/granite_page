@@ -11,7 +11,9 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
-  onAuthStateChanged
+  onAuthStateChanged,
+  GoogleAuthProvider,
+  signInWithPopup
 } from 'firebase/auth';
 
 const INQUIRIES_COLLECTION = 'inquiries';
@@ -268,6 +270,68 @@ export const api = {
         user: newUser
       };
     }
+  },
+
+  // AUTH — Google Sign-In (always uses Firebase, works online + offline)
+  loginWithGoogle: async () => {
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+
+    let credential;
+    try {
+      credential = await signInWithPopup(auth, provider);
+    } catch (err) {
+      if (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request') {
+        throw new Error('Google sign-in was cancelled.');
+      }
+      throw new Error(err.message || 'Google sign-in failed.');
+    }
+
+    const firebaseUser = credential.user;
+    const userDocRef = doc(db, 'users', firebaseUser.uid);
+
+    // Check if user profile already exists in Firestore
+    let userProfile;
+    try {
+      const snap = await getDoc(userDocRef);
+      if (snap.exists()) {
+        userProfile = snap.data();
+      } else {
+        // New Google user — create profile from Google account data
+        userProfile = {
+          id: firebaseUser.uid,
+          username: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User',
+          role: 'user',
+          profile_image: firebaseUser.photoURL || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop',
+          email: firebaseUser.email,
+          created_at: new Date().toISOString().replace('T', ' ').substring(0, 19)
+        };
+        try {
+          await setDoc(userDocRef, userProfile);
+          console.log('[Auth] Google user profile saved to Firestore:', firebaseUser.uid);
+        } catch (fsErr) {
+          console.warn('[Auth] Firestore write failed for Google user.', fsErr.message);
+          // Cache locally as fallback
+          const stored = JSON.parse(localStorage.getItem('gs_fb_profiles') || '{}');
+          stored[firebaseUser.uid] = userProfile;
+          localStorage.setItem('gs_fb_profiles', JSON.stringify(stored));
+        }
+      }
+    } catch (fsReadErr) {
+      // Firestore read failed — build profile from Firebase Auth data
+      console.warn('[Auth] Firestore read failed for Google user.', fsReadErr.message);
+      userProfile = {
+        id: firebaseUser.uid,
+        username: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User',
+        role: 'user',
+        profile_image: firebaseUser.photoURL || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop',
+        email: firebaseUser.email,
+        created_at: new Date().toISOString().replace('T', ' ').substring(0, 19)
+      };
+    }
+
+    const idToken = await firebaseUser.getIdToken();
+    return { token: idToken, user: userProfile };
   },
 
   // 1. PRODUCTS API — powered by Firebase Firestore for cross-device sync
