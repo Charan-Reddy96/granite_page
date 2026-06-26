@@ -305,6 +305,10 @@ def seed_database():
             print("Database seeding completed.")
 
 
+# Call seed_database at global scope to ensure it runs under all entry points (like flask run)
+seed_database()
+
+
 # Helper route to serve static uploads (useful if Flask is acting alone)
 @app.route('/static/uploads/<filename>')
 def uploaded_file(filename):
@@ -760,5 +764,4 @@ def upload_file():
 
 
 if __name__ == '__main__':
-    seed_database()
     app.run(host='0.0.0.0', port=5000, debug=True)

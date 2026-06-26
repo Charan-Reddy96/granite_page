@@ -12,11 +12,18 @@ export default function Home() {
   const [autoSlide, setAutoSlide] = useState(true);
   const [hoveredSlideId, setHoveredSlideId] = useState(null);
   const [isInquiryOpen, setIsInquiryOpen] = useState(false);
+  const [loadingFeatured, setLoadingFeatured] = useState(true);
 
   useEffect(() => {
     api.getProducts({ featured: true })
-      .then(data => setFeaturedProducts(data))
-      .catch(err => console.error("Error fetching featured products:", err));
+      .then(data => {
+        setFeaturedProducts(data);
+        setLoadingFeatured(false);
+      })
+      .catch(err => {
+        console.error("Error fetching featured products:", err);
+        setLoadingFeatured(false);
+      });
 
     api.getProducts()
       .then(data => setAllProducts(data.filter(p => p.images && p.images.length > 0)))
@@ -151,7 +158,7 @@ export default function Home() {
             </Link>
           </div>
 
-          {featuredProducts.length === 0 ? (
+          {loadingFeatured ? (
             <div style={{
               textAlign: 'center',
               padding: '60px',
@@ -162,9 +169,20 @@ export default function Home() {
             }}>
               Loading catalog masterpieces...
             </div>
+          ) : featuredProducts.length === 0 ? (
+            <div style={{
+              textAlign: 'center',
+              padding: '60px',
+              backgroundColor: 'var(--bg-primary)',
+              borderRadius: 'var(--border-radius-md)',
+              border: '1px solid var(--border-color)',
+              color: 'var(--text-secondary)'
+            }}>
+              No featured collections at the moment.
+            </div>
           ) : (
             <div className="catalog-grid">
-              {featuredProducts.slice(0, 3).map(p => (
+              {featuredProducts.slice(0, 8).map(p => (
                 <ProductCard key={p.id} product={p} />
               ))}
             </div>

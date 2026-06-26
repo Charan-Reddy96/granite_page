@@ -358,8 +358,6 @@ export default function AdminDashboard() {
                   >
                     <option value="Polished">Polished</option>
                     <option value="Honed">Honed</option>
-                    <option value="Matte">Matte</option>
-                    <option value="Leathered">Leathered</option>
                   </select>
                 </div>
               </div>

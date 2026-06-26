@@ -38,7 +38,7 @@ export default function Catalog() {
 
   // Available unique attributes for filters (dynamic list, or hardcoded for seed consistency)
   const colors = ['White', 'Black', 'Grey', 'Gold', 'Blue'];
-  const finishes = ['Polished', 'Honed', 'Matte', 'Satin'];
+  const finishes = ['Polished'];
 
   const fetchFilteredProducts = () => {
     setLoading(true);
