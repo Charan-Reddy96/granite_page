@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs, addDoc, query, where, serverTimestamp } from 'firebase/firestore';
+import { initializeFirestore, collection, getDocs, addDoc, query, where, serverTimestamp } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBLadvl5zxTwpDGadstWM7MD1lQGjhbkZs",
@@ -11,7 +11,9 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const db = initializeFirestore(app, {
+  experimentalForceLongPolling: true,
+});
 
 const newTiles = [
   {
