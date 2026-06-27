@@ -628,9 +628,9 @@ def update_product(product_id):
     if 'size' in data: product.size = data['size']
     
     # File handling if updating files via form-data
+    new_images = []
     if not request.is_json and 'images' in request.files:
         files = request.files.getlist('images')
-        new_images = []
         for file in files:
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
@@ -643,6 +643,11 @@ def update_product(product_id):
                 new_images.append(f"/static/uploads/{filename}")
         if new_images:
             product.set_images(new_images)
+            
+    if not request.is_json and not new_images and 'imageUrl' in data:
+        image_url_input = data.get('imageUrl')
+        if image_url_input:
+            product.set_images([image_url_input])
             
     # Fallback to direct image paths update (if sent as array)
     if 'images' in data and request.is_json:

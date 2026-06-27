@@ -137,6 +137,10 @@ export default function AdminDashboard() {
 
   const handleEditInit = (product) => {
     setEditingId(product.id);
+    setImageFile(null);
+    const fileInput = document.getElementById('imageFileInput');
+    if (fileInput) fileInput.value = '';
+    
     setFormData({
       name: product.name || '',
       category: product.category || 'Granite',
