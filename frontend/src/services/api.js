@@ -724,13 +724,23 @@ export const api = {
     const results = snapshot.docs.map(d => {
       const data = d.data();
       const ts = data.created_at;
-      const created_at = ts && ts.toDate
-        ? ts.toDate().toISOString().replace('T', ' ').substring(0, 19)
-        : (ts || '');
+      let created_at = '';
+      if (ts && typeof ts.toDate === 'function') {
+        created_at = ts.toDate().toISOString();
+      } else if (ts && ts.seconds) {
+        created_at = new Date(ts.seconds * 1000).toISOString();
+      } else if (typeof ts === 'string') {
+        created_at = ts;
+      } else if (typeof ts === 'number') {
+        created_at = new Date(ts).toISOString();
+      } else {
+        created_at = new Date().toISOString();
+      }
+      created_at = created_at.replace('T', ' ').substring(0, 19);
       return { ...data, id: d.id, created_at };
     });
     // Sort newest first client-side
-    return results.sort((a, b) => b.created_at.localeCompare(a.created_at));
+    return results.sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
   },
 
   // Real-time inquiry listener — uses Firestore real-time onSnapshot listener
@@ -744,12 +754,22 @@ export const api = {
         const inquiries = snapshot.docs.map(d => {
           const data = d.data();
           const ts = data.created_at;
-          const created_at = ts && ts.toDate
-            ? ts.toDate().toISOString().replace('T', ' ').substring(0, 19)
-            : (ts || new Date().toISOString().replace('T', ' ').substring(0, 19));
+          let created_at = '';
+          if (ts && typeof ts.toDate === 'function') {
+            created_at = ts.toDate().toISOString();
+          } else if (ts && ts.seconds) {
+            created_at = new Date(ts.seconds * 1000).toISOString();
+          } else if (typeof ts === 'string') {
+            created_at = ts;
+          } else if (typeof ts === 'number') {
+            created_at = new Date(ts).toISOString();
+          } else {
+            created_at = new Date().toISOString();
+          }
+          created_at = created_at.replace('T', ' ').substring(0, 19);
           return { ...data, id: d.id, created_at };
         });
-        inquiries.sort((a, b) => b.created_at.localeCompare(a.created_at));
+        inquiries.sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
         callback(inquiries);
       },
       (err) => {
@@ -759,11 +779,21 @@ export const api = {
           const fallback = snap.docs.map(d => {
             const data = d.data();
             const ts = data.created_at;
-            const created_at = ts && ts.toDate
-              ? ts.toDate().toISOString().replace('T', ' ').substring(0, 19)
-              : (ts || '');
+            let created_at = '';
+            if (ts && typeof ts.toDate === 'function') {
+              created_at = ts.toDate().toISOString();
+            } else if (ts && ts.seconds) {
+              created_at = new Date(ts.seconds * 1000).toISOString();
+            } else if (typeof ts === 'string') {
+              created_at = ts;
+            } else if (typeof ts === 'number') {
+              created_at = new Date(ts).toISOString();
+            } else {
+              created_at = new Date().toISOString();
+            }
+            created_at = created_at.replace('T', ' ').substring(0, 19);
             return { ...data, id: d.id, created_at };
-          }).sort((a, b) => b.created_at.localeCompare(a.created_at));
+          }).sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
           if (!stopped) callback(fallback);
         }).catch(() => {});
       }
