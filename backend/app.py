@@ -297,6 +297,66 @@ def seed_database():
                     dimensions="8' x 2.5'",
                     finish="Polished",
                     image_paths=json.dumps(["/static/uploads/tiles_8x2_5.png"])
+                ),
+                Product(
+                    name="Carrara White Marble Tiles",
+                    category="Tile",
+                    color="White",
+                    price="150 - 250",
+                    availability="In Stock",
+                    description="Luxurious polished Carrara marble floor and wall tiles. Classic grey veining on pure white background.",
+                    featured=True,
+                    dimensions="24\" x 24\"",
+                    finish="Polished",
+                    image_paths=json.dumps(["/static/uploads/carrara_tile.webp"])
+                ),
+                Product(
+                    name="Emerald Green Subway Tiles",
+                    category="Tile",
+                    color="Green",
+                    price="120 - 180",
+                    availability="In Stock",
+                    description="Vibrant glazed emerald green subway tiles. Ideal for kitchen backsplashes and bathroom accent walls.",
+                    featured=False,
+                    dimensions="3\" x 6\"",
+                    finish="Glossy",
+                    image_paths=json.dumps(["/static/uploads/emerald_subway.webp"])
+                ),
+                Product(
+                    name="Terrazzo White Tiles",
+                    category="Tile",
+                    color="White",
+                    price="90 - 140",
+                    availability="In Stock",
+                    description="Modern matte-finish white terrazzo tiles with colorful marble and quartz chips.",
+                    featured=False,
+                    dimensions="12\" x 12\"",
+                    finish="Matte",
+                    image_paths=json.dumps(["/static/uploads/terrazzo_white.webp"])
+                ),
+                Product(
+                    name="Travertine Gold Tiles",
+                    category="Tile",
+                    color="Gold",
+                    price="200 - 320",
+                    availability="In Stock",
+                    description="Exquisite warm gold travertine stone tiles, honed and filled for premium indoor and outdoor floor styling.",
+                    featured=False,
+                    dimensions="16\" x 16\"",
+                    finish="Honed",
+                    image_paths=json.dumps(["/static/uploads/travertine_gold.webp"])
+                ),
+                Product(
+                    name="Coral Blush Ceramic Tiles",
+                    category="Tile",
+                    color="Pink",
+                    price="110 - 160",
+                    availability="In Stock",
+                    description="Soft pastel coral pink ceramic tiles. Add a warm, modern minimalist aesthetic to your home styling.",
+                    featured=False,
+                    dimensions="8\" x 8\"",
+                    finish="Satin",
+                    image_paths=json.dumps(["/static/uploads/coral_blush.webp"])
                 )
             ]
             for p in default_products:

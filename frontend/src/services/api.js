@@ -469,7 +469,8 @@ export const api = {
   },
 
   getProductById: async (id) => {
-    const isOnline = await checkServer();
+    const isFlaskId = /^\d+$/.test(String(id));
+    const isOnline = isFlaskId && (await checkServer());
     if (isOnline) {
       // Flask backend available — use REST API
       const res = await fetchWithTimeout(`${API_BASE}/api/products/${id}`);
@@ -566,7 +567,8 @@ export const api = {
   },
 
   updateProduct: async (id, formData) => {
-    const isOnline = await checkServer();
+    const isFlaskId = /^\d+$/.test(String(id));
+    const isOnline = isFlaskId && (await checkServer());
     if (isOnline) {
       // Flask backend available — use REST API
       const res = await fetchWithTimeout(`${API_BASE}/api/products/${id}`, {
@@ -643,7 +645,8 @@ export const api = {
   },
 
   deleteProduct: async (id) => {
-    const isOnline = await checkServer();
+    const isFlaskId = /^\d+$/.test(String(id));
+    const isOnline = isFlaskId && (await checkServer());
     if (isOnline) {
       // Flask backend available — use REST API
       const res = await fetchWithTimeout(`${API_BASE}/api/products/${id}`, {
