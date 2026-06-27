@@ -591,7 +591,17 @@ export default function AdminDashboard() {
       {/* --- TAB CONTENT: INQUIRIES --- */}
       {activeTab === 'inquiries' && (
         <div className="glass" style={{ padding: '30px', borderRadius: 'var(--border-radius-lg)', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-          <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '22px' }}>Client Submissions</h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+            <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '22px', margin: 0 }}>Client Submissions</h3>
+            <button
+              onClick={fetchInquiries}
+              className="btn btn-secondary btn-sm"
+              style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', padding: '6px 14px' }}
+              title="Manually refresh inquiries from database"
+            >
+              <RefreshCw size={14} /> Refresh
+            </button>
+          </div>
           
           {inquiries.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--text-secondary)' }}>

@@ -87,12 +87,26 @@ const docToProduct = (d) => ({ ...d.data(), id: d.id });
 async function checkServer() {
   if (isGitHubPages) return false;
   try {
-    const res = await fetchWithTimeout(`${API_BASE}/api/products?featured=true`, {}, 1200);
+    const res = await fetchWithTimeout(`${API_BASE}/api/products?featured=true`, {}, 5000);
     return res.ok;
   } catch (e) {
     return false;
   }
 }
+
+// Local Storage helpers for standalone offline CRUD fallback
+const getLocalProducts = () => {
+  try {
+    return JSON.parse(localStorage.getItem('gs_local_products') || '[]');
+  } catch (e) {
+    return [];
+  }
+};
+
+const saveLocalProducts = (products) => {
+  localStorage.setItem('gs_local_products', JSON.stringify(products));
+};
+
 
 export const api = {
   // 0. AUTH API
@@ -394,6 +408,23 @@ export const api = {
       const snapshot = await getDocs(collection(db, PRODUCTS_COLLECTION));
       let results = snapshot.docs.map(docToProduct);
 
+      // Merge with localStorage products and filter out locally deleted products
+      const localProducts = getLocalProducts();
+      const deletedIds = JSON.parse(localStorage.getItem('gs_local_deleted_products') || '[]');
+      
+      // Remove deleted ones
+      results = results.filter(p => !deletedIds.includes(p.id));
+      
+      // Override or append local products
+      localProducts.forEach(localP => {
+        const idx = results.findIndex(p => p.id === localP.id);
+        if (idx !== -1) {
+          results[idx] = { ...results[idx], ...localP };
+        } else {
+          results.push(localP);
+        }
+      });
+
       // Apply filters client-side
       if (filters.category) {
         results = results.filter(p => p.category && p.category.toLowerCase() === filters.category.toLowerCase());
@@ -446,6 +477,24 @@ export const api = {
       return res.json();
     } else {
       // Standalone / GitHub Pages — read from Firestore
+      if (String(id).startsWith('local_')) {
+        const localProducts = getLocalProducts();
+        const localP = localProducts.find(p => p.id === id);
+        if (localP) return localP;
+        throw new Error('Product not found');
+      }
+      
+      // Check if it's locally deleted
+      const deletedIds = JSON.parse(localStorage.getItem('gs_local_deleted_products') || '[]');
+      if (deletedIds.includes(id)) {
+        throw new Error('Product not found');
+      }
+
+      // Check if it's locally overridden
+      const localProducts = getLocalProducts();
+      const localOverride = localProducts.find(p => p.id === id);
+      if (localOverride) return localOverride;
+
       const docRef = doc(db, PRODUCTS_COLLECTION, id);
       const snap = await getDoc(docRef);
       if (!snap.exists()) throw new Error('Product not found');
@@ -493,11 +542,26 @@ export const api = {
         name, category, color, price, availability, description,
         featured, thickness, dimensions, finish, coverage, size,
         images: [imageUrl],
-        created_at: serverTimestamp()
+        created_at: new Date().toISOString()
       };
 
-      const docRef = await addDoc(collection(db, PRODUCTS_COLLECTION), newData);
-      return { ...newData, id: docRef.id };
+      try {
+        const docRef = await addDoc(collection(db, PRODUCTS_COLLECTION), {
+          ...newData,
+          created_at: serverTimestamp()
+        });
+        return { ...newData, id: docRef.id };
+      } catch (err) {
+        console.warn('[Firestore] Failed to write product to Firestore, saving locally instead:', err.message);
+        const localProducts = getLocalProducts();
+        const localNewProduct = {
+          ...newData,
+          id: `local_${Date.now()}`
+        };
+        localProducts.push(localNewProduct);
+        saveLocalProducts(localProducts);
+        return localNewProduct;
+      }
     }
   },
 
@@ -540,13 +604,41 @@ export const api = {
       const updateData = {
         name, category, color, price, availability, description,
         featured, thickness, dimensions, finish, coverage, size,
-        updated_at: serverTimestamp()
+        updated_at: new Date().toISOString()
       };
       if (imageUrl) updateData.images = [imageUrl];
 
-      const docRef = doc(db, PRODUCTS_COLLECTION, id);
-      await updateDoc(docRef, updateData);
-      return { ...updateData, id };
+      if (String(id).startsWith('local_')) {
+        const localProducts = getLocalProducts();
+        const index = localProducts.findIndex(p => p.id === id);
+        if (index !== -1) {
+          localProducts[index] = { ...localProducts[index], ...updateData };
+          saveLocalProducts(localProducts);
+          return { ...localProducts[index] };
+        }
+        throw new Error('Local product not found');
+      }
+
+      try {
+        const docRef = doc(db, PRODUCTS_COLLECTION, id);
+        await updateDoc(docRef, {
+          ...updateData,
+          updated_at: serverTimestamp()
+        });
+        return { ...updateData, id };
+      } catch (err) {
+        console.warn('[Firestore] Failed to update product in Firestore, saving locally instead:', err.message);
+        const localProducts = getLocalProducts();
+        const index = localProducts.findIndex(p => p.id === id);
+        const updatedObj = { ...updateData, id };
+        if (index !== -1) {
+          localProducts[index] = { ...localProducts[index], ...updateData };
+        } else {
+          localProducts.push(updatedObj);
+        }
+        saveLocalProducts(localProducts);
+        return updatedObj;
+      }
     }
   },
 
@@ -565,97 +657,90 @@ export const api = {
       return res.json();
     } else {
       // Standalone / GitHub Pages — delete Firestore doc
-      await deleteDoc(doc(db, PRODUCTS_COLLECTION, id));
-      return { message: 'Product deleted successfully' };
+      if (String(id).startsWith('local_')) {
+        const localProducts = getLocalProducts();
+        const updated = localProducts.filter(p => p.id !== id);
+        saveLocalProducts(updated);
+        return { message: 'Product deleted successfully' };
+      }
+
+      try {
+        await deleteDoc(doc(db, PRODUCTS_COLLECTION, id));
+        return { message: 'Product deleted successfully' };
+      } catch (err) {
+        console.warn('[Firestore] Failed to delete product in Firestore, deleting locally instead:', err.message);
+        const localProducts = getLocalProducts();
+        const updated = localProducts.filter(p => p.id !== id);
+        saveLocalProducts(updated);
+        
+        const deletedIds = JSON.parse(localStorage.getItem('gs_local_deleted_products') || '[]');
+        if (!deletedIds.includes(id)) {
+          deletedIds.push(id);
+          localStorage.setItem('gs_local_deleted_products', JSON.stringify(deletedIds));
+        }
+        return { message: 'Product deleted successfully' };
+      }
     }
   },
 
   // 2. INQUIRIES API — powered by Firebase Firestore for cross-device sync
   submitInquiry: async (inquiryData) => {
-    const isOnline = await checkServer();
-    if (isOnline) {
-      // Flask backend available — use REST API
-      const res = await fetchWithTimeout(`${API_BASE}/api/inquiries`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(inquiryData)
-      });
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Failed to submit inquiry');
-      }
-      return res.json();
-    } else {
-      // Standalone / GitHub Pages — write directly to Firestore
-      let prodName = 'General Inquiry';
-      let prodCat = null;
+    // Always write directly to Firestore for cross-device sync
+    let prodName = 'General Inquiry';
+    let prodCat = null;
 
-      if (inquiryData.product_id && inquiryData.product_id !== 'general') {
-        try {
-          const docRef = doc(db, PRODUCTS_COLLECTION, inquiryData.product_id);
-          const snap = await getDoc(docRef);
-          if (snap.exists()) {
-            const prod = snap.data();
-            prodName = prod.name;
-            prodCat = prod.category;
-          }
-        } catch (e) {
-          console.error("Error retrieving product for inquiry:", e);
+    if (inquiryData.product_id && inquiryData.product_id !== 'general') {
+      try {
+        const docRef = doc(db, PRODUCTS_COLLECTION, inquiryData.product_id);
+        const snap = await getDoc(docRef);
+        if (snap.exists()) {
+          const prod = snap.data();
+          prodName = prod.name;
+          prodCat = prod.category;
         }
+      } catch (e) {
+        console.error("Error retrieving product for inquiry:", e);
       }
-
-      const docRef = await addDoc(collection(db, INQUIRIES_COLLECTION), {
-        name: inquiryData.name,
-        phone: inquiryData.phone,
-        email: inquiryData.email,
-        product_id: inquiryData.product_id === 'general' ? null : inquiryData.product_id,
-        product_name: prodName,
-        product_category: prodCat,
-        message: inquiryData.message,
-        status: 'New',
-        created_at: serverTimestamp()
-      });
-
-      return { id: docRef.id, message: 'Inquiry submitted successfully' };
     }
+
+    const docRef = await addDoc(collection(db, INQUIRIES_COLLECTION), {
+      name: inquiryData.name,
+      phone: inquiryData.phone,
+      email: inquiryData.email,
+      product_id: inquiryData.product_id === 'general' ? null : inquiryData.product_id,
+      product_name: prodName,
+      product_category: prodCat,
+      message: inquiryData.message,
+      status: 'New',
+      created_at: serverTimestamp()
+    });
+
+    return { id: docRef.id, message: 'Inquiry submitted successfully' };
   },
 
   getInquiries: async () => {
-    const isOnline = await checkServer();
-    if (isOnline) {
-      // Flask backend available — use REST API
-      const res = await fetchWithTimeout(`${API_BASE}/api/inquiries`, {
-        headers: { ...getAuthHeaders() }
-      });
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Failed to fetch inquiries');
-      }
-      return res.json();
-    } else {
-      // Standalone / GitHub Pages — read all from Firestore, sort client-side
-      // (avoids needing a Firestore composite index)
-      const snapshot = await getDocs(collection(db, INQUIRIES_COLLECTION));
-      const results = snapshot.docs.map(d => {
-        const data = d.data();
-        const ts = data.created_at;
-        const created_at = ts && ts.toDate
-          ? ts.toDate().toISOString().replace('T', ' ').substring(0, 19)
-          : (ts || '');
-        return { ...data, id: d.id, created_at };
-      });
-      // Sort newest first client-side
-      return results.sort((a, b) => b.created_at.localeCompare(a.created_at));
-    }
+    // Read all from Firestore, sort client-side (avoids needing composite index)
+    const snapshot = await getDocs(collection(db, INQUIRIES_COLLECTION));
+    const results = snapshot.docs.map(d => {
+      const data = d.data();
+      const ts = data.created_at;
+      const created_at = ts && ts.toDate
+        ? ts.toDate().toISOString().replace('T', ' ').substring(0, 19)
+        : (ts || '');
+      return { ...data, id: d.id, created_at };
+    });
+    // Sort newest first client-side
+    return results.sort((a, b) => b.created_at.localeCompare(a.created_at));
   },
 
-  // Real-time inquiry listener — calls callback(inquiries[]) whenever Firestore changes.
-  // Does NOT use orderBy (avoids Firestore index requirement) — sorts client-side.
-  // Returns an unsubscribe function.
+  // Real-time inquiry listener — uses Firestore real-time onSnapshot listener
   subscribeToInquiries: (callback) => {
-    const unsub = onSnapshot(
+    let stopped = false;
+
+    const firestoreUnsub = onSnapshot(
       collection(db, INQUIRIES_COLLECTION),
       (snapshot) => {
+        if (stopped) return;
         const inquiries = snapshot.docs.map(d => {
           const data = d.data();
           const ts = data.created_at;
@@ -664,7 +749,6 @@ export const api = {
             : (ts || new Date().toISOString().replace('T', ' ').substring(0, 19));
           return { ...data, id: d.id, created_at };
         });
-        // Sort newest first client-side
         inquiries.sort((a, b) => b.created_at.localeCompare(a.created_at));
         callback(inquiries);
       },
@@ -680,52 +764,28 @@ export const api = {
               : (ts || '');
             return { ...data, id: d.id, created_at };
           }).sort((a, b) => b.created_at.localeCompare(a.created_at));
-          callback(fallback);
+          if (!stopped) callback(fallback);
         }).catch(() => {});
       }
     );
-    return unsub;
+
+    // Return cleanup function
+    return () => {
+      stopped = true;
+      if (firestoreUnsub) firestoreUnsub();
+    };
   },
 
   updateInquiryStatus: async (id, status) => {
-    const isOnline = await checkServer();
-    if (isOnline) {
-      // Flask backend available — use REST API
-      const res = await fetchWithTimeout(`${API_BASE}/api/inquiries/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
-        body: JSON.stringify({ status })
-      });
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Failed to update inquiry status');
-      }
-      return res.json();
-    } else {
-      // Standalone / GitHub Pages — update Firestore doc
-      const docRef = doc(db, INQUIRIES_COLLECTION, id);
-      await updateDoc(docRef, { status });
-      return { id, status };
-    }
+    // Update Firestore doc directly to keep in sync
+    const docRef = doc(db, INQUIRIES_COLLECTION, id);
+    await updateDoc(docRef, { status });
+    return { id, status };
   },
 
   deleteInquiry: async (id) => {
-    const isOnline = await checkServer();
-    if (isOnline) {
-      // Flask backend available — use REST API
-      const res = await fetchWithTimeout(`${API_BASE}/api/inquiries/${id}`, {
-        method: 'DELETE',
-        headers: { ...getAuthHeaders() }
-      });
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Failed to delete inquiry');
-      }
-      return res.json();
-    } else {
-      // Standalone / GitHub Pages — delete Firestore doc
-      await deleteDoc(doc(db, INQUIRIES_COLLECTION, id));
-      return { message: 'Inquiry deleted successfully' };
-    }
+    // Standalone / GitHub Pages — delete Firestore doc
+    await deleteDoc(doc(db, INQUIRIES_COLLECTION, id));
+    return { message: 'Inquiry deleted successfully' };
   }
 };
