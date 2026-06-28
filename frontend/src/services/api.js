@@ -107,6 +107,34 @@ const saveLocalProducts = (products) => {
   localStorage.setItem('gs_local_products', JSON.stringify(products));
 };
 
+// Sync Firebase Auth (for cross-device features like Inquiries that rely on Firestore security rules)
+const syncFirebaseAuth = async (username, password) => {
+  const trimUser = username.trim();
+  const fakeEmail = `${trimUser.toLowerCase().replace(/[^a-z0-9]/g, '_')}@gs-granites.app`;
+  try {
+    await signInWithEmailAndPassword(auth, fakeEmail, password);
+  } catch (err) {
+    if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, fakeEmail, password);
+        // Create user document with admin role if it's the admin
+        const role = trimUser === 'admin' ? 'admin' : 'user';
+        await setDoc(doc(db, 'users', cred.user.uid), {
+          id: cred.user.uid,
+          username: trimUser,
+          role: role,
+          profile_image: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop',
+          created_at: new Date().toISOString().replace('T', ' ').substring(0, 19)
+        });
+      } catch (e) {
+        console.warn('Failed to create Firebase user for sync:', e.message);
+      }
+    } else {
+      console.warn('Failed to sign in to Firebase Auth:', err.message);
+    }
+  }
+};
+
 
 export const api = {
   // 0. AUTH API
@@ -124,6 +152,8 @@ export const api = {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Login failed');
+      
+      await syncFirebaseAuth(username, password);
       return data;
     } else {
       // Mock Login in Standalone Mode
@@ -135,6 +165,9 @@ export const api = {
         if (deviceSignature !== 'gs_dev_device_sig_2026') {
           throw new Error('Access restricted: Unauthorized device signature key.');
         }
+        
+        await syncFirebaseAuth(username, password);
+
         const adminUser = {
           id: 1,
           username: 'admin',
