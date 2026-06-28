@@ -237,6 +237,10 @@ export const api = {
       }
       const res = await fetchWithTimeout(`${API_BASE}/api/auth/me`, { headers });
       if (!res.ok) throw new Error('Not authenticated');
+      
+      // Wait for Firebase Auth session to be restored for cross-device features
+      await waitForFirebaseUser();
+      
       return res.json();
     } else {
       // Mock getMe
@@ -245,6 +249,10 @@ export const api = {
         if (signature !== 'gs_dev_device_sig_2026') {
           throw new Error('Access restricted: Unauthorized device signature key.');
         }
+        
+        // Wait for Firebase Auth session to be restored for cross-device features
+        await waitForFirebaseUser();
+        
         return {
           user: {
             id: 1,
